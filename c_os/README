@@ -1,0 +1,7 @@
+Implementierungen in folgenden Dateien
+======================================
+main.cc
+devices/CGA.h
+devices/CGA.cc
+devices/PCSPK.cc
+
