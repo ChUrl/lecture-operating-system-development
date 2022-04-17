@@ -24,7 +24,7 @@ private:
       CGA_Stream(CGA_Stream &copy); // Verhindere Kopieren
 
 public:
-    CGA_Stream () : OutStream(), CGA () { flush(); }
+    CGA_Stream () : OutStream(), CGA() { flush(); }
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     virtual void flush ();

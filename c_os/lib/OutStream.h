@@ -89,4 +89,3 @@ OutStream& dec (OutStream& os);
 OutStream& hex (OutStream& os);
 
 #endif
-

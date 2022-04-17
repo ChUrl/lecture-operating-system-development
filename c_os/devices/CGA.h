@@ -31,6 +31,9 @@ public:
     // Konstruktur mit Initialisierung der Ports
     CGA () : index_port (0x3d4), data_port (0x3d5) {
         CGA_START = (const char*)0xb8000;
+
+        // NOTE: Added this
+        this->setpos(0, 0);
     }
     
     // Konstanten fuer die moeglichen Farben im Attribut-Byte.

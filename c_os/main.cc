@@ -19,6 +19,7 @@ int main() {
     /* Hier muess Code eingefuegt werden */
 
     // Bildschirm loeschen.
+    kout.clear();
 
     // Startmeldung ausgeben
 
