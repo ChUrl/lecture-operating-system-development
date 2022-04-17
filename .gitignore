@@ -6,3 +6,6 @@ build/
 texfrag/
 README
 compile_commands.json
+c_boot/bootsect
+c_boot/setup
+c_tools/build
