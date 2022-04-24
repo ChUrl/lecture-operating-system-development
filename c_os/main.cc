@@ -21,10 +21,10 @@ int main() {
     // Bildschirm loeschen.
     kout.clear();
 
-    // Startmeldung ausgeben
+    // TODO: Startmeldung ausgeben
+
 
     text_demo();
-    
     sound_demo();
 
     while (1);
