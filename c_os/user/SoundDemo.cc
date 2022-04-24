@@ -12,6 +12,8 @@
 
 void sound_demo() {
    
-   /* Hier muess Code eingefuegt werden */
+    /* Hier muess Code eingefuegt werden */
+    pcspk.tetris();
+    // pcspk.play(440, 1000);
 
 }
