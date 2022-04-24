@@ -162,9 +162,12 @@ void CGA::scrollup () {
 void CGA::clear () {
 
     /* Hier muess Code eingefuegt werden */
+
     for (unsigned short byte = 2 * 80 * 0; byte < 2 * 80 * 25; ++byte) {
         *((char*)(CGA_START + byte)) = '\0';
     }
+
+    this->setpos(0, 0);
 
 }
 
