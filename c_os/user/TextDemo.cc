@@ -14,15 +14,15 @@
 void text_demo() {
 
     /* Hier muess Code eingefuegt werden */
-
-    // TODO:
-    // kout << fixedwidth(5) << "Test" << endl;
-
     kout << "Test der Zahlenausgabefunktion:" << endl << endl;
-    kout << "| dec | hex  | bin   |" << endl;
-    kout << "+-----+------+-------+" << endl;
+    kout << "|  dec  |  hex  |  bin  |" << endl;
+    kout << "+-------+-------+-------+" << endl;
 
-    for (unsigned char num = 0; num < 17; ++num) {
-        kout << "|     |      |       |" << endl;
+    // TODO: should fillw just work for the next << ?
+    for (unsigned short num = 0; num < 17; ++num) {
+        kout << fillw(0) << "| " << fillw(6) << dec << num;
+        kout << fillw(0) << "| " << fillw(6) << hex << num;
+        kout << fillw(0) << "| " << fillw(6) << bin << num;
+        kout << fillw(0) << "|" << endl;
     }
 }

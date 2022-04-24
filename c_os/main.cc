@@ -25,7 +25,7 @@ int main() {
 
 
     text_demo();
-    sound_demo();
+    // sound_demo();
 
     while (1);
     return 0;
