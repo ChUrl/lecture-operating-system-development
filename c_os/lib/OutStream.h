@@ -7,13 +7,13 @@
  *                  << Operators fuer die wichtigsten der vordefinierten     *
  *                  Datentypen und realisiert somit die bekannte Ausgabe-    *
  *                  funktion der C++ iO_Stream Bibliothek. Zur Zeit wird     *
- *                  die Darstellung von Zeichen, Zeichenketten und ganzen    * 
+ *                  die Darstellung von Zeichen, Zeichenketten und ganzen    *
  *                  Zahlen unterstuetzt. Ein weiterer << Operator erlaubt    *
  *                  die Verwendung von Manipulatoren.                        *
  *                                                                           *
  *                  Neben der Klasse OutStream sind hier auch die            *
  *                  Manipulatoren hex, dec, oct und bin fuer die Wahl der    *
- *                  Basis bei der Zahlendarstellung, sowie endl fuer den     * 
+ *                  Basis bei der Zahlendarstellung, sowie endl fuer den     *
  *                  Zeilenumbruch definiert.                                 *
  *                                                                           *
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
@@ -24,17 +24,51 @@
 
 #include "lib/StringBuffer.h"
 
+// NOTE: I added this, stream manipulator with argument
+class OutStream;
+
+// TODO: Should this only work for the next << ?
+class fillw {
+public:
+      fillw(unsigned char w) : w(w) {};
+      unsigned char w;
+};
+
+class fillc {
+public:
+      fillc(char c) : c(c) {};
+      char c;
+};
+
+
 class OutStream : public StringBuffer {
-    
+
 private:
       OutStream(const OutStream &copy); // Verhindere Kopieren
+
+      // NOTE: I added this
+      unsigned char fill_used; // indicates how many characters are already used by the text internally
+      void fill_use_char(); // recognizes that one char from the print width has been used up
+      void fill_finalize(); // does the filling after text has been written to buffer
 
 public:
       int base;   // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
 
-      OutStream () : StringBuffer () { base = 10; }   // initial Dezimalsystem
+      // NOTE: I added this
+      unsigned char fill_width;
+      char fill_char; // fill character for fixed width
 
-      virtual void flush () = 0;                    // weiterhin undefiniert
+      OutStream () : StringBuffer () {
+            base = 10;   // initial Dezimalsystem
+            fill_width = 0;   // no fixed width
+            fill_used = 0;
+            fill_char = ' ';  // fill with spaces
+      }
+
+      void flush() override = 0; // weiterhin undefiniert aber public
+
+      // NOTE: I added this
+      void put(char c) override;
 
       // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
       //               Zeichenkette.
@@ -57,9 +91,12 @@ public:
       // Darstellung eines Zeigers als hexadezimale ganze Zahl
       OutStream& operator << (void* ptr);
 
+      // NOTE: I added this, set fixed output width
+      OutStream &operator << (const fillw &w);
+      OutStream &operator << (const fillc &c);
+
       // Aufruf einer Manipulatorfunktion
       OutStream& operator << (OutStream& (*f) (OutStream&));
-    
 };
 
 

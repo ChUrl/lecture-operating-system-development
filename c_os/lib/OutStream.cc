@@ -22,15 +22,64 @@
 
 #include "lib/OutStream.h"
 
+// NOTE: I added this, stream manipulators with arg
+OutStream& OutStream::operator << (const fillw& w) {
+    this->fill_width = w.w;
+    return *this;
+}
+OutStream& OutStream::operator << (const fillc& c) {
+    this->fill_char = c.c;
+    return *this;
+}
+
+// NOTE: I added this, fixed width printing
+void OutStream::put(char c) {
+    if (this->fill_width == 0) {
+        StringBuffer::put(c);
+    } else if (this->fill_used == this->fill_width - 1) {
+        // This indicates that content has been cut
+        StringBuffer::put('@');
+        this->fill_use_char();
+    } else if (this->fill_used == this->fill_width) {
+        // do nothing
+    } else {
+        StringBuffer::put(c);
+        this->fill_use_char();
+    }
+}
+void OutStream::fill_finalize() {
+    if (this->fill_width == 0 || this->fill_used == this->fill_width) {
+        // do nothing
+    } else if (this->fill_used > this->fill_width) {
+        // should never happen
+    } else {
+        for (unsigned char i = 0; i < this->fill_width - this->fill_used; ++i) {
+            StringBuffer::put(this->fill_char);
+        }
+    }
+
+    this->fill_used = 0;
+}
+void OutStream::fill_use_char() {
+    if (this->fill_width == 0) {
+        return;
+    }
+    this->fill_used++;
+}
 
 //
 // Zeichen und Zeichenketten in Stream ausgeben
 //
 OutStream& OutStream::operator << (char c) {
     put(c);
+    if (c != '\n') {
+        // endl() doesn't has access to StringBuffer::put(), so ignore \n here
+        this->fill_finalize(); // NOTE: I added this
+    }
     return *this;
 }
 
+// TODO: shouldn't this be printed as number?
 OutStream& OutStream::operator << (unsigned char c) {
     return *this << (char) c;
 }
@@ -41,6 +90,7 @@ OutStream& OutStream::operator << (char* string) {
         put (*pos);
         pos++;
     }
+    this->fill_finalize(); // NOTE: I added this
     return *this;
 }
 
@@ -79,10 +129,10 @@ OutStream& OutStream::operator << (long ival) {
 OutStream& OutStream::operator << (unsigned long ival) {
     unsigned long div;
     char digit;
-   
-    if (base == 8)
+
+    if (base == 8) {
         put ('0');         // oktale Zahlen erhalten eine fuehrende Null
-    else if (base == 16) {
+    } else if (base == 16) {
         put ('0');         // hexadezimale Zahlen ein "0x"
         put ('x');
     }
@@ -94,12 +144,14 @@ OutStream& OutStream::operator << (unsigned long ival) {
     // ziffernweise Ausgabe der Zahl
     for (; div > 0; div /= (unsigned long) base) {
         digit = ival / div;
-        if (digit < 10)
-                put ('0' + digit);
-        else
-                put ('a' + digit - 10);
+        if (digit < 10) {
+            put ('0' + digit);
+        } else {
+            put ('a' + digit - 10);
+        }
         ival %= div;
     }
+    this->fill_finalize(); // NOTE: I added this
     return *this;
 }
 
@@ -130,7 +182,7 @@ OutStream& OutStream::operator << (OutStream& (*f) (OutStream&)) {
 // Fuege einen Zeilenumbruch in die Ausgabe ein.
 OutStream& endl (OutStream& os) {
     os << '\n';
-    os.flush ();
+    os.flush();
     return os;
 }
 

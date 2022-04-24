@@ -36,8 +36,9 @@ protected:
     // StringBuffer: Im Konstruktor wird der Puffer als leer markiert.
     StringBuffer () : pos(0) {}
 
+    // NOTE: I changed this 
     // Fuegt ein Zeichen in den Puffer ein. Wenn der Puffer
-    void put (char c);
+    virtual void put (char c);
 
     // Methode zur Ausgabe des Pufferinhalts
     virtual void flush () = 0;

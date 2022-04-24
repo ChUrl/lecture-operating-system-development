@@ -19,15 +19,15 @@
 #include "lib/OutStream.h"
 
 class CGA_Stream : public OutStream, public CGA {
-    
+
 private:
-      CGA_Stream(CGA_Stream &copy); // Verhindere Kopieren
+    CGA_Stream(CGA_Stream &copy); // Verhindere Kopieren
 
 public:
     CGA_Stream () : OutStream(), CGA() { flush(); }
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
-    virtual void flush ();
+    void flush () override;
 };
 
 #endif
