@@ -11,6 +11,7 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+#include "user/KeyboardDemo.h"
 #include "user/SoundDemo.h"
 #include "user/TextDemo.h"
 
@@ -22,10 +23,10 @@ int main() {
 
     // TODO: Startmeldung ausgeben
 
-    text_demo();
+    // text_demo();
     // sound_demo();
+    keyboard_demo();
 
-    while (1)
-        ;
+    while (1);
     return 0;
 }

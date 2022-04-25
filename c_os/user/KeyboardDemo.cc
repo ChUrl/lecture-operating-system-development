@@ -1,16 +1,16 @@
 /*****************************************************************************
  *                                                                           *
- *                               G L O B A L S                               *
+ *                        K E Y B O A R D D E M O                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Beschreibung:    Globale Variablen des Systems.                           *
+ * Beschreibung:    Testausgaben für den CGA-Treiber.                        *
  *                                                                           *
- * Autor:           Michael Schoettner, 30.7.16                              *
+ * Autor:           Michael Schoettner, HHU, 26.10.2018                      *
  *****************************************************************************/
 
 #include "kernel/Globals.h"
 
-CPU cpu;          // CPU-spezifische Funktionen
-PCSPK pcspk;      // PC-Lautsprecher
-CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
-Keyboard kb;      // Tastatur
+void keyboard_demo() {
+
+    /* Hier muess Code eingefuegt werden */
+}
