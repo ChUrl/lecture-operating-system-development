@@ -15,7 +15,6 @@
 #include "devices/PCSPK.h"
 #include "kernel/Globals.h"
 
-
 /*****************************************************************************
  * Methode:         PCSPK::play                                              *
  *---------------------------------------------------------------------------*
@@ -24,41 +23,38 @@
  * Rückgabewerte:   f:   Frequenz des Tons                                   *
  *                  len: Laenge des Tons in ms                               *
  *****************************************************************************/
-void PCSPK::play (float f, int len) {
+void PCSPK::play(float f, int len) {
     int freq = (int)f;
-    int cntStart  =  1193180 / freq;
+    int cntStart = 1193180 / freq;
     int status;
-    
-    
+
     // Zaehler laden
-    control.outb (0xB6);            // Zaehler-2 konfigurieren
-    data2.outb (cntStart%256);      // Zaehler-2 laden (Lobyte)
-    data2.outb (cntStart/256);      // Zaehler-2 laden (Hibyte)
+    control.outb(0xB6);          // Zaehler-2 konfigurieren
+    data2.outb(cntStart % 256);  // Zaehler-2 laden (Lobyte)
+    data2.outb(cntStart / 256);  // Zaehler-2 laden (Hibyte)
 
     // Lautsprecher einschalten
-    status = (int)ppi.inb ();       // Status-Register des PPI auslesen
-    ppi.outb ( status|3 );          // Lautpsrecher Einschalten
+    status = (int)ppi.inb();  // Status-Register des PPI auslesen
+    ppi.outb(status | 3);     // Lautpsrecher Einschalten
 
     // Pause
     delay(len);
-    
-    // Lautsprecher ausschalten
-    off ();
-}
 
+    // Lautsprecher ausschalten
+    off();
+}
 
 /*****************************************************************************
  * Methode:         PCSPK::off                                               *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Lautsprecher ausschalten.                                *
  *****************************************************************************/
-void PCSPK::off () {
+void PCSPK::off() {
     int status;
 
-    status = (int)ppi.inb ();       // Status-Register des PPI auslesen
-    ppi.outb ( (status>>2)<<2 );    // Lautsprecher ausschalten
+    status = (int)ppi.inb();       // Status-Register des PPI auslesen
+    ppi.outb((status >> 2) << 2);  // Lautsprecher ausschalten
 }
-
 
 /*****************************************************************************
  * Methode:         PCSPK::readCounter                                       *
@@ -71,12 +67,11 @@ void PCSPK::off () {
 inline unsigned int PCSPK::readCounter() {
     unsigned char lo, hi;
 
-    control.outb (0x0);         // Latch Command
-    lo = data0.inb ();       // Lobyte des Counters auslesen
-    hi = data0.inb ();       // Hibyte des Counters auslesen
+    control.outb(0x0);  // Latch Command
+    lo = data0.inb();   // Lobyte des Counters auslesen
+    hi = data0.inb();   // Hibyte des Counters auslesen
     return (hi << 8) | lo;
 }
-
 
 /*****************************************************************************
  * Methode:         PCSPK::delay                                             *
@@ -85,36 +80,33 @@ inline unsigned int PCSPK::readCounter() {
  *                                                                           *
  * Parameter:       time (delay in ms)                                       *
  *****************************************************************************/
-inline void PCSPK::delay (int time) {
+inline void PCSPK::delay(int time) {
 
     /* Hier muess Code eingefuegt werden */
 
     // 1.19 MHz => 1s for full countdown
-    unsigned short cntStart  =  1193180 / 1000; // 1s / 1000 = 1ms countdown
+    unsigned short cntStart = 1193180 / 1000;  // 1s / 1000 = 1ms countdown
 
     // 00110000 => 0x30: Counter0, LoByte/HiByte, Mode0, Binary
     // 00110010 => 0x32: Counter0, LoByte/HiByte, Mode1, Binary
     // 00110100 => 0x34: Counter0, LoByte/HiByte, Mode2, Binary
     // 00110110 => 0x36: Counter0, LoByte/HiByte, Mode3, Binary
-    control.outb(0x34);          // Zaehler-0 konfigurieren
-    data0.outb(cntStart & 0xFF); // Zaehler-0 laden (Lobyte)
-    data0.outb(cntStart >> 8);   // Zaehler-0 laden (Hibyte)
+    control.outb(0x34);           // Zaehler-0 konfigurieren
+    data0.outb(cntStart & 0xFF);  // Zaehler-0 laden (Lobyte)
+    data0.outb(cntStart >> 8);    // Zaehler-0 laden (Hibyte)
 
     int initial_count, current_count;
     for (int i = 0; i < time; ++i) {
         initial_count = readCounter();
-        while(1) {
+        while (1) {
             current_count = readCounter();
 
-            if (current_count > initial_count) break; // The counter has already been reset
+            if (current_count > initial_count) break;  // The counter has already been reset
 
             initial_count = current_count;
         }
-
     }
-
 }
-
 
 /*****************************************************************************
  * Methode:         PCSPK::tetris                                            *
@@ -122,7 +114,7 @@ inline void PCSPK::delay (int time) {
  * Beschreibung:    Tetris Sound, Kévin Rapaille, August 2013                *
  *                  https://gist.github.com/XeeX/6220067                     *
  *****************************************************************************/
-void PCSPK::tetris () {
+void PCSPK::tetris() {
     play(658, 125);
     play(1320, 500);
     play(990, 250);
@@ -238,9 +230,8 @@ void PCSPK::tetris () {
     play(660, 500);
     play(880, 1000);
     play(838, 2000);
-    off ();
+    off();
 }
-
 
 /*****************************************************************************
  * Methode:         PCSPK::tetris                                            *
@@ -881,5 +872,5 @@ void PCSPK::aerodynamic() {
     play(880.0, 122);
     play(1108.7, 122);
     play(880.0, 122);
-    off ();
+    off();
 }

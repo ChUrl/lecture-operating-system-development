@@ -30,75 +30,73 @@ class OutStream;
 // TODO: Should this only work for the next << ?
 class fillw {
 public:
-      fillw(unsigned char w) : w(w) {};
-      unsigned char w;
+    fillw(unsigned char w) : w(w) {};
+    unsigned char w;
 };
 
 class fillc {
 public:
-      fillc(char c) : c(c) {};
-      char c;
+    fillc(char c) : c(c) {};
+    char c;
 };
-
 
 class OutStream : public StringBuffer {
 
 private:
-      OutStream(const OutStream &copy); // Verhindere Kopieren
+    OutStream(const OutStream& copy);  // Verhindere Kopieren
 
-      // NOTE: I added this
-      unsigned char fill_used; // indicates how many characters are already used by the text internally
-      void fill_use_char(); // recognizes that one char from the print width has been used up
-      void fill_finalize(); // does the filling after text has been written to buffer
+    // NOTE: I added this
+    unsigned char fill_used;  // indicates how many characters are already used by the text internally
+    void fill_use_char();     // recognizes that one char from the print width has been used up
+    void fill_finalize();     // does the filling after text has been written to buffer
 
 public:
-      int base;   // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
+    int base;  // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
 
-      // NOTE: I added this
-      unsigned char fill_width;
-      char fill_char; // fill character for fixed width
+    // NOTE: I added this
+    unsigned char fill_width;
+    char fill_char;  // fill character for fixed width
 
-      OutStream () : StringBuffer () {
-            base = 10;   // initial Dezimalsystem
-            fill_width = 0;   // no fixed width
-            fill_used = 0;
-            fill_char = ' ';  // fill with spaces
-      }
+    OutStream() : StringBuffer() {
+        base = 10;       // initial Dezimalsystem
+        fill_width = 0;  // no fixed width
+        fill_used = 0;
+        fill_char = ' ';  // fill with spaces
+    }
 
-      void flush() override = 0; // weiterhin undefiniert aber public
+    void flush() override = 0;  // weiterhin undefiniert aber public
 
-      // NOTE: I added this
-      void put(char c) override;
+    // NOTE: I added this
+    void put(char c) override;
 
-      // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
-      //               Zeichenkette.
+    // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
+    //               Zeichenkette.
 
-      // Darstellung eines Zeichens (trivial)
-      OutStream& operator << (char c);
-      OutStream& operator << (unsigned char c);
+    // Darstellung eines Zeichens (trivial)
+    OutStream& operator<<(char c);
+    OutStream& operator<<(unsigned char c);
 
-      // Darstellung einer nullterminierten Zeichenkette
-      OutStream& operator << (char* string);
+    // Darstellung einer nullterminierten Zeichenkette
+    OutStream& operator<<(char* string);
 
-      //  Darstellung ganzer Zahlen im Zahlensystem zur Basis base
-      OutStream& operator << (short ival);
-      OutStream& operator << (unsigned short ival);
-      OutStream& operator << (int ival);
-      OutStream& operator << (unsigned int ival);
-      OutStream& operator << (long ival);
-      OutStream& operator << (unsigned long ival);
+    //  Darstellung ganzer Zahlen im Zahlensystem zur Basis base
+    OutStream& operator<<(short ival);
+    OutStream& operator<<(unsigned short ival);
+    OutStream& operator<<(int ival);
+    OutStream& operator<<(unsigned int ival);
+    OutStream& operator<<(long ival);
+    OutStream& operator<<(unsigned long ival);
 
-      // Darstellung eines Zeigers als hexadezimale ganze Zahl
-      OutStream& operator << (void* ptr);
+    // Darstellung eines Zeigers als hexadezimale ganze Zahl
+    OutStream& operator<<(void* ptr);
 
-      // NOTE: I added this, set fixed output width
-      OutStream &operator << (const fillw &w);
-      OutStream &operator << (const fillc &c);
+    // NOTE: I added this, set fixed output width
+    OutStream& operator<<(const fillw& w);
+    OutStream& operator<<(const fillc& c);
 
-      // Aufruf einer Manipulatorfunktion
-      OutStream& operator << (OutStream& (*f) (OutStream&));
+    // Aufruf einer Manipulatorfunktion
+    OutStream& operator<<(OutStream& (*f)(OutStream&));
 };
-
 
 //
 // Manipulatorfunktionen
@@ -111,18 +109,18 @@ public:
 // zu beeinflussen, z.B durch die Wahl des Zahlensystems.
 
 // Zeilenumbruch in Ausgabe einfuegen.
-OutStream& endl (OutStream& os);
+OutStream& endl(OutStream& os);
 
 // Waehle binaeres Zahlensystem aus.
-OutStream& bin (OutStream& os);
+OutStream& bin(OutStream& os);
 
 // Waehle oktales Zahlensystem aus.
-OutStream& oct (OutStream& os);
+OutStream& oct(OutStream& os);
 
 // Waehle dezimales Zahlensystem aus.
-OutStream& dec (OutStream& os);
+OutStream& dec(OutStream& os);
 
 // Waehle hexadezimales Zahlensystem aus.
-OutStream& hex (OutStream& os);
+OutStream& hex(OutStream& os);
 
 #endif

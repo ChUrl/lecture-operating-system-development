@@ -21,13 +21,13 @@
 class CGA_Stream : public OutStream, public CGA {
 
 private:
-    CGA_Stream(CGA_Stream &copy); // Verhindere Kopieren
+    CGA_Stream(CGA_Stream& copy);  // Verhindere Kopieren
 
 public:
-    CGA_Stream () : OutStream(), CGA() { flush(); }
+    CGA_Stream() : OutStream(), CGA() { flush(); }
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
-    void flush () override;
+    void flush() override;
 };
 
 #endif

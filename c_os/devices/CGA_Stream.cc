@@ -15,7 +15,6 @@
 
 #include "devices/CGA_Stream.h"
 
-
 /*****************************************************************************
  * Methode:         CGA_Stream::flush                                        *
  *---------------------------------------------------------------------------*
@@ -24,8 +23,7 @@
  *                  sobald der Puffer voll ist, kann aber auch explizit      *
  *                  verwendet werden, um eine Ausgabe zu erzwingen.          *
  *****************************************************************************/
-void CGA_Stream::flush () {
-    print (buffer, pos);
+void CGA_Stream::flush() {
+    print(buffer, pos);
     pos = 0;
 }
-

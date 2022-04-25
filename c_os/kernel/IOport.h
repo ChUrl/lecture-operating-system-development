@@ -16,7 +16,6 @@
 #ifndef __IOport_include__
 #define __IOport_include__
 
-
 class IOport {
     // Kopieren erlaubt!
 
@@ -25,50 +24,56 @@ class IOport {
 
 public:
     // Konstruktor, speichert Port-Adresse
-    IOport (unsigned short a) : address (a) { };
+    IOport(unsigned short a) : address(a) {};
 
     // Byteweise Ausgabe eines Wertes ueber einen I/O-Port.
-    void outb (unsigned char val) const {
-        asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(address) );
+    void outb(unsigned char val) const {
+        asm volatile("outb %0, %1"
+                     :
+                     : "a"(val), "Nd"(address));
     }
 
     // Wortweise Ausgabe eines Wertes ueber einen I/O-Port.
-    void outw (unsigned short val) const {
-        asm volatile ( "outw %0, %1" : : "a"(val), "Nd"(address) );
+    void outw(unsigned short val) const {
+        asm volatile("outw %0, %1"
+                     :
+                     : "a"(val), "Nd"(address));
     }
 
     // 32-Bit Ausgabe eines Wertes ueber einen I/O-Port.
-    void outdw (unsigned int val) const {
-        asm volatile ( "outl %0, %1" : : "a"(val), "Nd"(address) );
+    void outdw(unsigned int val) const {
+        asm volatile("outl %0, %1"
+                     :
+                     : "a"(val), "Nd"(address));
     }
 
     // Byteweises Einlesen eines Wertes ueber einen I/O-Port.
-    unsigned char inb () const {
+    unsigned char inb() const {
         unsigned char ret;
 
-        asm volatile ( "inb %1, %0"
-                        : "=a"(ret)
-                        : "Nd"(address) );
+        asm volatile("inb %1, %0"
+                     : "=a"(ret)
+                     : "Nd"(address));
         return ret;
     }
 
     // Wortweises Einlesen eines Wertes ueber einen I/O-Port.
-    unsigned short inw () const {
+    unsigned short inw() const {
         unsigned short ret;
 
-        asm volatile ( "inw %1, %0"
-                        : "=a"(ret)
-                        : "Nd"(address) );
+        asm volatile("inw %1, %0"
+                     : "=a"(ret)
+                     : "Nd"(address));
         return ret;
     }
-    
+
     // 32-Bit Einlesen eines Wertes ueber einen I/O-Port.
-    unsigned int indw () const {
+    unsigned int indw() const {
         unsigned int ret;
-        
-        asm volatile ( "inl %1, %0"
-                      : "=a"(ret)
-                      : "Nd"(address) );
+
+        asm volatile("inl %1, %0"
+                     : "=a"(ret)
+                     : "Nd"(address));
         return ret;
     }
 };

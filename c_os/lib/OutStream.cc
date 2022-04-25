@@ -23,11 +23,11 @@
 #include "lib/OutStream.h"
 
 // NOTE: I added this, stream manipulators with arg
-OutStream& OutStream::operator << (const fillw& w) {
+OutStream& OutStream::operator<<(const fillw& w) {
     this->fill_width = w.w;
     return *this;
 }
-OutStream& OutStream::operator << (const fillc& c) {
+OutStream& OutStream::operator<<(const fillc& c) {
     this->fill_char = c.c;
     return *this;
 }
@@ -70,27 +70,27 @@ void OutStream::fill_use_char() {
 //
 // Zeichen und Zeichenketten in Stream ausgeben
 //
-OutStream& OutStream::operator << (char c) {
+OutStream& OutStream::operator<<(char c) {
     put(c);
     if (c != '\n') {
         // endl() doesn't has access to StringBuffer::put(), so ignore \n here
-        this->fill_finalize(); // NOTE: I added this
+        this->fill_finalize();  // NOTE: I added this
     }
     return *this;
 }
 
 // TODO: shouldn't this be printed as number?
-OutStream& OutStream::operator << (unsigned char c) {
-    return *this << (char) c;
+OutStream& OutStream::operator<<(unsigned char c) {
+    return *this << (char)c;
 }
 
-OutStream& OutStream::operator << (char* string) {
+OutStream& OutStream::operator<<(char* string) {
     char* pos = string;
     while (*pos) {
-        put (*pos);
+        put(*pos);
         pos++;
     }
-    this->fill_finalize(); // NOTE: I added this
+    this->fill_finalize();  // NOTE: I added this
     return *this;
 }
 
@@ -98,74 +98,75 @@ OutStream& OutStream::operator << (char* string) {
 //  Ganzer Zahlen im Zahlensystem zur Basis base in Stream ausgeveb
 //  Alle vorzeichenbehafteten Datentypen werden als long dargestellt,
 //  Alle vorzeichenlosen als unsigned long.
-OutStream& OutStream::operator << (short ival) {
-    return *this << (long) ival;
+OutStream& OutStream::operator<<(short ival) {
+    return *this << (long)ival;
 }
-  
-OutStream& OutStream::operator << (unsigned short ival) {
-    return *this << (unsigned long) ival;
+
+OutStream& OutStream::operator<<(unsigned short ival) {
+    return *this << (unsigned long)ival;
 }
-  
-OutStream& OutStream::operator << (int ival) {
-    return *this << (long) ival;
+
+OutStream& OutStream::operator<<(int ival) {
+    return *this << (long)ival;
 }
-  
-OutStream& OutStream::operator << (unsigned int ival) {
-    return *this << (unsigned long) ival;
+
+OutStream& OutStream::operator<<(unsigned int ival) {
+    return *this << (unsigned long)ival;
 }
 
 // Darstellung eine vorzeichenbehafteten ganzen Zahl.
-OutStream& OutStream::operator << (long ival) {
+OutStream& OutStream::operator<<(long ival) {
     // Bei negativen Werten wird ein Minuszeichen ausgegeben.
     if (ival < 0) {
-        put ('-');
+        put('-');
         ival = -ival;
     }
     // Dann wird der Absolutwert als vorzeichenlose Zahl ausgegeben.
-    return *this << (unsigned long) ival;
+    return *this << (unsigned long)ival;
 }
 
 // Darstellung einer vorzeichenlosen ganzen Zahl.
-OutStream& OutStream::operator << (unsigned long ival) {
+OutStream& OutStream::operator<<(unsigned long ival) {
     unsigned long div;
     char digit;
 
     if (base == 8) {
-        put ('0');         // oktale Zahlen erhalten eine fuehrende Null
+        put('0');  // oktale Zahlen erhalten eine fuehrende Null
     } else if (base == 16) {
-        put ('0');         // hexadezimale Zahlen ein "0x"
-        put ('x');
+        put('0');  // hexadezimale Zahlen ein "0x"
+        put('x');
     }
 
     // Bestimmung der groessten Potenz der gewaehlten Zahlenbasis, die
     // noch kleiner als die darzustellende Zahl ist.
-    for (div = 1; ival/div >= (unsigned long) base; div *= base);
+    for (div = 1; ival / div >= (unsigned long)base; div *= base)
+        ;
 
     // ziffernweise Ausgabe der Zahl
-    for (; div > 0; div /= (unsigned long) base) {
+    for (; div > 0; div /= (unsigned long)base) {
         digit = ival / div;
         if (digit < 10) {
-            put ('0' + digit);
+            put('0' + digit);
         } else {
-            put ('a' + digit - 10);
+            put('a' + digit - 10);
         }
         ival %= div;
     }
-    this->fill_finalize(); // NOTE: I added this
+    this->fill_finalize();  // NOTE: I added this
     return *this;
 }
 
 // Darstellung eines Zeigers als hexadezimale ganze Zahl
-OutStream& OutStream::operator << (void* ptr) {
+OutStream& OutStream::operator<<(void* ptr) {
     int oldbase = base;
     base = 16;
-    *this << (unsigned long) ptr;
+    *this << (unsigned long)ptr;
     base = oldbase;
     return *this;
- }
+}
 
 //   Aufruf einer Manipulatorfunktion
-OutStream& OutStream::operator << (OutStream& (*f) (OutStream&)) {
+OutStream& OutStream::operator<<(OutStream& (*f)(OutStream&)) {
     return f(*this);
 }
 
@@ -180,33 +181,32 @@ OutStream& OutStream::operator << (OutStream& (*f) (OutStream&)) {
 // zu beeinflussen, z.B durch die Wahl des Zahlensystems.
 
 // Fuege einen Zeilenumbruch in die Ausgabe ein.
-OutStream& endl (OutStream& os) {
+OutStream& endl(OutStream& os) {
     os << '\n';
     os.flush();
     return os;
 }
 
 // Waehlt das binaere Zahlensystem aus.
-OutStream& bin (OutStream& os) {
+OutStream& bin(OutStream& os) {
     os.base = 2;
     return os;
 }
 
 // Waehlt das oktale Zahlensystem aus.
-OutStream& oct (OutStream& os) {
+OutStream& oct(OutStream& os) {
     os.base = 8;
     return os;
 }
 
 // Waehlt das dezimale Zahlensystem aus.
-OutStream& dec (OutStream& os) {
+OutStream& dec(OutStream& os) {
     os.base = 10;
     return os;
 }
 
 // Waehlt das hexadezimale Zahlensystem aus.
-OutStream& hex (OutStream& os) {
+OutStream& hex(OutStream& os) {
     os.base = 16;
     return os;
 }
-

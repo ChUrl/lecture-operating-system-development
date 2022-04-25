@@ -11,9 +11,8 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-#include "user/TextDemo.h"
 #include "user/SoundDemo.h"
-
+#include "user/TextDemo.h"
 
 int main() {
     /* Hier muess Code eingefuegt werden */
@@ -23,10 +22,10 @@ int main() {
 
     // TODO: Startmeldung ausgeben
 
-
     text_demo();
     // sound_demo();
 
-    while (1);
+    while (1)
+        ;
     return 0;
- }
+}

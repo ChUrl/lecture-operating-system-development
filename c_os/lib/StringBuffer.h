@@ -19,9 +19,9 @@
 #define __StringBuffer_include__
 
 class StringBuffer {
-    
+
 private:
-    StringBuffer(const StringBuffer &copy); // Verhindere Kopieren
+    StringBuffer(const StringBuffer& copy);  // Verhindere Kopieren
 
     // Alle Variablen und Methoden dieser Klasse sind "protected",
     // da die abgeleiteten Klassen einen direkten Zugriff auf den
@@ -34,15 +34,14 @@ protected:
     int pos;
 
     // StringBuffer: Im Konstruktor wird der Puffer als leer markiert.
-    StringBuffer () : pos(0) {}
+    StringBuffer() : pos(0) {}
 
-    // NOTE: I changed this 
+    // NOTE: I changed this
     // Fuegt ein Zeichen in den Puffer ein. Wenn der Puffer
-    virtual void put (char c);
+    virtual void put(char c);
 
     // Methode zur Ausgabe des Pufferinhalts
-    virtual void flush () = 0;
-    
+    virtual void flush() = 0;
 };
 
 #endif

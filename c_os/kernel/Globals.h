@@ -10,12 +10,12 @@
 #ifndef __Globals_include__
 #define __Globals_include__
 
-#include "kernel/CPU.h"
-#include "devices/PCSPK.h"
 #include "devices/CGA_Stream.h"
+#include "devices/PCSPK.h"
+#include "kernel/CPU.h"
 
-extern CPU              cpu;        // CPU-spezifische Funktionen
-extern PCSPK            pcspk;      // PC-Lautsprecher
-extern CGA_Stream       kout;       // Ausgabe-Strom fuer Kernel
+extern CPU cpu;          // CPU-spezifische Funktionen
+extern PCSPK pcspk;      // PC-Lautsprecher
+extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
 
 #endif

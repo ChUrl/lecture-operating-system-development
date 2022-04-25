@@ -10,11 +10,11 @@
 
 #include "kernel/Globals.h"
 
-
 void text_demo() {
 
     /* Hier muess Code eingefuegt werden */
-    kout << "Test der Zahlenausgabefunktion:" << endl << endl;
+    kout << "Test der Zahlenausgabefunktion:" << endl;
+    kout << endl;
     kout << "|  dec  |  hex  |  bin  |" << endl;
     kout << "+-------+-------+-------+" << endl;
 

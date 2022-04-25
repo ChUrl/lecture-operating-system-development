@@ -11,6 +11,6 @@
 #ifndef __TextDemo_include__
 #define __TextDemo_include__
 
-void text_demo();  
+void text_demo();
 
 #endif

@@ -11,11 +11,8 @@
  * Autor:           Michael Schoettner, 30.7.16                              *
  *****************************************************************************/
 
-
-extern "C" void int_disp (unsigned int slot);
-
+extern "C" void int_disp(unsigned int slot);
 
 // Low-Level Interrupt-Behandlung. (Die Funktion wird spaeter noch erweitert)
-void int_disp (unsigned int slot) {
+void int_disp(unsigned int slot) {
 }
-

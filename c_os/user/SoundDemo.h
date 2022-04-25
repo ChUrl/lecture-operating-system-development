@@ -11,6 +11,6 @@
 #ifndef __SoundDemo_include__
 #define __SondDemo_include__
 
-void sound_demo();  
+void sound_demo();
 
 #endif

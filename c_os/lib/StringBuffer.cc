@@ -18,7 +18,6 @@
 
 #include "lib/StringBuffer.h"
 
-
 /*****************************************************************************
  * Methode:         StringBuffer::put                                        *
  *---------------------------------------------------------------------------*
@@ -29,10 +28,9 @@
  * Parameter:                                                                *
  *      c:          Einzufuegendes Zeichen.                                  * 
  *****************************************************************************/
-void StringBuffer::put (char c) {
+void StringBuffer::put(char c) {
     buffer[pos] = c;
     pos++;
-    if (pos == sizeof (buffer))
-        flush ();
- }
-
+    if (pos == sizeof(buffer))
+        flush();
+}
