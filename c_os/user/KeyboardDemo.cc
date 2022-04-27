@@ -13,4 +13,9 @@
 void keyboard_demo() {
 
     /* Hier muess Code eingefuegt werden */
+
+    while (true) {
+        kout << kb.key_hit();
+        kout.flush();
+    }
 }
