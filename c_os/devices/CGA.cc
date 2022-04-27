@@ -117,7 +117,6 @@ void CGA::print(char* string, int n, unsigned char attrib) {
     this->setpos(cursor_x, cursor_y);
 
     // TODO: automatic line breaking, automatic scrolling
-    // TODO: printing doesn't work after first newline character
 }
 
 /*****************************************************************************
@@ -173,4 +172,8 @@ void CGA::clear() {
 unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     /* Hier muess Code eingefuegt werden */
+
+    return blink << 7       // B0000000
+         | (bg & 0x7) << 4  // 0HHH0000
+         | (fg & 0xF);     // 0000VVVV
 }

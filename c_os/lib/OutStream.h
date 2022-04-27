@@ -24,18 +24,18 @@
 
 #include "lib/StringBuffer.h"
 
-// NOTE: I added this, stream manipulator with argument
-class OutStream;
-
+// NOTE: I added this
+// TODO: I should probably put this inside some FormatStream or sth...
 // TODO: Should this only work for the next << ?
 class fillw {
 public:
+    fillw() : w(0) {};
     fillw(unsigned char w) : w(w) {};
     unsigned char w;
 };
-
 class fillc {
 public:
+    fillc() : c(' ') {};
     fillc(char c) : c(c) {};
     char c;
 };
@@ -58,15 +58,16 @@ public:
     char fill_char;  // fill character for fixed width
 
     OutStream() : StringBuffer() {
-        base = 10;       // initial Dezimalsystem
-        fill_width = 0;  // no fixed width
-        fill_used = 0;
+        base = 10;  // initial Dezimalsystem
+
+        fill_width = 0;   // no fixed width
         fill_char = ' ';  // fill with spaces
+        fill_used = 0;
     }
 
     void flush() override = 0;  // weiterhin undefiniert aber public
 
-    // NOTE: I added this
+    // NOTE: I added this, override put for fixed width
     void put(char c) override;
 
     // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
@@ -90,9 +91,9 @@ public:
     // Darstellung eines Zeigers als hexadezimale ganze Zahl
     OutStream& operator<<(void* ptr);
 
-    // NOTE: I added this, set fixed output width
-    OutStream& operator<<(const fillw& w);
-    OutStream& operator<<(const fillc& c);
+    // NOTE: I added this
+    OutStream& operator<<(const fillw&);
+    OutStream& operator<<(const fillc&);
 
     // Aufruf einer Manipulatorfunktion
     OutStream& operator<<(OutStream& (*f)(OutStream&));

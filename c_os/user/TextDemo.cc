@@ -13,16 +13,23 @@
 void text_demo() {
 
     /* Hier muess Code eingefuegt werden */
-    kout << "Test der Zahlenausgabefunktion:" << endl;
-    kout << endl;
-    kout << "|  dec  |  hex  |  bin  |" << endl;
-    kout << "+-------+-------+-------+" << endl;
+    kout << "Attribut (GREEN on WHITE, blinking): "
+         << (unsigned short)kout.attribute(CGA::WHITE, CGA::GREEN, true) << endl
+         << "Attribut (WHITE on BLACK, no blink): "
+         << (unsigned short)kout.attribute(CGA::BLACK, CGA::WHITE, false) << endl
+         << endl;
 
-    // TODO: should fillw just work for the next << ?
+    kout << "Test der Zahlenausgabefunktion:" << endl
+         << endl
+         << "|  dec  |  hex  |  bin  |" << endl
+         << "+-------+-------+-------+" << endl;
+
     for (unsigned short num = 0; num < 17; ++num) {
-        kout << fillw(0) << "| " << fillw(6) << dec << num;
-        kout << fillw(0) << "| " << fillw(6) << hex << num;
-        kout << fillw(0) << "| " << fillw(6) << bin << num;
-        kout << fillw(0) << "|" << endl;
+        kout << fillw(0) << "| " << fillw(6) << dec << num
+             << fillw(0) << "| " << fillw(6) << hex << num
+             << fillw(0) << "| " << fillw(6) << bin << num
+             << fillw(0) << "|" << endl;
     }
+
+    kout << endl;
 }
