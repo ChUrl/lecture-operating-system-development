@@ -241,7 +241,7 @@ Keyboard::Keyboard() : ctrl_port(0x64), data_port(0x60) {
  *                  erfolgen.                                                *
  *                                                                           *
  * Rückgabewert:    Wenn der Tastendruck abgeschlossen ist und ein Scancode, *
- *                  sowie gegebenenfalls ein ASCII-Code emittelt werden      * 
+ *                  sowie gegebenenfalls ein ASCII-Code emittelt werden      *
  *                  konnte, werden diese in 'gather' (siehe Keyboard.h)      *
  *                  zurueckgeliefert. Anderenfalls liefert key_hit () einen  *
  *                  ungueltigen Wert zurueck, was mit Key::valid ()          *
