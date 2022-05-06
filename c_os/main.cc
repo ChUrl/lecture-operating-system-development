@@ -22,9 +22,10 @@ int main() {
     // Bildschirm loeschen.
     kout.clear();
 
-    text_demo();
+    // text_demo();
     // sound_demo();
-    keyboard_demo();
+    // keyboard_demo();
+    heap_demo();
 
     while (1) {};
     return 0;
