@@ -7,26 +7,27 @@
  *                  nachdem dieser in den Protected Mode geschaltet hat und  *
  *                  die GDT und IDT initalisiert hat.                        *
  *                                                                           *
- * Autor:           Michael Schoettner, HHU, 15.8.2016                       *
+ * Autor:           Michael Schoettner, HHU, 11.11.2016                      *
  *****************************************************************************/
 
+#include "kernel/Allocator.h"
 #include "kernel/Globals.h"
-#include "user/KeyboardDemo.h"
-#include "user/SoundDemo.h"
-#include "user/TextDemo.h"
+#include "user/HeapDemo.h"
 
 int main() {
-    /* Hier muess Code eingefuegt werden */
+
+    // Speicherverwaltung initialisieren
+    allocator.init();
 
     // Bildschirm loeschen.
     kout.clear();
 
-    // TODO: Startmeldung ausgeben
+    // Startmeldung ausgeben
+    kout << "Yo it's booting" << endl;
 
-    // text_demo();
-    // sound_demo();
-    keyboard_demo();
+    heap_demo();
 
-    while (1);
+    while (1)
+        ;
     return 0;
 }

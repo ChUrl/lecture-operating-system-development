@@ -62,10 +62,10 @@ VERBOSE = @
 ASMOBJFORMAT = elf
 OBJDIR = ./build
 DEPDIR = ./dep
-DRIVE_FD = /dev/sdb
+DRIVE_FD = /media/student/LUCAS
 # ACHTUNG: ein falsch angegebenes Laufwerk kann dazu fuehren, dass Daten auf dem
 # spezifizierten Laufwerk verloren gehen! Nicht mit root-Rechten ausfuehren!
-DRIVE_HD = /dev/sdb
+DRIVE_HD = /media/student/LUCAS
 DELETE = rm
 ASM = nasm
 CC ?= gcc

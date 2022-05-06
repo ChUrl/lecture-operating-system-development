@@ -29,7 +29,12 @@ MULTIBOOT_EAX_MAGIC	equ	0x2badb002
 [GLOBAL startup]
 [GLOBAL idt]
 [GLOBAL __cxa_pure_virtual]
-[GLOBAL _ZdlPv]
+
+; Michael Schoettner:
+; Nachfolgender label steht fuer das 'delete', welches jetzt implementiert
+; wird. Damit der Linker nicht wegen doppelter Definition "meckert"
+; nun auskommentieren!
+; [GLOBAL _ZdlPv]
 
 [EXTERN main]
 [EXTERN int_disp]

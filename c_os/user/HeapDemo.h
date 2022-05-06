@@ -1,18 +1,16 @@
 /*****************************************************************************
  *                                                                           *
- *                               G L O B A L S                               *
+ *                            H E A P D E M O                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
- * Beschreibung:    Globale Variablen des Systems.                           *
+ * Beschreibung:    Demonstration der dynamischen Speicherverwaltung.        *
  *                                                                           *
- * Autor:           Michael Schoettner, 30.7.16                              *
+ * Autor:           Michael Schoettner, HHU, 25.9.2016                       *
  *****************************************************************************/
+#ifndef __HeapDemo_include__
+#define __HeapDemo_include__
 
-#include "kernel/Globals.h"
 
+void heap_demo();
 
-CPU             cpu;        // CPU-spezifische Funktionen
-PCSPK           pcspk;      // PC-Lautsprecher
-CGA_Stream      kout;       // Ausgabe-Strom fuer Kernel
-Keyboard        kb;         // Tastatur
-
+#endif
