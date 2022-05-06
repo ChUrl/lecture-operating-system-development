@@ -57,6 +57,7 @@ void OutStream::fill_use_char() {
     this->fill_used++;
 }
 void OutStream::flush() {
+    // TODO: Should not be reset like this
     // Flushing resets fixed width
     this->base = 10;
     this->fill_char = ' ';

@@ -16,11 +16,9 @@ void text_demo() {
     kout << "Attribut (GREEN on WHITE): "
          << bgc(CGA::WHITE) << fgc(CGA::GREEN) << "GREEN on WHITE" << endl
          << "Attribut (WHITE on BLACK): "
-         << bgc(CGA::BLACK) << fgc(CGA::WHITE) << "WHITE on BLACK" << endl
-         << endl;
+         << bgc(CGA::BLACK) << fgc(CGA::WHITE) << "WHITE on BLACK" << endl;
 
     kout << "Test der Zahlenausgabefunktion:" << endl
-         << endl
          << "|  dec  |  hex  |  bin  |" << endl
          << "+-------+-------+-------+" << endl;
 

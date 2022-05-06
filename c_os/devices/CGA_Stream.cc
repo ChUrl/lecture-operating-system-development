@@ -26,6 +26,7 @@
 void CGA_Stream::flush() {
     print(buffer, pos, attribute(this->color_bg, this->color_fg, this->blink));
 
+    // TODO: Should not be reset like this
     // Flushing resets attributes
     this->blink = false;
     this->color_bg = CGA::BLACK;
