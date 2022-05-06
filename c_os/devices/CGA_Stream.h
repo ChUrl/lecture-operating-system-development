@@ -53,9 +53,19 @@ public:
     void flush() override;
 
     // NOTE: I added this
-    // TODO: Problem: Implementing this here breaks the << chaining
-    // CGA_Stream& operator<<(const fgc&);
-    // CGA_Stream& operator<<(const bgc&);
+    template<typename T>
+    friend T& operator<<(T& os, const fgc& fg) {
+        os.flush();
+        os.color_fg = fg.fg;
+        return os;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, const bgc& bg) {
+        os.flush();
+        os.color_fg = bg.bg;
+        return os;
+    }
 };
 
 #endif

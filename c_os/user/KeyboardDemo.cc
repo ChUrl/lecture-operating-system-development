@@ -14,6 +14,8 @@ void keyboard_demo() {
 
     /* Hier muess Code eingefuegt werden */
 
+    kout << "Keyboard Demo: " << endl;
+
     while (true) {
         kout << kb.key_hit();
         kout.flush();

@@ -13,14 +13,12 @@
 void text_demo() {
 
     /* Hier muess Code eingefuegt werden */
-    kout << "Attribut (GREEN on WHITE, blinking): "
-         << (unsigned short)kout.attribute(CGA::WHITE, CGA::GREEN, true) << endl
-         << "Attribut (WHITE on BLACK, no blink): "
-         << (unsigned short)kout.attribute(CGA::BLACK, CGA::WHITE, false) << endl
-         << endl;
+    kout << "Attribut (GREEN on WHITE): "
+         << bgc(CGA::WHITE) << fgc(CGA::GREEN) << "GREEN on WHITE" << endl
+         << "Attribut (WHITE on BLACK): "
+         << bgc(CGA::BLACK) << fgc(CGA::WHITE) << "WHITE on BLACK" << endl;
 
     kout << "Test der Zahlenausgabefunktion:" << endl
-         << endl
          << "|  dec  |  hex  |  bin  |" << endl
          << "+-------+-------+-------+" << endl;
 

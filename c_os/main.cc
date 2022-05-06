@@ -22,12 +22,10 @@ int main() {
     // Bildschirm loeschen.
     kout.clear();
 
-    // Startmeldung ausgeben
-    kout << "Yo it's booting" << endl;
+    text_demo();
+    // sound_demo();
+    keyboard_demo();
 
-    heap_demo();
-
-    while (1)
-        ;
+    while (1) {};
     return 0;
 }

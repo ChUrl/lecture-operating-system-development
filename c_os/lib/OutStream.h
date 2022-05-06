@@ -25,8 +25,6 @@
 #include "lib/StringBuffer.h"
 
 // NOTE: I added this
-// TODO: I should probably put this inside some FormatStream or sth...
-// TODO: Should this only work for the next << ?
 class fillw {
 public:
     fillw() : w(0) {};
@@ -41,7 +39,6 @@ public:
 };
 
 class OutStream : public StringBuffer {
-
 private:
     OutStream(const OutStream& copy);  // Verhindere Kopieren
 
@@ -65,7 +62,8 @@ public:
         fill_used = 0;
     }
 
-    void flush() override = 0;  // weiterhin undefiniert aber public
+    // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
+    void flush() override;
 
     // NOTE: I added this, override put for fixed width
     void put(char c) override;
@@ -73,30 +71,131 @@ public:
     // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
     //               Zeichenkette.
 
+    // NOTE: I changed the stream manipulators to templates to be usable with different streams
+    //       Needed because I added manipulators to the CGA_Stream class
+
     // Darstellung eines Zeichens (trivial)
-    OutStream& operator<<(char c);
-    OutStream& operator<<(unsigned char c);
+    template<typename T>
+    friend T& operator<<(T& os, char c) {
+        os.put(c);
+        if (c != '\n') {
+            // endl() doesn't has access to StringBuffer::put(), so ignore \n here
+            os.fill_finalize();  // NOTE: I added this
+        }
+        return os;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, unsigned char c) {
+        return os << (char)c;
+    }
 
     // Darstellung einer nullterminierten Zeichenkette
-    OutStream& operator<<(char* string);
+    template<typename T>
+    friend T& operator<<(T& os, char* string) {
 
-    //  Darstellung ganzer Zahlen im Zahlensystem zur Basis base
-    OutStream& operator<<(short ival);
-    OutStream& operator<<(unsigned short ival);
-    OutStream& operator<<(int ival);
-    OutStream& operator<<(unsigned int ival);
-    OutStream& operator<<(long ival);
-    OutStream& operator<<(unsigned long ival);
+        char* pos = string;
+        while (*pos) {
+            os.put(*pos);
+            pos++;
+        }
+        os.fill_finalize();  // NOTE: I added this
+        return os;
+    }
+
+    // Darstellung ganzer Zahlen im Zahlensystem zur Basis base
+    template<typename T>
+    friend T& operator<<(T& os, short ival) {
+        return os << (long)ival;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, unsigned short ival) {
+        return os << (unsigned long)ival;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, int ival) {
+        return os << (long)ival;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, unsigned int ival) {
+        return os << (unsigned long)ival;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, long ival) {
+        // Bei negativen Werten wird ein Minuszeichen ausgegeben.
+        if (ival < 0) {
+            os.put('-');
+            ival = -ival;
+        }
+        // Dann wird der Absolutwert als vorzeichenlose Zahl ausgegeben.
+        return os << (unsigned long)ival;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, unsigned long ival) {
+        unsigned long div;
+        char digit;
+
+        if (os.base == 8) {
+            os.put('0');  // oktale Zahlen erhalten eine fuehrende Null
+        } else if (os.base == 16) {
+            os.put('0');  // hexadezimale Zahlen ein "0x"
+            os.put('x');
+        }
+
+        // Bestimmung der groessten Potenz der gewaehlten Zahlenbasis, die
+        // noch kleiner als die darzustellende Zahl ist.
+        for (div = 1; ival / div >= (unsigned long)os.base; div *= os.base) {};
+
+        // ziffernweise Ausgabe der Zahl
+        for (; div > 0; div /= (unsigned long)os.base) {
+            digit = ival / div;
+            if (digit < 10) {
+                os.put('0' + digit);
+            } else {
+                os.put('a' + digit - 10);
+            }
+            ival %= div;
+        }
+        os.fill_finalize();  // NOTE: I added this
+        return os;
+    }
 
     // Darstellung eines Zeigers als hexadezimale ganze Zahl
-    OutStream& operator<<(void* ptr);
-
-    // NOTE: I added this
-    OutStream& operator<<(const fillw&);
-    OutStream& operator<<(const fillc&);
+    template<typename T>
+    friend T& operator<<(T& os, void* ptr) {
+        int oldbase = os.base;
+        os.base = 16;
+        os << (unsigned long)ptr;
+        os.base = oldbase;
+        return os;
+    }
 
     // Aufruf einer Manipulatorfunktion
-    OutStream& operator<<(OutStream& (*f)(OutStream&));
+    // NOTE: Changed the function pointer type including the manipulator functions
+    template<typename T>
+    friend T& operator<<(T& os, T& (*f)(T&)) {
+        return f(os);
+    }
+
+    // NOTE: I added this
+    template<typename T>
+    friend T& operator<<(T& os, const fillw& w) {
+        os.flush();  // Flush the buffer to not modify previous output
+        os.fill_width = w.w;
+        return os;
+    }
+
+    template<typename T>
+    friend T& operator<<(T& os, const fillc& c) {
+        os.flush();
+        os.fill_char = c.c;
+        return os;
+    }
 };
 
 //
@@ -110,18 +209,39 @@ public:
 // zu beeinflussen, z.B durch die Wahl des Zahlensystems.
 
 // Zeilenumbruch in Ausgabe einfuegen.
-OutStream& endl(OutStream& os);
+template<typename T>
+T& endl(T& os) {
+    os << '\n';
+    os.flush();
+    return os;
+}
 
 // Waehle binaeres Zahlensystem aus.
-OutStream& bin(OutStream& os);
+template<typename T>
+T& bin(T& os) {
+    os.base = 2;
+    return os;
+}
 
 // Waehle oktales Zahlensystem aus.
-OutStream& oct(OutStream& os);
+template<typename T>
+T& oct(T& os) {
+    os.base = 8;
+    return os;
+}
 
 // Waehle dezimales Zahlensystem aus.
-OutStream& dec(OutStream& os);
+template<typename T>
+T& dec(T& os) {
+    os.base = 10;
+    return os;
+}
 
 // Waehle hexadezimales Zahlensystem aus.
-OutStream& hex(OutStream& os);
+template<typename T>
+T& hex(T& os) {
+    os.base = 16;
+    return os;
+}
 
 #endif

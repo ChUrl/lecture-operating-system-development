@@ -73,11 +73,14 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
+    if (x > 80 || y > 25) {
+        // Out of bounds
+        return;
+    }
+
     char* pos = (char*)(CGA_START + 2 * (x + y * 80));  // cast to char* to make writable
     *pos = character;
     *(pos + 1) = attrib;
-
-    // TODO: screen border check
 }
 
 /*****************************************************************************
@@ -95,28 +98,44 @@ void CGA::print(char* string, int n, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
-    int cursor_x, cursor_y;
+    int cursor_x, cursor_y;  // Don't poll registers every stroke
     this->getpos(cursor_x, cursor_y);
 
     for (unsigned short byte = 0; byte < n; ++byte) {
-
         char current = *(string + byte);
         if (current == '\n') {
-            // TODO: Screen bounds
             cursor_x = 0;
             cursor_y = cursor_y + 1;
+
+            if (cursor_y > 24) {
+                // Bottom of screen reached
+                this->scrollup();
+                cursor_y = cursor_y - 1;
+            }
+
             continue;
         } else if (current == '\0') {
+            // Don't need to run to end if null terminated
             break;
         }
 
         this->show(cursor_x, cursor_y, current, attrib);
         cursor_x = cursor_x + 1;
+
+        if (cursor_x > 79) {
+            // Right of screen reached
+            cursor_x = 0;
+            cursor_y = cursor_y + 1;
+
+            if (cursor_y > 24) {
+                // Bottom of screen reached
+                this->scrollup();
+                cursor_y = cursor_y - 1;
+            }
+        }
     }
 
     this->setpos(cursor_x, cursor_y);
-
-    // TODO: automatic line breaking, automatic scrolling
 }
 
 /*****************************************************************************
@@ -175,5 +194,5 @@ unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     return blink << 7       // B0000000
          | (bg & 0x7) << 4  // 0HHH0000
-         | (fg & 0xF);     // 0000VVVV
+         | (fg & 0xF);      // 0000VVVV
 }
