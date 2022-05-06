@@ -25,16 +25,21 @@
  *****************************************************************************/
 void CGA_Stream::flush() {
     print(buffer, pos, attribute(this->color_bg, this->color_fg, this->blink));
+
+    // Flushing resets attributes
+    this->blink = false;
+    this->color_bg = CGA::BLACK;
+    this->color_fg = CGA::LIGHT_GREY;
+
     pos = 0;
 }
 
-// NOTE: I added this
-// TODO
-// CGA_Stream& CGA_Stream::operator<<(const fgc& fg) {
-//     this->color_fg = fg.fg;
-//     return *this;
+// Alternative way to write the templates which keeps definition separated
+// Usable for our case but somehow defeats the purpose of templates
+// template<typename T>
+// T& operator<<(T& os, const fgc& fg) {
+//     os.color_fg = fg.fg;
+//     return os;
 // }
-// CGA_Stream& CGA_Stream::operator<<(const bgc& bg) {
-//     this->color_bg = bg.bg;
-//     return *this;
-// }
+
+// template CGA_Stream& operator<<<CGA_Stream>(CGA_Stream&, const fgc&);
