@@ -23,7 +23,7 @@ private:
     BumpAllocator(Allocator& copy);  // Verhindere Kopieren
 
 public:
-    BumpAllocator() {}
+    BumpAllocator() {};  // Allocator() called implicitely in C++
 
     void init();
     void dump_free_memory();

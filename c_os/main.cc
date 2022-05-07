@@ -15,12 +15,10 @@
 #include "user/HeapDemo.h"
 
 int main() {
+    kout.clear();
 
     // Speicherverwaltung initialisieren
     allocator.init();
-
-    // Bildschirm loeschen.
-    kout.clear();
 
     // text_demo();
     // sound_demo();

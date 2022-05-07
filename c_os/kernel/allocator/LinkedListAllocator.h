@@ -14,30 +14,27 @@
 
 #include "kernel/Allocator.h"
 
-
 // Format eines freien Blocks
 struct free_block {
     unsigned int size;
-    struct free_block *next;
+    struct free_block* next;
 };
 
-
 class LinkedListAllocator : Allocator {
-    
-private:
-      // freie Bloecke werden verkettet
-      struct free_block *free_start;
 
-      LinkedListAllocator(Allocator &copy); // Verhindere Kopieren
+private:
+    // freie Bloecke werden verkettet
+    struct free_block* free_start;
+
+    LinkedListAllocator(Allocator& copy);  // Verhindere Kopieren
 
 public:
-      LinkedListAllocator () { }
+    LinkedListAllocator() {}
 
-      void init ();        
-      void dump_free_memory ();
-      void* alloc (unsigned int req_size);
-      void free (void *ptr);
-
+    void init();
+    void dump_free_memory();
+    void* alloc(unsigned int req_size);
+    void free(void* ptr);
 };
 
 #endif

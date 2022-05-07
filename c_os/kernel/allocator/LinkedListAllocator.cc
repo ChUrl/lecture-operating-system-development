@@ -9,12 +9,11 @@
  * Autor:           Michael Schoettner, HHU, 13.6.2020                        *
  *****************************************************************************/
 
-#include <stddef.h>
-#include "kernel/Globals.h"
 #include "kernel/allocator/LinkedListAllocator.h"
+#include "kernel/Globals.h"
+#include <stddef.h>
 
-#define HEAP_MIN_FREE_BLOCK_SIZE 64         // min. Groesse eines freien Blocks
-
+#define HEAP_MIN_FREE_BLOCK_SIZE 64  // min. Groesse eines freien Blocks
 
 /*****************************************************************************
  * Methode:         LinkedListAllocator::init                                *
@@ -28,10 +27,8 @@
  *****************************************************************************/
 void LinkedListAllocator::init() {
 
-     /* Hier muess Code eingefuegt werden */
-
+    /* Hier muess Code eingefuegt werden */
 }
-
 
 /*****************************************************************************
  * Methode:         LinkedListAllocator::dump_free_memory                    *
@@ -40,31 +37,25 @@ void LinkedListAllocator::init() {
  *****************************************************************************/
 void LinkedListAllocator::dump_free_memory() {
 
-     /* Hier muess Code eingefuegt werden */
-
+    /* Hier muess Code eingefuegt werden */
 }
-
 
 /*****************************************************************************
  * Methode:         LinkedListAllocator::alloc                               *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Einen neuen Speicherblock allozieren.                    * 
  *****************************************************************************/
-void * LinkedListAllocator::alloc(unsigned int req_size) {
+void* LinkedListAllocator::alloc(unsigned int req_size) {
 
-     /* Hier muess Code eingefuegt werden */
-
+    /* Hier muess Code eingefuegt werden */
 }
-
 
 /*****************************************************************************
  * Methode:         LinkedListAllocator::free                                *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Einen Speicherblock freigeben.                           *
  *****************************************************************************/
-void LinkedListAllocator::free(void *ptr) {
+void LinkedListAllocator::free(void* ptr) {
 
-     /* Hier muess Code eingefuegt werden */
-
+    /* Hier muess Code eingefuegt werden */
 }
-
