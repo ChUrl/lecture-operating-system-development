@@ -33,13 +33,6 @@
 #ifndef __Allocator_include__
 #define __Allocator_include__
 
-// NOTE: I added this
-typedef struct {
-    unsigned int length;
-    bool free;
-    unsigned char* next;
-} mem_block_header_t;
-
 class Allocator {
 
 private:
