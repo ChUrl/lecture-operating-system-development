@@ -14,7 +14,7 @@
 
 #include "kernel/Allocator.h"
 
-// Format eines freien Blocks
+// Format eines freien Blocks, 4 + 4 Byte
 struct free_block {
     unsigned int size;
     struct free_block* next;
@@ -27,6 +27,9 @@ private:
     struct free_block* free_start;
 
     LinkedListAllocator(Allocator& copy);  // Verhindere Kopieren
+
+    // NOTE: I added this
+    struct free_block* find_previous_block(struct free_block*);
 
 public:
     LinkedListAllocator() {}
