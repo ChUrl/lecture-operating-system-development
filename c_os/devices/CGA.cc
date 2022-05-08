@@ -23,7 +23,7 @@ void CGA::setpos(int x, int y) {
     /* Hier muess Code eingefuegt werden */
 
     // NOTE: The cursor addresses positions on screen, not bytes
-    unsigned short pos = x + y * 80;
+    unsigned short pos = x + y * COLUMNS;
     unsigned char cursor_low = pos & 0xFF;
     unsigned char cursor_high = (pos >> 8) & 0xFF;
 
@@ -54,8 +54,8 @@ void CGA::getpos(int& x, int& y) {
     unsigned short cursor =
       (cursor_low & 0xFF) | ((cursor_high << 8) & 0xFF00);
 
-    x = cursor % 80;
-    y = (int)(cursor / 80);
+    x = cursor % COLUMNS;
+    y = (int)(cursor / COLUMNS);
 }
 
 /*****************************************************************************
@@ -73,12 +73,12 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
-    if (x > 80 || y > 25) {
+    if (x > COLUMNS || y > ROWS) {
         // Out of bounds
         return;
     }
 
-    char* pos = (char*)(CGA_START + 2 * (x + y * 80));  // cast to char* to make writable
+    char* pos = (char*)(CGA_START + 2 * (x + y * COLUMNS));  // cast to char* to make writable
     *pos = character;
     *(pos + 1) = attrib;
 }
@@ -107,7 +107,7 @@ void CGA::print(char* string, int n, unsigned char attrib) {
             cursor_x = 0;
             cursor_y = cursor_y + 1;
 
-            if (cursor_y > 24) {
+            if (cursor_y >= ROWS) {
                 // Bottom of screen reached
                 this->scrollup();
                 cursor_y = cursor_y - 1;
@@ -122,12 +122,12 @@ void CGA::print(char* string, int n, unsigned char attrib) {
         this->show(cursor_x, cursor_y, current, attrib);
         cursor_x = cursor_x + 1;
 
-        if (cursor_x > 79) {
+        if (cursor_x >= COLUMNS) {
             // Right of screen reached
             cursor_x = 0;
             cursor_y = cursor_y + 1;
 
-            if (cursor_y > 24) {
+            if (cursor_y >= ROWS) {
                 // Bottom of screen reached
                 this->scrollup();
                 cursor_y = cursor_y - 1;
@@ -150,12 +150,12 @@ void CGA::scrollup() {
     /* Hier muess Code eingefuegt werden */
 
     // Move up
-    for (unsigned short byte = 2 * 80 * 1; byte < 2 * 80 * 25; ++byte) {
-        *((char*)(CGA_START + byte - 2 * 80 * 1)) = *(CGA_START + byte);
+    for (unsigned short byte = 2 * COLUMNS * 1; byte < 2 * COLUMNS * ROWS; ++byte) {
+        *((char*)(CGA_START + byte - 2 * COLUMNS * 1)) = *(CGA_START + byte);
     }
 
     // Clear last line
-    for (unsigned short byte = 2 * 80 * 24; byte < 2 * 80 * 25; ++byte) {
+    for (unsigned short byte = 2 * COLUMNS * (ROWS - 1); byte < 2 * COLUMNS * ROWS; ++byte) {
         *((char*)(CGA_START + byte)) = '\0';
     }
 }
@@ -169,7 +169,7 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    for (unsigned short byte = 2 * 80 * 0; byte < 2 * 80 * 25; ++byte) {
+    for (unsigned short byte = 2 * COLUMNS * 0; byte < 2 * COLUMNS * ROWS; ++byte) {
         *((char*)(CGA_START + byte)) = '\0';
     }
 
@@ -193,6 +193,6 @@ unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
     /* Hier muess Code eingefuegt werden */
 
     return blink << 7       // B0000000
-         | (bg & 0x7) << 4  // 0HHH0000
-         | (fg & 0xF);      // 0000VVVV
+         | (bg & 0x7) << 4  // 0HHH0000 (Hintergrund)
+         | (fg & 0xF);      // 0000VVVV (Vordergrund)
 }
