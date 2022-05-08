@@ -26,7 +26,8 @@ void BumpAllocator::init() {
     this->next = (unsigned char*)heap_start;
 
     kout << "Initialized Bump Allocator" << endl
-         << "Heap Start: " << hex << this->heap_start << ", Heap End: " << this->heap_end << endl;
+         << "Heap Start: " << hex << (unsigned int)this->heap_start
+         << ", Heap End: " << hex << (unsigned int)this->heap_end << endl;
     kout << endl;
 }
 
@@ -40,7 +41,8 @@ void BumpAllocator::dump_free_memory() {
     /* Hier muess Code eingefuegt werden */
 
     kout << "Freier Speicher:" << endl
-         << "Next: " << hex << this->next << ", Allocations: " << dec << this->allocations << endl;
+         << "Next: " << hex << (unsigned int)this->next
+         << ", Allocations: " << dec << this->allocations << endl;
     kout << endl;
 }
 
@@ -53,19 +55,19 @@ void* BumpAllocator::alloc(unsigned int req_size) {
 
     /* Hier muess Code eingefuegt werden */
 
-    kout << "Requested " << dec << req_size << " Bytes" << endl;
+    kout << "Requested " << hex << req_size << " Bytes" << endl;
 
-    if (req_size > this->heap_end - (unsigned int)this->next) {
+    if (req_size + (unsigned int)this->next > this->heap_end) {
         kout << "More memory requested than available :(" << endl;
         kout << endl;
         return NULL;
     }
 
     void* allocated = this->next;
-    this->next = this->next + req_size;
+    this->next = (unsigned char*)((unsigned int)this->next + req_size);
     this->allocations = this->allocations + 1;
 
-    kout << "Allocated " << dec << req_size << " Bytes." << endl;
+    kout << "Allocated " << hex << req_size << " Bytes." << endl;
     kout << endl;
 
     return allocated;
