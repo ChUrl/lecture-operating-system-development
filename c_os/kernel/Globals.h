@@ -14,6 +14,7 @@
 #include "devices/Keyboard.h"
 #include "devices/PCSPK.h"
 #include "kernel/allocator/BumpAllocator.h"
+#include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/CPU.h"
 
 extern CPU cpu;                 // CPU-spezifische Funktionen
@@ -21,7 +22,7 @@ extern PCSPK pcspk;             // PC-Lautsprecher
 extern CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
 extern Keyboard kb;             // Tastatur
 extern unsigned int total_mem;  // RAM total
-extern BumpAllocator allocator;
-//extern LinkedListAllocator   allocator;
+// extern BumpAllocator allocator;
+extern LinkedListAllocator allocator;
 
 #endif

@@ -15,5 +15,5 @@ PCSPK pcspk;             // PC-Lautsprecher
 CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
 Keyboard kb;             // Tastatur
 unsigned int total_mem;  // RAM total
-BumpAllocator allocator;
-//LinkedListAllocator   allocator;
+// BumpAllocator allocator;
+LinkedListAllocator allocator;

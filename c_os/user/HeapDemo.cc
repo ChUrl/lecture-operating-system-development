@@ -32,9 +32,6 @@ void heap_demo() {
     MyObj* a = new MyObj(5);
     allocator.dump_free_memory();
 
-    MyObj* b = new MyObj(10);
-    allocator.dump_free_memory();
-
-    allocator.alloc(1024 * 1024);  // should fail as only 1024 * 1024 - (4 + 4) bytes remain
+    allocator.alloc(1024 * 1024 - 16);  // should fail as only 1024 * 1024 - (4 + 4) bytes remain
     allocator.dump_free_memory();
 }
