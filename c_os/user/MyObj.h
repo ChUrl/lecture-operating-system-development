@@ -3,6 +3,7 @@
 
 class MyObj {
 public:
+    MyObj() : value(5) {};
     MyObj(unsigned int val) : value(val) {};
     unsigned int value;
 };

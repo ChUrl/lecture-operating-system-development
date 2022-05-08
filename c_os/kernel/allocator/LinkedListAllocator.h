@@ -14,8 +14,9 @@
 
 #include "kernel/Allocator.h"
 
-// Format eines freien Blocks, 4 + 4 Byte
+// Format eines freien Blocks, 4 + 4 + 4 Byte
 struct free_block {
+    bool allocated;  // NOTE: I added this to allow easier merging of free blocks
     unsigned int size;
     struct free_block* next;
 };
