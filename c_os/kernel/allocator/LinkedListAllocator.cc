@@ -262,7 +262,7 @@ struct free_block* LinkedListAllocator::find_previous_block(struct free_block* n
     // Durchlaufe die ganze freispeicherliste bis zum Block der auf next_block zeigt
     struct free_block* current = next_block;
     while (current->next != next_block) {
-        // NOTE: This can get stuck if called on the wrong block
+        // NOTE: This will get stuck if called on the wrong block
         current = current->next;
     }
 

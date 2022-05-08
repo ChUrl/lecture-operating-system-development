@@ -149,6 +149,8 @@ void CGA::scrollup() {
 
     /* Hier muess Code eingefuegt werden */
 
+    // TODO: I really want a scrollback buffer
+
     // Move up
     for (unsigned short byte = 2 * COLUMNS * 1; byte < 2 * COLUMNS * ROWS; ++byte) {
         *((char*)(CGA_START + byte - 2 * COLUMNS * 1)) = *(CGA_START + byte);
