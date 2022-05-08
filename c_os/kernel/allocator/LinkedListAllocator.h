@@ -33,7 +33,7 @@ private:
     struct free_block* find_previous_block(struct free_block*);
 
 public:
-    LinkedListAllocator() {}
+    LinkedListAllocator() {};
 
     void init();
     void dump_free_memory();
