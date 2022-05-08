@@ -35,11 +35,11 @@ void heap_demo() {
     MyObj* b = new MyObj(10);
     // allocator.dump_free_memory();
     MyObj* c = new MyObj(15);
-    allocator.dump_free_memory();
+    // allocator.dump_free_memory();
     delete b;
-    // allocator.dump_free_memory();
+    allocator.dump_free_memory();
     delete a;
-    // allocator.dump_free_memory();
+    allocator.dump_free_memory();
     delete c;
     allocator.dump_free_memory();
 
@@ -56,7 +56,6 @@ void heap_demo() {
     // A lot of allocations
     // MyObj* objs[1024];
     // for (unsigned int i = 0; i < 1024; ++i) {
-    //     // This tries allocates a lot more than possible
     //     objs[i] = new MyObj(5);
     // }
     // allocator.dump_free_memory();
