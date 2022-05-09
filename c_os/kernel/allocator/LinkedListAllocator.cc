@@ -13,8 +13,6 @@
 #include "kernel/Globals.h"
 #include <stddef.h>
 
-#define HEAP_MIN_FREE_BLOCK_SIZE 64  // min. Groesse eines freien Blocks
-
 // I don't order the list by size so that the block order corresponds to the location in memory
 // Then I can easily merge adjacent free blocks by finding the previous block without looking at
 // memory addresses of each block
@@ -34,9 +32,9 @@ void LinkedListAllocator::init() {
 
     /* Hier muess Code eingefuegt werden */
 
-    this->free_start = (free_block*)this->heap_start;
+    this->free_start = (free_block_t*)this->heap_start;
     this->free_start->allocated = false;
-    this->free_start->size = this->heap_size - sizeof(free_block);
+    this->free_start->size = this->heap_size - sizeof(free_block_t);
     this->free_start->next = this->free_start;  // Only one block, points to itself
 
     kout << "Initialized LinkedList Allocator" << endl
@@ -62,7 +60,7 @@ void LinkedListAllocator::dump_free_memory() {
     } else {
         kout << " - Freelist start: " << hex << (unsigned int)this->free_start << endl;
 
-        free_block* current = this->free_start;
+        free_block_t* current = this->free_start;
         do {
             kout << " - Free Block (Start: " << hex << (unsigned int)current
                  << " Size: " << hex << current->size << ")" << endl;
@@ -95,27 +93,27 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
         kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
     }
 
-    free_block* current = this->free_start;
+    free_block_t* current = this->free_start;
     do {
         if (current->size >= rreq_size) {
             // Current block large enough
             // We now have: [<> | current | <>]
 
             // Don't subtract to prevent underflow
-            if (current->size >= rreq_size + sizeof(free_block) + HEAP_MIN_FREE_BLOCK_SIZE) {
+            if (current->size >= rreq_size + sizeof(free_block_t) + HEAP_MIN_FREE_BLOCK_SIZE) {
                 // Block so large it can be cut
 
                 // Create new header after allocated memory and rearrange pointers
                 // [<> | current | new_next | <>]
                 // In case of only one freeblock:
                 // [current | new_next]
-                free_block* new_next =
-                  (free_block*)((unsigned int)current + sizeof(free_block) + rreq_size);
+                free_block_t* new_next =
+                  (free_block_t*)((unsigned int)current + sizeof(free_block_t) + rreq_size);
 
                 // If only one block exists, current->next is current
                 // This shouldn't be a problem since the block gets removed from the list later
                 new_next->next = current->next;
-                new_next->size = current->size - (rreq_size + sizeof(free_block));
+                new_next->size = current->size - (rreq_size + sizeof(free_block_t));
 
                 current->next = new_next;  // We want to reach the next free block from the allocated block
                 current->size = rreq_size;
@@ -139,14 +137,14 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
             }
 
             // Block aushängen
-            free_block* previous = this->find_previous_block(current);
+            free_block_t* previous = this->find_previous_block(current);
             previous->next = current->next;
             current->allocated = true;
 
             // We leave the current->next pointer intact although the block is allocated
             // to allow easier merging of adjacent free blocks
 
-            return (void*)((unsigned int)current + sizeof(free_block));  // Speicheranfang, nicht header
+            return (void*)((unsigned int)current + sizeof(free_block_t));  // Speicheranfang, nicht header
         }
 
         current = current->next;
@@ -167,7 +165,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     kout << "Freeing " << hex << (unsigned int)ptr << endl;
 
-    free_block* block_start = (free_block*)((unsigned int)ptr - sizeof(free_block));
+    free_block_t* block_start = (free_block_t*)((unsigned int)ptr - sizeof(free_block_t));
 
     // Reenable the freelist if no block was available
     // This also means that no merging can be done
@@ -181,18 +179,18 @@ void LinkedListAllocator::free(void* ptr) {
         return;
     }
 
-    free_block* next_block =
-      (free_block*)((unsigned int)block_start + sizeof(free_block) + block_start->size);
+    free_block_t* next_block =
+      (free_block_t*)((unsigned int)block_start + sizeof(free_block_t) + block_start->size);
 
     // Find the next free block, multiple next blocks can be allocated so walk through them
-    free_block* next_free = block_start->next;
+    free_block_t* next_free = block_start->next;
     while (next_free->allocated) {
         next_free = next_free->next;
     }
 
-    free_block* previous_free = this->find_previous_block(next_free);
-    free_block* previous_free_next =
-      (free_block*)((unsigned int)previous_free + sizeof(free_block) + previous_free->size);
+    free_block_t* previous_free = this->find_previous_block(next_free);
+    free_block_t* previous_free_next =
+      (free_block_t*)((unsigned int)previous_free + sizeof(free_block_t) + previous_free->size);
 
     // We have: [previous_free | previous_free_next | <> | block_start | next_block | <> | next_free]
     // The <> spaces don't have to exist and next_block could be the same as next_free
@@ -217,7 +215,7 @@ void LinkedListAllocator::free(void* ptr) {
             // If next_free is the only free block it points to itself, so fix that
             block_start->next = block_start;
         }
-        block_start->size = block_start->size + sizeof(free_block) + next_free->size;
+        block_start->size = block_start->size + sizeof(free_block_t) + next_free->size;
 
         // There shouldn't exist any other allocated blocks pointing to next_free,
         // the current one should be the only one (or else I have done something wrong)
@@ -248,7 +246,7 @@ void LinkedListAllocator::free(void* ptr) {
         // [previous_free | block_start]
 
         previous_free->next = block_start->next;
-        previous_free->size = previous_free->size + sizeof(free_block) + block_start->size;
+        previous_free->size = previous_free->size + sizeof(free_block_t) + block_start->size;
 
         // For pointers to block_start the same as above applies
         // so I don't think I have to manage anything else here
@@ -265,9 +263,9 @@ void LinkedListAllocator::free(void* ptr) {
 }
 
 // NOTE: I added this
-free_block* LinkedListAllocator::find_previous_block(free_block* next_block) {
+free_block_t* LinkedListAllocator::find_previous_block(free_block_t* next_block) {
     // Durchlaufe die ganze freispeicherliste bis zum Block der auf next_block zeigt
-    free_block* current = next_block;
+    free_block_t* current = next_block;
     while (current->next != next_block) {
         // NOTE: This will get stuck if called on the wrong block
         current = current->next;

@@ -16,6 +16,7 @@
 
 // TODO: Is it 8 or 4?
 #define BASIC_ALIGN 8
+#define HEAP_MIN_FREE_BLOCK_SIZE 64  // min. Groesse eines freien Blocks
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 typedef struct free_block {
@@ -28,7 +29,7 @@ typedef struct free_block {
                      //       to merge blocks. Would be faster with doubly linked list.
     unsigned int size;
     struct free_block* next;
-} free_block;
+} free_block_t;
 
 class LinkedListAllocator : Allocator {
 
