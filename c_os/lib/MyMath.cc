@@ -1,23 +1,23 @@
-#include "Math.h"
+#include "MyMath.h"
 
 // NOTE: I added this file
 
-int min(int a, int b) {
+int mymin(int a, int b) {
     if (a < b) { return a; }
     return b;
 }
 
-int max(int a, int b) {
+int mymax(int a, int b) {
     if (a < b) { return b; }
     return a;
 }
 
-int abs(int a) {
+int myabs(int a) {
     if (a < 0) { return -a; }
     return a;
 }
 
-int pow(int a, unsigned int b) {
+int mypow(int a, unsigned int b) {
     int result = 1;
     for (unsigned int i = 0; i < b; ++i) {
         result = result * a;
