@@ -42,8 +42,6 @@ int main() {
     // Initialize scrollback buffer after allocator.init()
     kout.init();
 
-    allocator.dump_free_memory();
-
     // text_demo();
     // sound_demo();
     // keyboard_demo();

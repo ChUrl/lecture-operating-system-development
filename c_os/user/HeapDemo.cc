@@ -25,17 +25,19 @@ void waitForReturn() {
 }
 
 void heap_demo() {
+    kout << "HEAP_DEMO ===================================================================" << endl;
 
     /* hier muss Code eingefuegt werden */
     allocator.dump_free_memory();
 
     // Some objects and forward/backward merging
+    kout << "SOME OBJECTS ================================================================" << endl;
     MyObj* a = new MyObj(5);
-    // allocator.dump_free_memory();
+    allocator.dump_free_memory();
     MyObj* b = new MyObj(10);
-    // allocator.dump_free_memory();
+    allocator.dump_free_memory();
     MyObj* c = new MyObj(15);
-    // allocator.dump_free_memory();
+    allocator.dump_free_memory();
     delete b;
     allocator.dump_free_memory();
     delete a;
@@ -50,8 +52,9 @@ void heap_demo() {
     // allocator.dump_free_memory();
 
     // Allocate too much
-    // allocator.alloc(1024 * 1024);  // should fail as only 1024 * 1024 - Headersize bytes are available
-    // allocator.dump_free_memory();
+    kout << "TOO MUCH ====================================================================" << endl;
+    allocator.alloc(1024 * 1024);  // should fail as only 1024 * 1024 - Headersize bytes are available
+    allocator.dump_free_memory();
 
     // A lot of allocations
     // MyObj* objs[1024];
@@ -66,8 +69,11 @@ void heap_demo() {
     // allocator.dump_free_memory();
 
     // Array allocation
-    // MyObj* objs = new MyObj[1024];
-    // allocator.dump_free_memory();
-    // delete[] objs;
-    // allocator.dump_free_memory();
+    kout << "ARRAY =======================================================================" << endl;
+    MyObj* objs = new MyObj[1024];
+    allocator.dump_free_memory();
+    delete[] objs;
+    allocator.dump_free_memory();
+
+    kout << "HEAP_DEMO END ===============================================================" << endl;
 }
