@@ -78,7 +78,7 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
         return;
     }
 
-    cga_char_t* pos = (cga_char_t*)(CGA_START + 2 * (x + y * COLUMNS));  // cast to char* to make writable
+    cga_char_t* pos = (cga_char_t*)(CGA_START + 2 * (x + y * COLUMNS));
     pos->cga_char = character;
     pos->cga_attribute = attrib;
 }
