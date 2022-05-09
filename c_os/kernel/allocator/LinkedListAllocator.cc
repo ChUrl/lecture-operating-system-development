@@ -89,7 +89,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
     }
 
     // Round to word borders
-    unsigned int req_size_diff = (4 - req_size % 4) % 4;
+    unsigned int req_size_diff = (BASIC_ALIGN - req_size % BASIC_ALIGN) % BASIC_ALIGN;
     unsigned int rreq_size = req_size + req_size_diff;
     if (req_size_diff > 0) {
         kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;

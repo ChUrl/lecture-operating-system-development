@@ -14,6 +14,9 @@
 
 #include "kernel/Allocator.h"
 
+// TODO: Is it 8 or 4?
+#define BASIC_ALIGN 8
+
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 typedef struct free_block {
     bool allocated;  // NOTE: I added this to allow easier merging of free blocks:
