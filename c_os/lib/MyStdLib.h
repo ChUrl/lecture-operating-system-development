@@ -5,7 +5,7 @@
 // TODO: namespace this
 
 template<typename T>
-void mymemcpy(T* destination, T* source, unsigned int count) {
+void mymemcpy(T* destination, T* source, unsigned int count = 1) {
     for (unsigned int i = 0; i < count; ++i) {
         *(destination + i) = *(source + i);
     }
