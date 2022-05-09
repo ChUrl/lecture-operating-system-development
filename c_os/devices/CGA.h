@@ -15,6 +15,7 @@
 #define __CGA_include__
 
 #include "kernel/IOport.h"
+#include "lib/MyStdLib.h"
 
 class CGA {
 
@@ -63,6 +64,18 @@ public:
     enum { ROWS = 25,
            COLUMNS = 80 };
 
+    // NOTE: I added this
+    typedef struct {
+        char cga_char;
+        char cga_attribute;
+    } cga_char_t;
+    typedef struct {
+        cga_char_t cga_line[COLUMNS];
+    } cga_line_t;
+    typedef struct {
+        cga_line_t cga_page[ROWS];
+    } cga_page_t;
+
     // Setzen des Cursors in Spalte x und Zeile y.
     void setpos(int x, int y);
 
@@ -73,14 +86,14 @@ public:
     void show(int x, int y, char character, unsigned char attrib = STD_ATTR);
 
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
-    void print(char* string, int n, unsigned char attrib = STD_ATTR);
+    virtual void print(char* string, int n, unsigned char attrib = STD_ATTR);
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen
-    void scrollup();
+    virtual void scrollup();
 
     // Lösche den Textbildschirm
-    void clear();
+    virtual void clear();
 
     // Hilfsfunktion zur Erzeugung eines Attribut-Bytes
     unsigned char attribute(CGA::color bg, CGA::color fg, bool blink);

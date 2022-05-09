@@ -73,14 +73,14 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
-    if (x > COLUMNS || y > ROWS) {
+    if (x >= COLUMNS || y >= ROWS) {
         // Out of bounds
         return;
     }
 
-    char* pos = (char*)(CGA_START + 2 * (x + y * COLUMNS));  // cast to char* to make writable
-    *pos = character;
-    *(pos + 1) = attrib;
+    cga_char_t* pos = (cga_char_t*)(CGA_START + 2 * (x + y * COLUMNS));  // cast to char* to make writable
+    pos->cga_char = character;
+    pos->cga_attribute = attrib;
 }
 
 /*****************************************************************************
@@ -147,19 +147,13 @@ void CGA::print(char* string, int n, unsigned char attrib) {
  *****************************************************************************/
 void CGA::scrollup() {
 
-    /* Hier muess Code eingefuegt werden */
-
-    // TODO: I really want a scrollback buffer
+    /* Hier muss Code eingefuegt werden */
 
     // Move up
-    for (unsigned short byte = 2 * COLUMNS * 1; byte < 2 * COLUMNS * ROWS; ++byte) {
-        *((char*)(CGA_START + byte - 2 * COLUMNS * 1)) = *(CGA_START + byte);
-    }
+    mymemcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
 
     // Clear last line
-    for (unsigned short byte = 2 * COLUMNS * (ROWS - 1); byte < 2 * COLUMNS * ROWS; ++byte) {
-        *((char*)(CGA_START + byte)) = '\0';
-    }
+    myzero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
 }
 
 /*****************************************************************************
@@ -171,10 +165,7 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    for (unsigned short byte = 2 * COLUMNS * 0; byte < 2 * COLUMNS * ROWS; ++byte) {
-        *((char*)(CGA_START + byte)) = '\0';
-    }
-
+    myzero<cga_page_t>((cga_page_t*)CGA_START);
     this->setpos(0, 0);
 }
 
