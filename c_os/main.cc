@@ -24,10 +24,12 @@ void scroll_mode() {
 
         switch ((char)key) {
         case 'k':
-            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scroll_page_backward()));
+            kout.scroll_page_backward();
+            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
             break;
         case 'j':
-            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scroll_page_forward()));
+            kout.scroll_page_forward();
+            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
             break;
         }
     }

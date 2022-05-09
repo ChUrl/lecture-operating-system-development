@@ -16,4 +16,5 @@ CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
 Keyboard kb;             // Tastatur
 unsigned int total_mem;  // RAM total
 // BumpAllocator allocator;
-LinkedListAllocator allocator;
+// LinkedListAllocator allocator;
+TreeAllocator allocator;
