@@ -14,19 +14,21 @@
 #include "kernel/Globals.h"
 #include "user/HeapDemo.h"
 
-// TODO: Where to put this?
+// Waits for keys to control the scrollback buffer display
 void scroll_mode() {
     Key key;
-    // while (true) {
-    //     key = kb.key_hit();
+    while (true) {
+        key = kb.key_hit();
 
-    //     switch (key.ascii()) {
-    //     case 'k':
-    //         kout.pageup();
-    //     case 'j':
-    //         kout.pagedown();
-    //     }
-    // }
+        switch ((char)key) {
+        case 'k':
+            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scroll_page_backward()));
+            break;
+        case 'j':
+            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scroll_page_forward()));
+            break;
+        }
+    }
 }
 
 int main() {
@@ -35,8 +37,8 @@ int main() {
     // Speicherverwaltung initialisieren
     allocator.init();
 
-    // Initialize scrollback buffer
-    // kout.init();
+    // Initialize scrollback buffer after allocator.init()
+    kout.init();
 
     allocator.dump_free_memory();
 
@@ -45,7 +47,9 @@ int main() {
     // keyboard_demo();
     heap_demo();
 
-    // scroll_mode();
+    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+
+    scroll_mode();
 
     while (1) {};
     return 0;

@@ -15,7 +15,7 @@
 #ifndef __CGA_Stream_include__
 #define __CGA_Stream_include__
 
-#include "devices/CGA.h"
+#include "devices/BufferedCGA.h"
 #include "lib/OutStream.h"
 
 // NOTE: I added this
@@ -32,7 +32,8 @@ public:
     CGA::color bg;
 };
 
-class CGA_Stream : public OutStream, public CGA {
+// NOTE: I added this (changed this) to use BufferedCGA
+class CGA_Stream : public OutStream, public BufferedCGA {
 private:
     CGA_Stream(CGA_Stream& copy);  // Verhindere Kopieren
 
@@ -41,7 +42,7 @@ public:
     CGA::color color_bg;
     bool blink;
 
-    CGA_Stream() : OutStream(), CGA() {
+    CGA_Stream() : OutStream(), BufferedCGA() {
         color_fg = CGA::LIGHT_GREY;
         color_bg = CGA::BLACK;
         blink = false;

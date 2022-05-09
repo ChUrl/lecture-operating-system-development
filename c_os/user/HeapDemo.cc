@@ -21,7 +21,7 @@ void waitForReturn() {
     Key key;
     do {
         key = kb.key_hit();
-    } while (key.ascii() != '\n');
+    } while ((char)key != '\n');
 }
 
 void heap_demo() {
