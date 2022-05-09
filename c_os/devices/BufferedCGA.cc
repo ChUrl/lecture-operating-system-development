@@ -10,12 +10,16 @@ void BufferedCGA::init() {
 }
 
 void BufferedCGA::displaypage() {
-    if (this->current_page == 0) {
-        // Use pagebuffer
-        this->scrollback_buffer->copy_page_from_pagebuffer((cga_page_t*)CGA_START);
+    if (this->initialized) {
+        if (this->current_page == 0) {
+            // Use pagebuffer
+            this->scrollback_buffer->copy_page_from_pagebuffer((cga_page_t*)CGA_START);
+        } else {
+            // Use scrollback
+            this->scrollback_buffer->copy_page_from_buffer((cga_line_t*)CGA_START, this->current_page - 1);
+        }
     } else {
-        // Use scrollback
-        this->scrollback_buffer->copy_page_from_buffer((cga_line_t*)CGA_START, this->current_page - 1);
+        this->print("ScrollbackBuffer not initialized\n\n", 34);
     }
 }
 
@@ -51,25 +55,33 @@ void BufferedCGA::clear() {
     }
 }
 
-unsigned int BufferedCGA::scroll_page_backward() {
-    // If this is the first scrollback we have to save the current screen content
-    if (this->current_page == 0) {
-        this->scrollback_buffer->copy_page_to_pagebuffer((cga_page_t*)CGA_START);
-    }
+void BufferedCGA::scroll_page_backward() {
+    if (this->initialized) {
 
-    // current_page can be equal to scrollback_buffer->pages
-    // as we have a separate pagebuffer for the current screen content
-    if (this->current_page < this->scrollback_buffer->pages) {
-        this->current_page = this->current_page + 1;
+        // If this is the first scrollback we have to save the current screen content
+        if (this->current_page == 0) {
+            this->scrollback_buffer->copy_page_to_pagebuffer((cga_page_t*)CGA_START);
+        }
+
+        // current_page can be equal to scrollback_buffer->pages
+        // as we have a separate pagebuffer for the current screen content
+        if (this->current_page < this->scrollback_buffer->pages) {
+            this->current_page = this->current_page + 1;
+        }
+        this->displaypage();
+    } else {
+        this->print("ScrollbackBuffer not initialized\n\n", 34);
     }
-    this->displaypage();
-    return this->current_page;
 }
 
-unsigned int BufferedCGA::scroll_page_forward() {
-    if (this->current_page > 0) {
-        this->current_page = this->current_page - 1;
+void BufferedCGA::scroll_page_forward() {
+    if (this->initialized) {
+
+        if (this->current_page > 0) {
+            this->current_page = this->current_page - 1;
+        }
+        this->displaypage();
+    } else {
+        this->print("ScrollbackBuffer not initialized\n\n", 34);
     }
-    this->displaypage();
-    return this->current_page;
 }
