@@ -30,6 +30,13 @@ void heap_demo() {
     /* hier muss Code eingefuegt werden */
     allocator.dump_free_memory();
 
+    // Rounding to word border
+    kout << "ROUNDING ====================================================================" << endl;
+    void* alloc = allocator.alloc(1);
+    allocator.dump_free_memory();
+    allocator.free(alloc);
+    allocator.dump_free_memory();
+
     // Some objects and forward/backward merging
     kout << "SOME OBJECTS ================================================================" << endl;
     MyObj* a = new MyObj(5);

@@ -88,14 +88,21 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
         return NULL;
     }
 
+    // Round to word borders
+    unsigned int req_size_diff = (4 - req_size % 4) % 4;
+    unsigned int rreq_size = req_size + req_size_diff;
+    if (req_size_diff > 0) {
+        kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
+    }
+
     struct free_block* current = this->free_start;
     do {
-        if (current->size >= req_size) {
+        if (current->size >= rreq_size) {
             // Current block large enough
             // We now have: [<> | current | <>]
 
             // Don't subtract to prevent underflow
-            if (current->size >= req_size + sizeof(struct free_block) + HEAP_MIN_FREE_BLOCK_SIZE) {
+            if (current->size >= rreq_size + sizeof(struct free_block) + HEAP_MIN_FREE_BLOCK_SIZE) {
                 // Block so large it can be cut
 
                 // Create new header after allocated memory and rearrange pointers
@@ -103,20 +110,20 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 // In case of only one freeblock:
                 // [current | new_next]
                 struct free_block* new_next =
-                  (struct free_block*)((unsigned int)current + sizeof(struct free_block) + req_size);
+                  (struct free_block*)((unsigned int)current + sizeof(struct free_block) + rreq_size);
 
                 // If only one block exists, current->next is current
                 // This shouldn't be a problem since the block gets removed from the list later
                 new_next->next = current->next;
-                new_next->size = current->size - (req_size + sizeof(struct free_block));
+                new_next->size = current->size - (rreq_size + sizeof(struct free_block));
 
                 current->next = new_next;  // We want to reach the next free block from the allocated block
-                current->size = req_size;
+                current->size = rreq_size;
 
                 // Next-fit
                 this->free_start = new_next;
 
-                kout << " - Allocated " << hex << req_size << " Bytes with cutting" << endl;
+                kout << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
             } else {
                 // Block too small to be cut, allocate whole block
 
