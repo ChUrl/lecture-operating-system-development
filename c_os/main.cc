@@ -16,6 +16,8 @@
 
 // Waits for keys to control the scrollback buffer display
 void scroll_mode() {
+    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+
     Key key;
     while (true) {
         key = kb.key_hit();
@@ -46,8 +48,6 @@ int main() {
     // sound_demo();
     // keyboard_demo();
     heap_demo();
-
-    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
 
     scroll_mode();
 
