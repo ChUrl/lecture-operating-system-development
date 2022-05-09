@@ -35,7 +35,7 @@ void CGA_Stream::flush() {
     pos = 0;
 }
 
-// Alternative way to write the templates which keeps definition separated
+// Alternative way to write the templates which keeps definition/declaration separated
 // Usable for our case but somehow defeats the purpose of templates
 // template<typename T>
 // T& operator<<(T& os, const fgc& fg) {

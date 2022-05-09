@@ -16,7 +16,13 @@
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 struct free_block {
-    bool allocated;  // NOTE: I added this to allow easier merging of free blocks
+    bool allocated;  // NOTE: I added this to allow easier merging of free blocks:
+                     //       When freeing an allocated block, its next-pointer can
+                     //       point to another allocated block, the next free block
+                     //       can be found by traversing the leading allocated blocks.
+                     //       We only need a way to determine when the free block is reached.
+                     //       This also means that the whole list has to be traversed
+                     //       to merge blocks. Would be faster with doubly linked list.
     unsigned int size;
     struct free_block* next;
 };
@@ -30,6 +36,9 @@ private:
     LinkedListAllocator(Allocator& copy);  // Verhindere Kopieren
 
     // NOTE: I added this
+    // Traverses the whole list forward till previous block is reached.
+    // This can only be called on free blocks as allocated blocks
+    // aren't reachable from the freelist.
     struct free_block* find_previous_block(struct free_block*);
 
 public:
