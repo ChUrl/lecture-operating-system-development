@@ -15,7 +15,7 @@
 #include "kernel/Allocator.h"
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
-struct free_block {
+typedef struct free_block {
     bool allocated;  // NOTE: I added this to allow easier merging of free blocks:
                      //       When freeing an allocated block, its next-pointer can
                      //       point to another allocated block, the next free block
@@ -25,7 +25,7 @@ struct free_block {
                      //       to merge blocks. Would be faster with doubly linked list.
     unsigned int size;
     struct free_block* next;
-};
+} free_block;
 
 class LinkedListAllocator : Allocator {
 
