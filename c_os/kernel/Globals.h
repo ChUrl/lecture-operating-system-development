@@ -15,16 +15,19 @@
 #include "devices/PCSPK.h"
 #include "kernel/allocator/BumpAllocator.h"
 #include "kernel/allocator/LinkedListAllocator.h"
-#include "kernel/allocator/TreeAllocator.h"
 #include "kernel/CPU.h"
+#include "kernel/interrupts/IntDispatcher.h"
+#include "kernel/interrupts/PIC.h"
 
 extern CPU cpu;                 // CPU-spezifische Funktionen
 extern PCSPK pcspk;             // PC-Lautsprecher
 extern CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
 extern Keyboard kb;             // Tastatur
+extern IntDispatcher intdis;    // Unterbrechungsverteilung
+extern PIC pic;                 // Interrupt-Controller
 extern unsigned int total_mem;  // RAM total
-// extern BumpAllocator allocator;
-// extern LinkedListAllocator allocator;
+// extern BumpAllocator         allocator;
+// extern LinkedListAllocator   allocator;
 extern TreeAllocator allocator;
 
 #endif

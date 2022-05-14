@@ -47,9 +47,18 @@ int main() {
     // text_demo();
     // sound_demo();
     // keyboard_demo();
-    heap_demo();
+    // heap_demo();
 
-    scroll_mode();
+    // Tastatur-Unterbrechungsroutine 'einstoepseln'
+    /* hier muss Code eingefuegt werden */
+
+    // Interrupts erlauben (Tastatur)
+    /* hier muss Code eingefuegt werden */
+
+    key_irq_demo();
+
+    // TODO: Use interrupts
+    // scroll_mode();
 
     while (1) {};
     return 0;

@@ -7,6 +7,7 @@
 #define BASIC_ALIGN 8
 
 // NOTE: I added this file
+// NOTE: I can't imagine that this is very fast with all the tree logic?
 
 typedef struct list_block {
     // Doubly linked list for every block
@@ -15,11 +16,10 @@ typedef struct list_block {
     struct list_block* previous;
 } list_block_t;
 
-// Format eines freien Blocks
 // The free blocks are organized in a red-black tree to enable fast insertion with best-fit strategy.
 // To allow fast merging of freed blocks every block is part of a doubly linked list.
 // Because the red-black tree only contains the free blocks, the memory overhead comes
-// down to only 4 + 4 + 4 Bytes for the allocated flag, next and previous pointers.
+// down to 4 + 4 + 4 Bytes for the allocated flag, next and previous pointers.
 // The size can be calculated by using the next pointer so it doesn't have to be stored.
 typedef struct tree_block {
     // Doubly linked list for every block

@@ -73,8 +73,8 @@ CXX ?= g++
 CFLAGS := $(CFLAGS) -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -mpreferred-stack-boundary=2 -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr
 CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions
 
-BOOT = ../c_boot
-TOOLS = ../c_tools
+BOOT = ../boot
+TOOLS = ../tools
 # BIOS-dev.code:total-tracks:-heads:-sectors:start-track:-head:-sector
 # Default-Werte fuer Boot von Floppy (USB/HD erkennt bootsect.asm selbst):
 BOOTDEVICE = 0:80:2:18:0:0:1
