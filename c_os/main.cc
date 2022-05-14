@@ -13,6 +13,7 @@
 #include "kernel/Allocator.h"
 #include "kernel/Globals.h"
 #include "user/HeapDemo.h"
+#include "user/KeyIRQDemo.h"
 
 // Waits for keys to control the scrollback buffer display
 void scroll_mode() {

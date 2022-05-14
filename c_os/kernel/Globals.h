@@ -15,6 +15,7 @@
 #include "devices/PCSPK.h"
 #include "kernel/allocator/BumpAllocator.h"
 #include "kernel/allocator/LinkedListAllocator.h"
+#include "kernel/allocator/TreeAllocator.h"
 #include "kernel/CPU.h"
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
