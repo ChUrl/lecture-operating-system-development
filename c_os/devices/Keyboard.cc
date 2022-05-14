@@ -324,7 +324,7 @@ void Keyboard::set_led(char led, bool on) {
 }
 
 // Registriert die Tastatur ISR im IntDispatcher
-// und erlaubt den keyboard interrupt
+// und erlaubt den keyboard interrupt im PIC
 void Keyboard::plugin(IntDispatcher& intdis, PIC& pic) {
     intdis.assign(IntDispatcher::keyboard, *this);
     pic.allow(PIC::keyboard);
@@ -340,9 +340,11 @@ void Keyboard::trigger() {
     // NOTE: My keyboard has no delete key...
     if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
         this->reboot();
+    } else if ((char)key == 'k' || (char)key == 'j') {
+        scroll_mode(key);
     }
 
-    scroll_mode(key);
+    // TODO: Keyboard insert mode
 
     // kout.show(0, 0, (char)key);
 }
@@ -350,8 +352,6 @@ void Keyboard::trigger() {
 // TODO: Where to place this?
 // Waits for keys to control the scrollback buffer display
 void scroll_mode(Key key) {
-    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
-
     switch ((char)key) {
     case 'k':
         kout.scroll_page_backward();

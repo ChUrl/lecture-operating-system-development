@@ -23,6 +23,7 @@ int main() {
 
     // Initialize scrollback buffer after allocator.init()
     kout.init(5);
+    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));  // Show current page
 
     // text_demo();
     // sound_demo();
