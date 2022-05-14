@@ -2,11 +2,11 @@
 
 // Can't initialize in constructor as memory management already needs working CGA for output
 // NOTE: This has to be called when memorymanagement is active
-void BufferedCGA::init() {
-    this->scrollback_buffer = new ScrollbackBuffer(COLUMNS, ROWS, 5);
+void BufferedCGA::init(unsigned int pages) {
+    this->scrollback_buffer = new ScrollbackBuffer(COLUMNS, ROWS, pages);
     this->initialized = true;
 
-    this->print("\nInitialized scrollback buffer with 5 pages\n\n", 45);
+    this->print("\nInitialized scrollback buffer\n\n", 32);
 }
 
 void BufferedCGA::displaypage() {

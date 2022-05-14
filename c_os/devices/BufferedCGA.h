@@ -19,10 +19,10 @@ private:
 public:
     BufferedCGA() : CGA(), initialized(false), current_page(0) {};
 
-    void init();                  // Scrollback needs to be initialized after memorymanagement
-    unsigned char current_page;   // The page that is displayed
-    void scroll_page_backward();  // Scroll up the page history
-    void scroll_page_forward();   // Scroll down the page history (to the current page)
+    void init(unsigned int pages);  // Scrollback needs to be initialized after memorymanagement
+    unsigned char current_page;     // The page that is displayed
+    void scroll_page_backward();    // Scroll up the page history
+    void scroll_page_forward();     // Scroll down the page history (to the current page)
 
     void print(char* string, int n, unsigned char attrib = STD_ATTR) override;
     void scrollup() override;
