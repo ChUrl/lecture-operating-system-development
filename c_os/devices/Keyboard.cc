@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include "devices/Keyboard.h"
+#include "kernel/Globals.h"
 
 /* Tabellen fuer ASCII-Codes (Klassenvariablen) intiialisieren */
 
@@ -320,4 +321,45 @@ void Keyboard::set_repeat_rate(int speed, int delay) {
 void Keyboard::set_led(char led, bool on) {
 
     /* Hier muss Code eingefuegt werden. */
+}
+
+// Registriert die Tastatur ISR im IntDispatcher
+// und erlaubt den keyboard interrupt
+void Keyboard::plugin(IntDispatcher& intdis, PIC& pic) {
+    intdis.assign(IntDispatcher::keyboard, *this);
+    pic.allow(PIC::keyboard);
+}
+
+void scroll_mode(Key key);
+
+void Keyboard::trigger() {
+    // TODO: Get data from PS/2 Mouse if necessary
+
+    Key key = this->key_hit();
+
+    // NOTE: My keyboard has no delete key...
+    if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
+        this->reboot();
+    }
+
+    scroll_mode(key);
+
+    // kout.show(0, 0, (char)key);
+}
+
+// TODO: Where to place this?
+// Waits for keys to control the scrollback buffer display
+void scroll_mode(Key key) {
+    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+
+    switch ((char)key) {
+    case 'k':
+        kout.scroll_page_backward();
+        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+        break;
+    case 'j':
+        kout.scroll_page_forward();
+        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+        break;
+    }
 }

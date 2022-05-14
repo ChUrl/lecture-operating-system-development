@@ -18,27 +18,28 @@
 #define __PIC_include__
 
 class PIC {
-    
+
 private:
-    PIC(const PIC &copy); // Verhindere Kopieren
+    PIC(const PIC& copy);  // Verhindere Kopieren
+
 public:
     PIC() {}
-         
+
 public:
     // IRQ-Nummern von Geraeten
     enum {
-       timer    = 0,   // Programmable Interrupt Timer (PIT)
-       keyboard = 1    // Tastatur
+        timer = 0,    // Programmable Interrupt Timer (PIT)
+        keyboard = 1  // Tastatur
     };
 
     // Freischalten der Weiterleitung eines IRQs durch den PIC an die CPU
-    void allow (int irq);
+    void allow(int irq);
 
     // Unterdruecken der Weiterleitung eines IRQs durch den PIC an die CPU
-    void forbid (int irq);
+    void forbid(int irq);
 
     // Abfragen, ob die Weiterleitung fuer einen bestimmten IRQ unterdrueckt ist
-    bool status (int interrupt_device);
- };
+    bool status(int interrupt_device);
+};
 
 #endif

@@ -15,27 +15,6 @@
 #include "user/HeapDemo.h"
 #include "user/KeyIRQDemo.h"
 
-// Waits for keys to control the scrollback buffer display
-void scroll_mode() {
-    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
-
-    Key key;
-    while (true) {
-        key = kb.key_hit();
-
-        switch ((char)key) {
-        case 'k':
-            kout.scroll_page_backward();
-            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
-            break;
-        case 'j':
-            kout.scroll_page_forward();
-            kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
-            break;
-        }
-    }
-}
-
 int main() {
     kout.clear();
 
@@ -43,7 +22,7 @@ int main() {
     allocator.init();
 
     // Initialize scrollback buffer after allocator.init()
-    kout.init();
+    kout.init(5);
 
     // text_demo();
     // sound_demo();
@@ -52,14 +31,13 @@ int main() {
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
+    kb.plugin(intdis, pic);
 
     // Interrupts erlauben (Tastatur)
     /* hier muss Code eingefuegt werden */
+    cpu.enable_int();
 
-    key_irq_demo();
-
-    // TODO: Use interrupts
-    // scroll_mode();
+    // key_irq_demo();
 
     while (1) {};
     return 0;

@@ -10,9 +10,15 @@
 
 #include "kernel/Globals.h"
 
-
 void key_irq_demo() {
 
-   /* Hier muss Code eingefuegt werden */
+    /* Hier muss Code eingefuegt werden */
 
+    // TODO: I don't understand the task
+
+    while (true) {
+        for (unsigned char i = 0; i < 10; ++i) {
+            kout.show(kout.COLUMNS - 1, i, (char)(48 + i));
+        }
+    }
 }
