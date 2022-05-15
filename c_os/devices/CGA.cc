@@ -150,10 +150,10 @@ void CGA::scrollup() {
     /* Hier muss Code eingefuegt werden */
 
     // Move up
-    mymemcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
+    mmem::memcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
 
     // Clear last line
-    myzero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
+    mmem::zero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
 }
 
 /*****************************************************************************
@@ -165,7 +165,7 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    myzero<cga_page_t>((cga_page_t*)CGA_START);
+    mmem::zero<cga_page_t>((cga_page_t*)CGA_START);
     this->setpos(0, 0);
 }
 

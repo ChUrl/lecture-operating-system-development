@@ -3,10 +3,11 @@
 
 // NOTE: I added this file
 
-// TODO: namespace this
-int mymin(int, int);
-int mymax(int, int);
-int myabs(int);
-int mypow(int, unsigned int);
+namespace mmath {
+    int min(int, int);
+    int max(int, int);
+    int abs(int);
+    int pow(int, unsigned int);
+}  // namespace mmath
 
 #endif

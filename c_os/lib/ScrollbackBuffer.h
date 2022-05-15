@@ -11,7 +11,10 @@
 class ScrollbackBuffer {
 private:
     CGA::cga_line_t* buffer;      // Circular buffer to store lines that left the screen
-    CGA::cga_page_t* pagebuffer;  // Contains the current page separately from the scrollback
+    CGA::cga_page_t* pagebuffer;  // Contains the current page separately from the scrollback.
+                                  // I thought this was easier since it also captures the little output
+                                  // generated before the scrollback buffer is initialized
+                                  // (but only if it's less than a page)
     unsigned int current_linenumber;
 
     CGA::cga_line_t* get_current_line() const;  // Translate linenumber to memory location

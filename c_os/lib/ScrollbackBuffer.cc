@@ -12,7 +12,7 @@ CGA::cga_line_t* ScrollbackBuffer::get_current_line() const {
 }
 
 void ScrollbackBuffer::line_to_buffer(CGA::cga_line_t* line) {
-    mymemcpy<CGA::cga_line_t>(this->get_current_line(), line);
+    mmem::memcpy<CGA::cga_line_t>(this->get_current_line(), line);
     this->buffer_next_line();
 }
 
@@ -40,22 +40,22 @@ void ScrollbackBuffer::copy_page_from_buffer(CGA::cga_line_t* destination, unsig
     unsigned int wrapline;
     for (unsigned int line = 0; line < this->pageheight; ++line) {
         wrapline = (this->current_linenumber + rpage * this->pageheight + line) % this->lines;
-        mymemcpy<CGA::cga_line_t>(destination + line, this->buffer + wrapline);
+        mmem::memcpy<CGA::cga_line_t>(destination + line, this->buffer + wrapline);
     }
 }
 
 void ScrollbackBuffer::copy_page_from_pagebuffer(CGA::cga_page_t* destination) const {
-    mymemcpy<CGA::cga_page_t>(destination, this->pagebuffer);
+    mmem::memcpy<CGA::cga_page_t>(destination, this->pagebuffer);
 }
 
 void ScrollbackBuffer::copy_page_to_pagebuffer(CGA::cga_page_t* source) {
-    mymemcpy<CGA::cga_page_t>(this->pagebuffer, source);
+    mmem::memcpy<CGA::cga_page_t>(this->pagebuffer, source);
 }
 
 void ScrollbackBuffer::clear() {
     for (unsigned char page = 0; page < this->pages; ++page) {
-        myzero<CGA::cga_page_t>((CGA::cga_page_t*)this->buffer + page);
+        mmem::zero<CGA::cga_page_t>((CGA::cga_page_t*)this->buffer + page);
     }
-    myzero<CGA::cga_page_t>(this->pagebuffer);
+    mmem::zero<CGA::cga_page_t>(this->pagebuffer);
     this->current_linenumber = 0;
 }

@@ -2,22 +2,22 @@
 
 // NOTE: I added this file
 
-int mymin(int a, int b) {
+int mmath::min(int a, int b) {
     if (a < b) { return a; }
     return b;
 }
 
-int mymax(int a, int b) {
+int mmath::max(int a, int b) {
     if (a < b) { return b; }
     return a;
 }
 
-int myabs(int a) {
+int mmath::abs(int a) {
     if (a < 0) { return -a; }
     return a;
 }
 
-int mypow(int a, unsigned int b) {
+int mmath::pow(int a, unsigned int b) {
     int result = 1;
     for (unsigned int i = 0; i < b; ++i) {
         result = result * a;
