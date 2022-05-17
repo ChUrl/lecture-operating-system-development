@@ -62,16 +62,16 @@ VERBOSE = @
 ASMOBJFORMAT = elf
 OBJDIR = ./build
 DEPDIR = ./dep
-DRIVE_FD = /media/student/LUCAS
+DRIVE_FD = /media/student/DATAUSB
 # ACHTUNG: ein falsch angegebenes Laufwerk kann dazu fuehren, dass Daten auf dem
 # spezifizierten Laufwerk verloren gehen! Nicht mit root-Rechten ausfuehren!
-DRIVE_HD = /media/student/LUCAS
+DRIVE_HD = /media/student/DATAUSB
 DELETE = rm
 ASM = nasm
 CC ?= gcc
 CXX ?= g++
 CFLAGS := $(CFLAGS) -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -mpreferred-stack-boundary=2 -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr
-CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions
+CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++20
 
 BOOT = ../boot
 TOOLS = ../tools
@@ -128,7 +128,7 @@ $(OBJDIR)/%.o : %.cc
 	@echo "CXX		$@" 
 	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
 	$(VERBOSE) $(CXX) -c $(CXXFLAGS) -o $@ $<
-	
+
 $(OBJDIR)/_%.o : %.asm
 	@echo "ASM		$@"
 	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
