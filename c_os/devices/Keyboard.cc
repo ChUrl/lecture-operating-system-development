@@ -355,11 +355,11 @@ void scroll_mode(Key key) {
     switch ((char)key) {
     case 'k':
         kout.scroll_page_backward();
-        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scrollback));
         break;
     case 'j':
         kout.scroll_page_forward();
-        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));
+        kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.scrollback));
         break;
     }
 }

@@ -23,12 +23,6 @@ int main() {
 
     // Initialize scrollback buffer after allocator.init()
     kout.init(5);
-    kout.show(kout.COLUMNS - 1, 0, (char)(48 + kout.current_page));  // Show current page
-
-    // text_demo();
-    // sound_demo();
-    // keyboard_demo();
-    // heap_demo();
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
@@ -38,6 +32,10 @@ int main() {
     /* hier muss Code eingefuegt werden */
     cpu.enable_int();
 
+    // text_demo();
+    // sound_demo();
+    // keyboard_demo();
+    heap_demo();
     // key_irq_demo();
 
     while (1) {};

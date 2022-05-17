@@ -23,6 +23,7 @@
 #define __OutStream_include__
 
 #include "lib/StringBuffer.h"
+#include <concepts>
 
 // NOTE: I added this
 class fillw {
@@ -71,11 +72,14 @@ public:
     // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
     //               Zeichenkette.
 
-    // NOTE: I changed the stream manipulators to templates to be usable with different streams
-    //       Needed because I added manipulators to the CGA_Stream class
+    // NOTE: I changed the stream manipulators to templates to be usable with different streams.
+    //       If a Stream derived from OutStream gets passed to a operator<< the type won't be "lowered".
+    //       This allows chaining of operator<< of different streams.
+    //       Needed because I added operator<< overloads to the CGA_Stream class to change color with manipulators.
 
     // Darstellung eines Zeichens (trivial)
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, char c) {
         os.put(c);
         if (c != '\n') {
@@ -86,12 +90,14 @@ public:
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, unsigned char c) {
         return os << (char)c;
     }
 
     // Darstellung einer nullterminierten Zeichenkette
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, char* string) {
 
         char* pos = string;
@@ -105,26 +111,31 @@ public:
 
     // Darstellung ganzer Zahlen im Zahlensystem zur Basis base
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, short ival) {
         return os << (long)ival;
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, unsigned short ival) {
         return os << (unsigned long)ival;
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, int ival) {
         return os << (long)ival;
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, unsigned int ival) {
         return os << (unsigned long)ival;
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, long ival) {
         // Bei negativen Werten wird ein Minuszeichen ausgegeben.
         if (ival < 0) {
@@ -136,6 +147,7 @@ public:
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, unsigned long ival) {
         unsigned long div;
         char digit;
@@ -167,6 +179,7 @@ public:
 
     // Darstellung eines Zeigers als hexadezimale ganze Zahl
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, void* ptr) {
         int oldbase = os.base;
         os.base = 16;
@@ -178,12 +191,14 @@ public:
     // Aufruf einer Manipulatorfunktion
     // NOTE: Changed the function pointer type including the manipulator functions
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, T& (*f)(T&)) {
         return f(os);
     }
 
     // NOTE: I added this
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillw& w) {
         os.flush();  // Flush the buffer to not modify previous output
         os.fill_width = w.w;
@@ -191,6 +206,7 @@ public:
     }
 
     template<typename T>
+    requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillc& c) {
         os.flush();
         os.fill_char = c.c;

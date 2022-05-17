@@ -14,13 +14,17 @@ private:
 
     BufferedCGA(const CGA& copy);
 
-    void displaypage();  // Write the current_page to CGA memory
+    void display_scrollback();  // Write the current_page to CGA memory
 
 public:
-    BufferedCGA() : CGA(), initialized(false), current_page(0) {};
+    BufferedCGA() : CGA(), initialized(false), scrollback(0) {};
+    ~BufferedCGA() {
+        if (this->initialized) { delete this->scrollback_buffer; }
+    }
+
+    unsigned char scrollback;  // The page that is displayed, public to enable page display
 
     void init(unsigned int pages);  // Scrollback needs to be initialized after memorymanagement
-    unsigned char current_page;     // The page that is displayed
     void scroll_page_backward();    // Scroll up the page history
     void scroll_page_forward();     // Scroll down the page history (to the current page)
 
