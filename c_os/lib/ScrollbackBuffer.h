@@ -23,9 +23,9 @@ public:
 
     ScrollbackBuffer(unsigned char rows, unsigned char pages)
       : pos(0), pages(pages), rows(rows * pages) {
-        this->buffer = new CGA::cga_page_t[pages];
-        this->pagebuffer = new CGA::cga_page_t;
-        this->clear();  // Null out the buffer so no crap gets displayed
+        this->buffer = new CGA::cga_page_t[pages];  // Allocate with new because it's quite large,
+        this->pagebuffer = new CGA::cga_page_t;     // also I wanted to use the new memory manager.
+        this->clear();                              // Null out the buffer so no crap gets displayed.
     }
     ~ScrollbackBuffer() {
         delete[] this->buffer;
@@ -34,8 +34,8 @@ public:
 
     void put(CGA::cga_line_t* line);
     void get(CGA::cga_line_t* destination, unsigned char page) const;
-    void copy_from_pagebuffer(CGA::cga_page_t* destination) const;
-    void copy_to_pagebuffer(CGA::cga_page_t* source);
+    void save_screen(CGA::cga_page_t* destination) const;  // Do not lose video memory when scrolling
+    void restore_screen(CGA::cga_page_t* source);
     void clear();
 };
 

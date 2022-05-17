@@ -13,7 +13,7 @@ void BufferedCGA::display_scrollback() {
     if (this->initialized) {
         if (this->scrollback == 0) {
             // Use pagebuffer
-            this->scrollback_buffer->copy_from_pagebuffer((cga_page_t*)CGA_START);
+            this->scrollback_buffer->save_screen((cga_page_t*)CGA_START);
         } else {
             // Use scrollback
             this->scrollback_buffer->get((cga_line_t*)CGA_START, this->scrollback - 1);
@@ -60,7 +60,7 @@ void BufferedCGA::scroll_page_backward() {
 
         // If this is the first scrollback we have to save the current screen content
         if (this->scrollback == 0) {
-            this->scrollback_buffer->copy_to_pagebuffer((cga_page_t*)CGA_START);
+            this->scrollback_buffer->restore_screen((cga_page_t*)CGA_START);
         }
 
         // current_page can be equal to scrollback_buffer->pages
