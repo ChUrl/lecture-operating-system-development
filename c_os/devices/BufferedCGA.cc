@@ -4,8 +4,14 @@
 // NOTE: This has to be called when memorymanagement is active
 void BufferedCGA::init(unsigned int pages) {
     this->scrollback_buffer = new ScrollbackBuffer(ROWS, pages);
-    this->initialized = true;
+    this->screen_buffer = new CGA::cga_page_t;
 
+    if (this->scrollback_buffer == NULL || this->screen_buffer == NULL) {
+        this->print("\nError initializing scrollback buffer\n\n", 39);
+        return;
+    }
+
+    this->initialized = true;
     this->print("\nInitialized scrollback buffer\n\n", 32);
 }
 
@@ -13,7 +19,7 @@ void BufferedCGA::display_scrollback() {
     if (this->initialized) {
         if (this->scrollback == 0) {
             // Use pagebuffer
-            this->scrollback_buffer->save_screen((cga_page_t*)CGA_START);
+            mmem::memcpy<CGA::cga_page_t>((CGA::cga_page_t*)CGA_START, this->screen_buffer);
         } else {
             // Use scrollback
             this->scrollback_buffer->get((cga_line_t*)CGA_START, this->scrollback - 1);
@@ -50,6 +56,7 @@ void BufferedCGA::clear() {
 
     if (this->initialized) {
         this->scrollback_buffer->clear();
+        mmem::zero<CGA::cga_page_t>(this->screen_buffer);
     } else {
         this->print("ScrollbackBuffer not initialized\n\n", 34);
     }
@@ -60,7 +67,7 @@ void BufferedCGA::scroll_page_backward() {
 
         // If this is the first scrollback we have to save the current screen content
         if (this->scrollback == 0) {
-            this->scrollback_buffer->restore_screen((cga_page_t*)CGA_START);
+            mmem::memcpy<CGA::cga_page_t>(this->screen_buffer, (CGA::cga_page_t*)CGA_START);
         }
 
         // current_page can be equal to scrollback_buffer->pages

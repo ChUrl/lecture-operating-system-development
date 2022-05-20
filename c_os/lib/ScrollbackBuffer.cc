@@ -25,18 +25,9 @@ void ScrollbackBuffer::get(CGA::cga_line_t* destination, unsigned char page) con
     }
 }
 
-void ScrollbackBuffer::save_screen(CGA::cga_page_t* destination) const {
-    mmem::memcpy<CGA::cga_page_t>(destination, this->pagebuffer);
-}
-
-void ScrollbackBuffer::restore_screen(CGA::cga_page_t* source) {
-    mmem::memcpy<CGA::cga_page_t>(this->pagebuffer, source);
-}
-
 void ScrollbackBuffer::clear() {
     for (unsigned char page = 0; page < this->pages; ++page) {
         mmem::zero<CGA::cga_page_t>(this->buffer + page);
     }
-    mmem::zero<CGA::cga_page_t>(this->pagebuffer);
     this->pos = 0;
 }
