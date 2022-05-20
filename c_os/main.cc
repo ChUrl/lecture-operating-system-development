@@ -19,10 +19,21 @@ int main() {
     kout.clear();
 
     // Speicherverwaltung initialisieren
-    allocator.init();
+    // allocator.init();  // NOTE: Disabled for coroutines
 
     // Initialize scrollback buffer after allocator.init()
-    kout.init(5);
+    // kout.init(5);  // NOTE: Disabled for coroutines
+
+    // Startmeldung
+    kout << "HHUos 0.5" << endl
+         << "=========" << endl
+         << "Unterstuetzte Funktionen:" << endl
+         << "   - Bildschirmausgaben" << endl
+         << "   - Sound ueber den PC-Lautsprecher" << endl
+         << "   - Tastatureingaben per Interrupt" << endl
+         // << "   - Einfache Heap verwaltung" << endl
+         << "   - Koroutinen" << endl
+         << endl;
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
@@ -35,7 +46,7 @@ int main() {
     // text_demo();
     // sound_demo();
     // keyboard_demo();
-    heap_demo();
+    // heap_demo();
     // key_irq_demo();
 
     while (1) {};
