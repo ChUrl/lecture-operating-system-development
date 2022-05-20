@@ -71,7 +71,8 @@ ASM = nasm
 CC ?= gcc
 CXX ?= g++
 CFLAGS := $(CFLAGS) -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -mpreferred-stack-boundary=2 -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr
-CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++20
+CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions
+# Needed for template concepts, but we don't have it available: -std=c++20
 
 BOOT = ../boot
 TOOLS = ../tools

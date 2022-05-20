@@ -55,6 +55,7 @@ public:
 
     // NOTE: I added this
     template<typename T>
+    // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const fgc& fg) {
         os.flush();
         os.color_fg = fg.fg;
@@ -62,6 +63,7 @@ public:
     }
 
     template<typename T>
+    // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const bgc& bg) {
         os.flush();
         os.color_fg = bg.bg;
