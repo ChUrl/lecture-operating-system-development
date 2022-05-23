@@ -13,7 +13,6 @@
 #include "devices/CGA_Stream.h"
 #include "devices/Keyboard.h"
 #include "devices/PCSPK.h"
-#include "kernel/Allocator.h"
 #include "kernel/allocator/BumpAllocator.h"
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/allocator/TreeAllocator.h"

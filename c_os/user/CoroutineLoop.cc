@@ -25,7 +25,7 @@ void CoroutineLoop::run() {
 
     int i = 0;
     while (true) {
-        kout.setpos(0, 20 + this->id);
+        kout.setpos(0, 21 + this->id);
         kout << "Corout[" << this->id << "]: " << i++ << endl;
 
         this->switchToNext();
