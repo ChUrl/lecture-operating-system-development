@@ -325,7 +325,7 @@ void Keyboard::set_led(char led, bool on) {
 
 // Registriert die Tastatur ISR im IntDispatcher
 // und erlaubt den keyboard interrupt im PIC
-void Keyboard::plugin(IntDispatcher& intdis, PIC& pic) {
+void Keyboard::plugin() {
     intdis.assign(IntDispatcher::keyboard, *this);
     pic.allow(PIC::keyboard);
 }
@@ -348,14 +348,17 @@ void Keyboard::trigger() {
 }
 
 // TODO: Where to place this?
+//       To use keyboard interrupts from different applications more work is needed:
+//        - Ereignisverwaltung, wo man Threads registrieren kann
+//        - Blockierte Threads verwalten und aufwecken bei ereignissen
 // Waits for keys to control the scrollback buffer display
 void scroll_mode(Key key) {
     switch ((char)key) {
     case 'k':
-        kout.scroll_page_backward();
+        // kout.scroll_page_backward();
         break;
     case 'j':
-        kout.scroll_page_forward();
+        // kout.scroll_page_forward();
         break;
     }
 }

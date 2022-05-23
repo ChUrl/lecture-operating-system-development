@@ -90,8 +90,7 @@ public:
     void set_led(char led, bool on);
 
     // Aktivierung der Unterbrechungen fuer die Tastatur
-    // TODO: NOTE: I added this (parameters), but is it supposed to be this way?
-    void plugin(IntDispatcher& intdis, PIC& pic);
+    void plugin();
 
     // Unterbrechnungsroutine der Tastatur.
     void trigger() override;
