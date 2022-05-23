@@ -187,7 +187,7 @@ unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     /* Hier muess Code eingefuegt werden */
 
-    return static_cast<int>(blink) << 7  // B0000000
-         | (bg & 0x7) << 4               // 0HHH0000 (Hintergrund)
-         | (fg & 0xF);                   // 0000VVVV (Vordergrund)
+    return (int)blink << 7  // B0000000
+         | (bg & 0x7) << 4  // 0HHH0000 (Hintergrund)
+         | (fg & 0xF);      // 0000VVVV (Vordergrund)
 }
