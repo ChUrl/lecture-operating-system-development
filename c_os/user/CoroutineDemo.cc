@@ -25,7 +25,7 @@ void CoroutineDemo::main() {
      * Die 3 Koroutinen einrichten, verketten und die 1. starten
      *
      */
-    unsigned int(*stack)[1024] = new unsigned int[3][1024];
+    unsigned int(*stack)[1024] = new unsigned int[3][1024];  // No delete since it is never returned
 
     CoroutineLoop corout1(stack[0] + 1024, 0);
     CoroutineLoop corout2(stack[1] + 1024, 1);
