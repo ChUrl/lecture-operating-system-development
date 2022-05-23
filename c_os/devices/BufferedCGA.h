@@ -6,11 +6,7 @@
 #include "lib/ScrollbackBuffer.h"
 #include <memory>
 
-// NOTE: I added this file, I don't know if it will be used till the end but right know it's nice to have
-
-// NOTE: I wanted to write to screen_buffer always and copy this to video mem to allow easier composition
-//       of different screen elements, but this would disable printing before initialization or I would
-//       have to replace print with unbuffered_print or something, which I don't like.
+// NOTE: I added this file, I will probably replace this in the end by an application
 class BufferedCGA : public CGA {
 private:
     std::unique_ptr<ScrollbackBuffer> scrollback_buffer;  // Contains previous pages
