@@ -13,15 +13,15 @@
 #define __ISR_include__
 
 class ISR {
-    
+
 private:
-    ISR (const ISR &copy); // Verhindere Kopieren
+    ISR(const ISR& copy) = delete;  // Verhindere Kopieren
 
 public:
-    ISR () {}
-       
+    ISR() {}
+
     // Unterbrechungsbehandlungsroutine
-    virtual void trigger () = 0;
+    virtual void trigger() = 0;
 };
 
 #endif

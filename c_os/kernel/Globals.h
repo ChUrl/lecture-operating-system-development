@@ -28,7 +28,7 @@ extern IntDispatcher intdis;    // Unterbrechungsverteilung
 extern PIC pic;                 // Interrupt-Controller
 extern unsigned int total_mem;  // RAM total
 // extern BumpAllocator         allocator;
-// extern LinkedListAllocator   allocator;
+// extern LinkedListAllocator allocator;
 extern TreeAllocator allocator;
 
 constexpr bool DEBUG = true;

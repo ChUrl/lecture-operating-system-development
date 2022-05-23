@@ -3,9 +3,6 @@
 
 #include "kernel/Allocator.h"
 
-#define HEAP_MIN_FREE_BLOCK_SIZE 64  // min. Groesse eines freien Blocks
-#define BASIC_ALIGN 8
-
 // NOTE: I added this file
 // NOTE: I can't imagine that this is very fast with all the tree logic?
 
@@ -40,7 +37,7 @@ private:
     // Root of the rbt
     tree_block_t* free_start;
 
-    TreeAllocator(Allocator& copy);  // Verhindere Kopieren
+    TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     // Returns the size of the usable memory of a block
     unsigned int get_size(list_block_t* block) const;
@@ -50,7 +47,7 @@ private:
 
     // NOTE: Would be nice to have this stuff somewhere else for general use,
     //       but that would require different rbt_node/dll_node structures.
-    //       If I need this again later I should look into it.
+    //       If I need this again later I should move it.
     void rbt_rot_l(tree_block_t* x);
     void rbt_rot_r(tree_block_t* x);
     void rbt_transplant(tree_block_t* a, tree_block_t* b);
@@ -71,10 +68,10 @@ private:
 public:
     TreeAllocator() {};
 
-    void init();
-    void dump_free_memory();
-    void* alloc(unsigned int req_size);
-    void free(void* ptr);
+    void init() override;
+    void dump_free_memory() override;
+    void* alloc(unsigned int req_size) override;
+    void free(void* ptr) override;
 };
 
 #endif

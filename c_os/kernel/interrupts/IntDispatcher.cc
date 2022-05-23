@@ -94,7 +94,7 @@ int IntDispatcher::report(unsigned int vector) {
     ISR* isr = this->map[vector];
 
     if (isr == 0) {
-        if constexpr (DEBUG) kout << "No ISR registered for vector " << vector << endl;
+        if constexpr (DEBUG) { kout << "No ISR registered for vector " << vector << endl; }
         return -1;
     }
 

@@ -3,14 +3,15 @@
 
 #include "devices/CGA.h"
 #include "lib/MyStdLib.h"
+#include <memory>
 #include <stddef.h>
 
 // NOTE: I added this file
 
 class ScrollbackBuffer {
 private:
-    CGA::cga_page_t* buffer;  // Circular buffer to store lines that left the screen
-    unsigned int pos;         // Buffer write position
+    std::unique_ptr<CGA::cga_page_t[]> buffer;  // Circular buffer to store lines that left the screen
+    unsigned int pos;                           // Buffer write position
 
     ScrollbackBuffer(const ScrollbackBuffer&) = delete;
 
@@ -20,12 +21,8 @@ public:
 
     ScrollbackBuffer(unsigned char rows, unsigned char pages)
       : pos(0), pages(pages), rows(rows * pages) {
-        this->buffer = new CGA::cga_page_t[pages];  // Allocate with new because it's quite large (and I want to use the allocator)
-        this->clear();                              // Null out the buffer so no crap gets displayed
-    }
-
-    ~ScrollbackBuffer() {
-        delete[] this->buffer;
+        this->buffer = std::make_unique<CGA::cga_page_t[]>(pages);  // Allocate with new because it's quite large (and I want to use the allocator)
+        this->clear();                                              // Null out the buffer so no crap gets displayed
     }
 
     void put(CGA::cga_line_t* line);

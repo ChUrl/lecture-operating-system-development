@@ -4,6 +4,7 @@
 #include "devices/CGA.h"
 #include "devices/Keyboard.h"
 #include "lib/ScrollbackBuffer.h"
+#include <memory>
 
 // NOTE: I added this file, I don't know if it will be used till the end but right know it's nice to have
 
@@ -12,20 +13,14 @@
 //       have to replace print with unbuffered_print or something, which I don't like.
 class BufferedCGA : public CGA {
 private:
-    ScrollbackBuffer* scrollback_buffer;  // Contains previous pages
-    CGA::cga_page_t* screen_buffer;       // Contains the current page separately from the scrollback.
-    bool initialized;                     // Don't do ScrollbackBuffer actions if not initialized
+    std::unique_ptr<ScrollbackBuffer> scrollback_buffer;  // Contains previous pages
+    std::unique_ptr<CGA::cga_page_t> screen_buffer;       // Contains the current page separately from the scrollback.
+    bool initialized;                                     // Don't do ScrollbackBuffer actions if not initialized
 
     BufferedCGA(const BufferedCGA&) = delete;
 
 public:
-    BufferedCGA() : CGA(), initialized(false), scrollback(0) {};
-    ~BufferedCGA() {
-        if (this->initialized) {
-            delete this->scrollback_buffer;
-            delete this->screen_buffer;
-        }
-    }
+    BufferedCGA() : initialized(false), scrollback(0) {}
 
     unsigned char scrollback;  // The page that is displayed, public to enable page display
 

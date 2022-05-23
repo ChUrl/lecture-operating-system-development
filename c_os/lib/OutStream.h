@@ -28,20 +28,20 @@
 // NOTE: I added this
 class fillw {
 public:
-    fillw() : w(0) {};
-    fillw(unsigned char w) : w(w) {};
+    fillw() : w(0) {}
+    fillw(unsigned char w) : w(w) {}
     unsigned char w;
 };
 class fillc {
 public:
-    fillc() : c(' ') {};
-    fillc(char c) : c(c) {};
+    fillc() : c(' ') {}
+    fillc(char c) : c(c) {}
     char c;
 };
 
 class OutStream : public StringBuffer {
 private:
-    OutStream(const OutStream& copy);  // Verhindere Kopieren
+    OutStream(const OutStream& copy) = delete;  // Verhindere Kopieren
 
     // NOTE: I added this
     unsigned char fill_used;  // indicates how many characters are already used by the text internally
@@ -55,13 +55,7 @@ public:
     unsigned char fill_width;
     char fill_char;  // fill character for fixed width
 
-    OutStream() : StringBuffer() {
-        base = 10;  // initial Dezimalsystem
-
-        fill_width = 0;   // no fixed width
-        fill_char = ' ';  // fill with spaces
-        fill_used = 0;
-    }
+    OutStream() : fill_used(0), base(10), fill_width(0), fill_char(' ') {}
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
@@ -165,7 +159,7 @@ public:
 
         // Bestimmung der groessten Potenz der gewaehlten Zahlenbasis, die
         // noch kleiner als die darzustellende Zahl ist.
-        for (div = 1; ival / div >= (unsigned long)os.base; div *= os.base) {};
+        for (div = 1; ival / div >= (unsigned long)os.base; div *= os.base) {}
 
         // ziffernweise Ausgabe der Zahl
         for (; div > 0; div /= (unsigned long)os.base) {

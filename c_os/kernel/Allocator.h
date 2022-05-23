@@ -33,10 +33,13 @@
 #ifndef __Allocator_include__
 #define __Allocator_include__
 
-class Allocator {
+// TODO: Is it 8 or 4?
+constexpr unsigned int BASIC_ALIGN = 8;
+constexpr unsigned int HEAP_MIN_FREE_BLOCK_SIZE = 64;  // min. Groesse eines freien Blocks
 
+class Allocator {
 private:
-    Allocator(Allocator& copy);  // Verhindere Kopieren
+    Allocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
 public:
     unsigned int heap_start;

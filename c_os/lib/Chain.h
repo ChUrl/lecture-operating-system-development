@@ -13,9 +13,8 @@
 #define __Chain_include__
 
 class Chain {
-    
 private:
-    Chain(const Chain &copy); // Verhindere Kopieren
+    Chain(const Chain& copy) = delete;  // Verhindere Kopieren
 
 public:
     Chain* next;

@@ -20,15 +20,15 @@ private:
     unsigned char* next;
     unsigned int allocations;
 
-    BumpAllocator(Allocator& copy);  // Verhindere Kopieren
+    BumpAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
 public:
     BumpAllocator() {};  // Allocator() called implicitely in C++
 
-    void init();
-    void dump_free_memory();
-    void* alloc(unsigned int req_size);
-    void free(void* ptr);
+    void init() override;
+    void dump_free_memory() override;
+    void* alloc(unsigned int req_size) override;
+    void free(void* ptr) override;
 };
 
 #endif

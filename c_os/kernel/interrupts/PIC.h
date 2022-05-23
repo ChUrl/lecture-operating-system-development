@@ -20,12 +20,11 @@
 class PIC {
 
 private:
-    PIC(const PIC& copy);  // Verhindere Kopieren
+    PIC(const PIC& copy) = delete;  // Verhindere Kopieren
 
 public:
     PIC() {}
 
-public:
     // IRQ-Nummern von Geraeten
     enum {
         timer = 0,    // Programmable Interrupt Timer (PIT)

@@ -14,10 +14,6 @@
 
 #include "kernel/Allocator.h"
 
-// TODO: Is it 8 or 4?
-#define BASIC_ALIGN 8
-#define HEAP_MIN_FREE_BLOCK_SIZE 64  // min. Groesse eines freien Blocks
-
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 typedef struct free_block {
     bool allocated;  // NOTE: I added this to allow easier merging of free blocks:
@@ -37,21 +33,21 @@ private:
     // freie Bloecke werden verkettet
     struct free_block* free_start;
 
-    LinkedListAllocator(Allocator& copy);  // Verhindere Kopieren
+    LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     // NOTE: I added this
     // Traverses the whole list forward till previous block is reached.
     // This can only be called on free blocks as allocated blocks
     // aren't reachable from the freelist.
-    struct free_block* find_previous_block(struct free_block*);
+    static struct free_block* find_previous_block(struct free_block*);
 
 public:
-    LinkedListAllocator() {};
+    LinkedListAllocator() {}
 
-    void init();
-    void dump_free_memory();
-    void* alloc(unsigned int req_size);
-    void free(void* ptr);
+    void init() override;
+    void dump_free_memory() override;
+    void* alloc(unsigned int req_size) override;
+    void free(void* ptr) override;
 };
 
 #endif

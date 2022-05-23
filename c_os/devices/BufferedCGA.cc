@@ -4,29 +4,29 @@
 // Can't initialize in constructor as memory management already needs working CGA for output
 // NOTE: This has to be called when memorymanagement is active
 void BufferedCGA::init(unsigned int pages) {
-    this->scrollback_buffer = new ScrollbackBuffer(ROWS, pages);  // No delete since it's only off when shutting the os down
-    this->screen_buffer = new CGA::cga_page_t;
+    this->scrollback_buffer = std::make_unique<ScrollbackBuffer>(ROWS, pages);  // No delete since it's only off when shutting the os down
+    this->screen_buffer = std::make_unique<CGA::cga_page_t>();
 
     if (this->scrollback_buffer == NULL || this->screen_buffer == NULL) {
-        if constexpr (DEBUG) kout << "Error initializing scrollback buffer" << endl;
+        if constexpr (DEBUG) { kout << "Error initializing scrollback buffer" << endl; }
         return;
     }
 
     this->initialized = true;
-    if constexpr (DEBUG) kout << "Initialized scrollback buffer" << endl;
+    if constexpr (DEBUG) { kout << "Initialized scrollback buffer" << endl; }
 }
 
 void BufferedCGA::display_scrollback() {
     if (this->initialized) {
         if (this->scrollback == 0) {
             // Use pagebuffer
-            mmem::memcpy<CGA::cga_page_t>((CGA::cga_page_t*)CGA_START, this->screen_buffer);
+            mmem::memcpy<CGA::cga_page_t>((CGA::cga_page_t*)CGA_START, this->screen_buffer.get());
         } else {
             // Use scrollback
-            this->scrollback_buffer->get((cga_line_t*)CGA_START, this->scrollback - 1);
+            this->scrollback_buffer->get((CGA::cga_line_t*)CGA_START, this->scrollback - 1);
         }
     } else {
-        if constexpr (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
+        if constexpr (DEBUG) { kout << "ScrollbackBuffer not initialized" << endl; }
     }
 }
 
@@ -43,9 +43,9 @@ void BufferedCGA::print(char* string, int n, unsigned char attrib) {
 
 void BufferedCGA::scrollup() {
     if (this->initialized) {
-        this->scrollback_buffer->put((cga_line_t*)CGA_START);
+        this->scrollback_buffer->put((CGA::cga_line_t*)CGA_START);
     } else {
-        if constexpr (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
+        if constexpr (DEBUG) { kout << "ScrollbackBuffer not initialized" << endl; }
     }
 
     CGA::scrollup();
@@ -57,9 +57,9 @@ void BufferedCGA::clear() {
 
     if (this->initialized) {
         this->scrollback_buffer->clear();
-        mmem::zero<CGA::cga_page_t>(this->screen_buffer);
+        mmem::zero<CGA::cga_page_t>(this->screen_buffer.get());
     } else {
-        if constexpr (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
+        if constexpr (DEBUG) { kout << "ScrollbackBuffer not initialized" << endl; }
     }
 }
 
@@ -68,7 +68,7 @@ void BufferedCGA::scroll_page_backward() {
 
         // If this is the first scrollback we have to save the current screen content
         if (this->scrollback == 0) {
-            mmem::memcpy<CGA::cga_page_t>(this->screen_buffer, (CGA::cga_page_t*)CGA_START);
+            mmem::memcpy<CGA::cga_page_t>(this->screen_buffer.get(), (CGA::cga_page_t*)CGA_START);
         }
 
         // current_page can be equal to scrollback_buffer->pages
@@ -78,7 +78,7 @@ void BufferedCGA::scroll_page_backward() {
         }
         this->display_scrollback();
     } else {
-        if constexpr (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
+        if constexpr (DEBUG) { kout << "ScrollbackBuffer not initialized" << endl; }
     }
 }
 
@@ -90,6 +90,6 @@ void BufferedCGA::scroll_page_forward() {
         }
         this->display_scrollback();
     } else {
-        if constexpr (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
+        if constexpr (DEBUG) { kout << "ScrollbackBuffer not initialized" << endl; }
     }
 }

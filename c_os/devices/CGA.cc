@@ -41,7 +41,7 @@ void CGA::setpos(int x, int y) {
  *                                                                           *
  * Rückgabewerte:   x und y                                                  *
  *****************************************************************************/
-void CGA::getpos(int& x, int& y) {
+void CGA::getpos(int& x, int& y) const {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -78,7 +78,7 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
         return;
     }
 
-    cga_char_t* pos = (cga_char_t*)(CGA_START + 2 * (x + y * COLUMNS));
+    cga_char_t* pos = (cga_char_t*)CGA_START + x + y * COLUMNS;
     pos->cga_char = character;
     pos->cga_attribute = attrib;
 }
@@ -101,7 +101,7 @@ void CGA::print(char* string, int n, unsigned char attrib) {
     int cursor_x, cursor_y;  // Don't poll registers every stroke
     this->getpos(cursor_x, cursor_y);
 
-    for (unsigned short byte = 0; byte < n; ++byte) {
+    for (int byte = 0; byte < n; ++byte) {
         char current = *(string + byte);
         if (current == '\n') {
             cursor_x = 0;
@@ -114,7 +114,9 @@ void CGA::print(char* string, int n, unsigned char attrib) {
             }
 
             continue;
-        } else if (current == '\0') {
+        }
+
+        if (current == '\0') {
             // Don't need to run to end if null terminated
             break;
         }
@@ -185,7 +187,7 @@ unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     /* Hier muess Code eingefuegt werden */
 
-    return blink << 7       // B0000000
-         | (bg & 0x7) << 4  // 0HHH0000 (Hintergrund)
-         | (fg & 0xF);      // 0000VVVV (Vordergrund)
+    return static_cast<int>(blink) << 7  // B0000000
+         | (bg & 0x7) << 4               // 0HHH0000 (Hintergrund)
+         | (fg & 0xF);                   // 0000VVVV (Vordergrund)
 }

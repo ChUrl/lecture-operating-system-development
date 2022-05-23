@@ -44,16 +44,10 @@
 /*****************************************************************************
  * Konstruktor:     Allocator::Allocator                                     *
  *****************************************************************************/
-Allocator::Allocator() {
+Allocator::Allocator() : heap_start(HEAP_START), heap_end(HEAP_START + HEAP_SIZE), heap_size(HEAP_SIZE), initialized(1) {
     // Groesse des Hauptspeichers (kann über das BIOS abgefragt werden,
     // aber sehr umstaendlich, daher hier fest eingetragen
     total_mem = MEM_SIZE_DEF;
-
-    heap_start = HEAP_START;
-    heap_end = HEAP_START + HEAP_SIZE;
-    heap_size = HEAP_SIZE;
-
-    initialized = 1;
 }
 
 /*****************************************************************************

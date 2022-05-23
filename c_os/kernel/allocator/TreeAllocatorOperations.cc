@@ -197,7 +197,7 @@ void TreeAllocator::rbt_remove(tree_block_t* z) {
 // fix the rb tree modified by the delete operation
 void TreeAllocator::rbt_fix_remove(tree_block_t* x) {
     tree_block_t* s;
-    while (x != this->free_start && x->red == false) {
+    while (x != this->free_start && !x->red) {
         if (x == x->parent->left) {
             s = x->parent->right;
             if (s->red) {
@@ -238,7 +238,7 @@ void TreeAllocator::rbt_fix_remove(tree_block_t* x) {
                 s = x->parent->left;
             }
 
-            if (!s->right->red && !s->right->red) {
+            if (!s->right->red) {
                 // case 3.2
                 s->red = true;
                 x = x->parent;
@@ -264,6 +264,7 @@ void TreeAllocator::rbt_fix_remove(tree_block_t* x) {
 }
 // END copy from algorithmtutorprograms
 
+// NOTE: This is recursive and depends on luck
 tree_block_t* TreeAllocator::rbt_search_bestfit(tree_block_t* node, unsigned int req_size) {
     if (node == NULL) {
         return NULL;
@@ -275,7 +276,9 @@ tree_block_t* TreeAllocator::rbt_search_bestfit(tree_block_t* node, unsigned int
         }
 
         return node;
-    } else if (req_size > this->get_size(node)) {
+    }
+
+    if (req_size > this->get_size(node)) {
         if (node->right != NULL && this->get_size(node->right) >= req_size) {
             return this->rbt_search_bestfit(node->right, req_size);
         }

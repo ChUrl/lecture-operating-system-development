@@ -13,7 +13,7 @@
 #include "kernel/Globals.h"
 #include "user/CoroutineDemo.h"
 
-CoroutineDemo coroutineDemo;
+const CoroutineDemo coroutineDemo;
 
 int main() {
     kout.clear();
@@ -25,17 +25,18 @@ int main() {
     kout.init(5);
 
     // Startmeldung
-    if constexpr (!DEBUG)
-        kout << "HHUos 0.5" << endl
-             << "=========" << endl
-             << "Unterstuetzte Funktionen:" << endl
-             << "   - Bildschirmausgaben" << endl
-             << "   - Sound ueber den PC-Lautsprecher" << endl
-             << "   - Tastatureingaben per Abfrage" << endl
-             << "   - Einfache Heap verwaltung" << endl
-             << "   - Tastatureingaben per Interrupt" << endl
-             << "   - Koroutinen" << endl
+    if constexpr (!DEBUG) {
+        kout << "HHUos 0.5\n"
+             << "=========\n"
+             << "Unterstuetzte Funktionen:\n"
+             << "   - Bildschirmausgaben\n"
+             << "   - Sound ueber den PC-Lautsprecher\n"
+             << "   - Tastatureingaben per Abfrage\n"
+             << "   - Einfache Heap verwaltung\n"
+             << "   - Tastatureingaben per Interrupt\n"
+             << "   - Koroutinen\n"
              << endl;
+    }
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */

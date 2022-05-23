@@ -25,7 +25,7 @@ void BumpAllocator::init() {
     this->allocations = 0;
     this->next = (unsigned char*)heap_start;
 
-    if constexpr (DEBUG) kout << "Initialized Bump Allocator" << endl;
+    if constexpr (DEBUG) { kout << "Initialized Bump Allocator" << endl; }
 }
 
 /*****************************************************************************
@@ -51,10 +51,10 @@ void* BumpAllocator::alloc(unsigned int req_size) {
 
     /* Hier muess Code eingefuegt werden */
 
-    if constexpr (DEBUG) kout << "Requested " << hex << req_size << " Bytes" << endl;
+    if constexpr (DEBUG) { kout << "Requested " << hex << req_size << " Bytes" << endl; }
 
     if (req_size + (unsigned int)this->next > this->heap_end) {
-        if constexpr (DEBUG) kout << " - More memory requested than available :(" << endl;
+        if constexpr (DEBUG) { kout << " - More memory requested than available :(" << endl; }
         return NULL;
     }
 
@@ -62,7 +62,7 @@ void* BumpAllocator::alloc(unsigned int req_size) {
     this->next = (unsigned char*)((unsigned int)this->next + req_size);
     this->allocations = this->allocations + 1;
 
-    if constexpr (DEBUG) kout << " - Allocated " << hex << req_size << " Bytes." << endl;
+    if constexpr (DEBUG) { kout << " - Allocated " << hex << req_size << " Bytes." << endl; }
 
     return allocated;
 }
@@ -73,5 +73,5 @@ void* BumpAllocator::alloc(unsigned int req_size) {
  * Beschreibung:    Nicht implementiert.                                     *
  *****************************************************************************/
 void BumpAllocator::free(void* ptr) {
-    if constexpr (DEBUG) kout << "   mm_free: ptr= " << hex << (unsigned int)ptr << ", not supported" << endl;
+    if constexpr (DEBUG) { kout << "   mm_free: ptr= " << hex << (unsigned int)ptr << ", not supported" << endl; }
 }

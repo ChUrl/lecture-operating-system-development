@@ -29,9 +29,8 @@
 class Coroutine : public Chain {
 
 private:
-    Coroutine(const Coroutine& copy);  // Verhindere Kopieren
+    Coroutine(const Coroutine& copy) = delete;  // Verhindere Kopieren
 
-private:
     struct CoroutineState regs;
 
 public:

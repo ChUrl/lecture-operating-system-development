@@ -18,7 +18,7 @@
 class IntDispatcher {
 
 private:
-    IntDispatcher(const IntDispatcher& copy);  // Verhindere Kopieren
+    IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren
 
     enum { size = 256 };
     ISR* map[size];

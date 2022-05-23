@@ -16,23 +16,23 @@
 
 #include "kernel/IOport.h"
 #include "lib/MyStdLib.h"
+#include <variant>
 
 class CGA {
-
 private:
     IOport index_port;  // Auswahl eines Register der Grafikkarte
     IOport data_port;   // Lese-/Schreib-Zugriff auf Register der Grafikk.
 
     // Copy Konstrutkor unterbinden
-    CGA(const CGA& copy);
+    CGA(const CGA& copy) = delete;
 
 public:
-    const char* CGA_START;  // Startadresse des Buldschirmspeichers
+    // NOTE: I change CGA_START to this const because I think the address should be constant and macro-like,
+    //       not the data at this address (we want that data to change).
+    static const unsigned int CGA_START = 0xb8000U;
 
     // Konstruktur mit Initialisierung der Ports
     CGA() : index_port(0x3d4), data_port(0x3d5) {
-        CGA_START = (const char*)0xb8000;
-
         // NOTE: I added this
         this->setpos(0, 0);
     }
@@ -67,7 +67,7 @@ public:
     // NOTE: I added this
     typedef struct {
         char cga_char;
-        char cga_attribute;
+        unsigned char cga_attribute;
     } cga_char_t;
     typedef struct {
         cga_char_t cga_line[COLUMNS];
@@ -80,7 +80,7 @@ public:
     void setpos(int x, int y);
 
     // Abfragen der Cursorpostion
-    void getpos(int& x, int& y);
+    void getpos(int& x, int& y) const;
 
     // Anzeige eines Zeichens mit Attribut an einer bestimmten Stelle
     void show(int x, int y, char character, unsigned char attrib = STD_ATTR);
@@ -96,7 +96,7 @@ public:
     virtual void clear();
 
     // Hilfsfunktion zur Erzeugung eines Attribut-Bytes
-    unsigned char attribute(CGA::color bg, CGA::color fg, bool blink);
+    static unsigned char attribute(CGA::color bg, CGA::color fg, bool blink);
 };
 
 #endif

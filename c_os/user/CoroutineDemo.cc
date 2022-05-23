@@ -17,7 +17,7 @@
  *---------------------------------------------------------------------------*
  * Beschreibung:    main-Methode der Anwendung.                              *
  *****************************************************************************/
-void CoroutineDemo::main() {
+void CoroutineDemo::main() const {
 
     /* 
      * Hier muss Code eingefuegt werden 

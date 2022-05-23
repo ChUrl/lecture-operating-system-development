@@ -11,15 +11,14 @@
 #define __coroutinedemo_include__
 
 class CoroutineDemo {
-
 private:
-    CoroutineDemo(const CoroutineDemo& copy);  // Verhindere Kopieren
+    CoroutineDemo(const CoroutineDemo& copy) = delete;  // Verhindere Kopieren
 
 public:
     CoroutineDemo() {}
 
     // Koroutine-Startmethode
-    void main();
+    void main() const;
 };
 
 #endif

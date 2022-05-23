@@ -18,5 +18,5 @@ IntDispatcher intdis;    // Unterbrechungsverteilung
 PIC pic;                 // Interrupt-Controller
 unsigned int total_mem;  // RAM total
 // BumpAllocator         allocator;
-// LinkedListAllocator   allocator;
+// LinkedListAllocator allocator;
 TreeAllocator allocator;
