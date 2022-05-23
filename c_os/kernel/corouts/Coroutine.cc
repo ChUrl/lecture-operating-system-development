@@ -49,7 +49,7 @@ void Coroutine_init(struct CoroutineState* regs, unsigned int* stack, void (*kic
     // wird, sie darf also nicht terminieren, sonst kracht's.
 
     *(--sp) = (unsigned int*)object;    // Parameter
-    *(--sp) = (unsigned int*)0x131155;  // Ruecksprungadresse
+    *(--sp) = (unsigned int*)0x131155;  // Ruecksprungadresse (Dummy)
 
     // Nun legen wir noch die Adresse der Funktion "kickoff" ganz oben auf
     // den Stack. Wenn dann bei der ersten Aktivierung dieser Koroutine der
@@ -67,7 +67,7 @@ void Coroutine_init(struct CoroutineState* regs, unsigned int* stack, void (*kic
     regs->esi = 0;
     regs->edi = 0;
     regs->ebp = 0;
-    regs->esp = sp;
+    regs->esp = sp;  // esp now points to the location of the address of kickoff
 }
 
 /*****************************************************************************
@@ -100,13 +100,15 @@ Coroutine::Coroutine(unsigned int* stack) {
 }
 
 /*****************************************************************************
- * Methode:         Coroutine::switchToNext                                    *
+ * Methode:         Coroutine::switchToNext                                  *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Auf die nächste Koroutine umschalten.                    *
  *****************************************************************************/
 void Coroutine::switchToNext() {
 
     /* hier muss Code eingefügt werden */
+
+    Coroutine_switch(&this->regs, &((Coroutine*)this->next)->regs);
 }
 
 /*****************************************************************************
@@ -117,6 +119,8 @@ void Coroutine::switchToNext() {
 void Coroutine::start() {
 
     /* hier muss Code eingefügt werden */
+
+    Coroutine_start(&this->regs);
 }
 
 /*****************************************************************************
@@ -127,4 +131,6 @@ void Coroutine::start() {
 void Coroutine::setNext(Chain* next) {
 
     /* hier muss Code eingefügt werden */
+
+    this->next = next;
 }

@@ -27,28 +27,27 @@
 #include "lib/Chain.h"
 
 class Coroutine : public Chain {
-    
+
 private:
-    Coroutine(const Coroutine &copy); // Verhindere Kopieren
+    Coroutine(const Coroutine& copy);  // Verhindere Kopieren
 
 private:
     struct CoroutineState regs;
 
 public:
-    Coroutine (unsigned int* stack);
-    
-    // Coroutine aktivieren
-    void start ();
-    
-    // Auf die naechste Coroutine umschalten
-    void switchToNext ();
-    
-    // Methode der Coroutine, muss in Sub-Klasse implementiert werden
-    virtual void run () = 0;
-    
-    // Verweis auf nächste Coroutine setzen
-    void setNext (Chain* next);
+    Coroutine(unsigned int* stack);
 
- };
+    // Coroutine aktivieren
+    void start();
+
+    // Auf die naechste Coroutine umschalten
+    void switchToNext();
+
+    // Methode der Coroutine, muss in Sub-Klasse implementiert werden
+    virtual void run() = 0;
+
+    // Verweis auf nächste Coroutine setzen
+    void setNext(Chain* next);
+};
 
 #endif
