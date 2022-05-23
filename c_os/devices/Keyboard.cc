@@ -355,10 +355,10 @@ void Keyboard::trigger() {
 void scroll_mode(Key key) {
     switch ((char)key) {
     case 'k':
-        // kout.scroll_page_backward();
+        kout.scroll_page_backward();
         break;
     case 'j':
-        // kout.scroll_page_forward();
+        kout.scroll_page_forward();
         break;
     }
 }
