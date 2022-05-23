@@ -1,0 +1,2 @@
+Checks: "boost-*, bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, misc-*, moderinze-*, performance-*, portability-*, readability-*"
+FormatStyle: file
