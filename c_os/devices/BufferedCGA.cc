@@ -3,7 +3,7 @@
 // Can't initialize in constructor as memory management already needs working CGA for output
 // NOTE: This has to be called when memorymanagement is active
 void BufferedCGA::init(unsigned int pages) {
-    this->scrollback_buffer = new ScrollbackBuffer(ROWS, pages);
+    this->scrollback_buffer = new ScrollbackBuffer(ROWS, pages);  // No delete since it's only off when shutting the os down
     this->screen_buffer = new CGA::cga_page_t;
 
     if (this->scrollback_buffer == NULL || this->screen_buffer == NULL) {

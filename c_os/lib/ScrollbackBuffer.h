@@ -20,9 +20,10 @@ public:
 
     ScrollbackBuffer(unsigned char rows, unsigned char pages)
       : pos(0), pages(pages), rows(rows * pages) {
-        this->buffer = new CGA::cga_page_t[pages];  // Allocate with new because it's quite large
+        this->buffer = new CGA::cga_page_t[pages];  // Allocate with new because it's quite large (and I want to use the allocator)
         this->clear();                              // Null out the buffer so no crap gets displayed
     }
+
     ~ScrollbackBuffer() {
         delete[] this->buffer;
     }
