@@ -1,4 +1,5 @@
 #include "BufferedCGA.h"
+#include "kernel/Globals.h"
 
 // Can't initialize in constructor as memory management already needs working CGA for output
 // NOTE: This has to be called when memorymanagement is active
@@ -7,12 +8,12 @@ void BufferedCGA::init(unsigned int pages) {
     this->screen_buffer = new CGA::cga_page_t;
 
     if (this->scrollback_buffer == NULL || this->screen_buffer == NULL) {
-        this->print("Error initializing scrollback buffer\n", 39);
+        if (DEBUG) kout << "Error initializing scrollback buffer" << endl;
         return;
     }
 
     this->initialized = true;
-    this->print("Initialized scrollback buffer\n", 32);
+    if (DEBUG) kout << "Initialized scrollback buffer" << endl;
 }
 
 void BufferedCGA::display_scrollback() {
@@ -25,7 +26,7 @@ void BufferedCGA::display_scrollback() {
             this->scrollback_buffer->get((cga_line_t*)CGA_START, this->scrollback - 1);
         }
     } else {
-        this->print("ScrollbackBuffer not initialized\n", 34);
+        if (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
     }
 }
 
@@ -44,7 +45,7 @@ void BufferedCGA::scrollup() {
     if (this->initialized) {
         this->scrollback_buffer->put((cga_line_t*)CGA_START);
     } else {
-        this->print("ScrollbackBuffer not initialized\n", 34);
+        if (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
     }
 
     CGA::scrollup();
@@ -58,7 +59,7 @@ void BufferedCGA::clear() {
         this->scrollback_buffer->clear();
         mmem::zero<CGA::cga_page_t>(this->screen_buffer);
     } else {
-        this->print("ScrollbackBuffer not initialized\n", 34);
+        if (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
     }
 }
 
@@ -77,7 +78,7 @@ void BufferedCGA::scroll_page_backward() {
         }
         this->display_scrollback();
     } else {
-        this->print("ScrollbackBuffer not initialized\n", 34);
+        if (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
     }
 }
 
@@ -89,6 +90,6 @@ void BufferedCGA::scroll_page_forward() {
         }
         this->display_scrollback();
     } else {
-        this->print("ScrollbackBuffer not initialized\n", 34);
+        if (DEBUG) kout << "ScrollbackBuffer not initialized" << endl;
     }
 }

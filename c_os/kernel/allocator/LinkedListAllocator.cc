@@ -37,11 +37,7 @@ void LinkedListAllocator::init() {
     this->free_start->size = this->heap_size - sizeof(free_block_t);
     this->free_start->next = this->free_start;  // Only one block, points to itself
 
-    kout << "Initialized LinkedList Allocator" << endl
-         << " - Heap Start: " << hex << (unsigned int)this->heap_start
-         << ", Heap End: " << hex << (unsigned int)this->heap_end
-         << ", Heap Size: " << hex << this->heap_size << endl;
-    kout << endl;
+    if (DEBUG) kout << "Initialized LinkedList Allocator" << endl;
 }
 
 /*****************************************************************************
@@ -79,10 +75,10 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
     /* Hier muess Code eingefuegt werden */
     // NOTE: next pointer zeigt auf headeranfang, returned wird zeiger auf anfang des nutzbaren freispeichers
 
-    kout << "Requested " << hex << req_size << " Bytes" << endl;
+    if (DEBUG) kout << "Requested " << hex << req_size << " Bytes" << endl;
 
     if (this->free_start == NULL) {
-        kout << " - No free memory remaining :(" << endl;
+        if (DEBUG) kout << " - No free memory remaining :(" << endl;
         return NULL;
     }
 
@@ -90,7 +86,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
     unsigned int req_size_diff = (BASIC_ALIGN - req_size % BASIC_ALIGN) % BASIC_ALIGN;
     unsigned int rreq_size = req_size + req_size_diff;
     if (req_size_diff > 0) {
-        kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
+        if (DEBUG) kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
     }
 
     free_block_t* current = this->free_start;
@@ -121,7 +117,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 // Next-fit
                 this->free_start = new_next;
 
-                kout << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
+                if (DEBUG) kout << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
             } else {
                 // Block too small to be cut, allocate whole block
 
@@ -129,11 +125,11 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 this->free_start = current->next;  // Pointer keeps pointing to current if last block
                 if (this->free_start == current) {
                     // No free block remaining
-                    kout << " - Disabled freelist" << endl;
+                    if (DEBUG) kout << " - Disabled freelist" << endl;
                     this->free_start = NULL;
                 }
 
-                kout << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
+                if (DEBUG) kout << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
             }
 
             // Block aushängen
@@ -150,7 +146,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
         current = current->next;
     } while (current != this->free_start);  // Stop when arriving at the first block again
 
-    kout << " - More memory requested than available :(" << endl;
+    if (DEBUG) kout << " - More memory requested than available :(" << endl;
     return NULL;
 }
 
@@ -163,7 +159,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     /* Hier muess Code eingefuegt werden */
 
-    kout << "Freeing " << hex << (unsigned int)ptr << endl;
+    if (DEBUG) kout << "Freeing " << hex << (unsigned int)ptr << endl;
 
     free_block_t* block_start = (free_block_t*)((unsigned int)ptr - sizeof(free_block_t));
 
@@ -174,7 +170,7 @@ void LinkedListAllocator::free(void* ptr) {
         block_start->allocated = false;
         block_start->next = block_start;
 
-        kout << " - Enabling freelist with one block" << endl;
+        if (DEBUG) kout << " - Enabling freelist with one block" << endl;
 
         return;
     }
@@ -205,7 +201,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     // Try to merge forward ========================================================================
     if (next_block == next_free) {
-        kout << " - Merging block forward" << endl;
+        if (DEBUG) kout << " - Merging block forward" << endl;
 
         // Current and next adjacent block can be merged
         // [previous_free | previous_free_next | <> | block_start | next_free]
@@ -224,7 +220,7 @@ void LinkedListAllocator::free(void* ptr) {
 
         if (this->free_start == next_free) {
             // next_free is now invalid after merge
-            kout << " - Moving freelist start to " << hex << (unsigned int)block_start << endl;
+            if (DEBUG) kout << " - Moving freelist start to " << hex << (unsigned int)block_start << endl;
             this->free_start = block_start;
         }
     } else {
@@ -240,7 +236,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     // Try to merge backward   =====================================================================
     if (previous_free_next == block_start) {
-        kout << " - Merging block backward" << endl;
+        if (DEBUG) kout << " - Merging block backward" << endl;
 
         // Current and previous adjacent block can be merged
         // [previous_free | block_start]
@@ -253,7 +249,7 @@ void LinkedListAllocator::free(void* ptr) {
 
         if (this->free_start == block_start) {
             // block_start is now invalid after merge
-            kout << " - Moving freelist start to " << hex << (unsigned int)previous_free << endl;
+            if (DEBUG) kout << " - Moving freelist start to " << hex << (unsigned int)previous_free << endl;
             this->free_start = previous_free;
         }
     }

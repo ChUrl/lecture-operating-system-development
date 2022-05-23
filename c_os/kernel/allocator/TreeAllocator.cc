@@ -14,7 +14,7 @@ void TreeAllocator::init() {
     this->free_start->next = (list_block_t*)this->free_start;
     this->free_start->previous = (list_block_t*)this->free_start;
 
-    kout << "Initialized Tree Allocator" << endl;
+    if (DEBUG) kout << "Initialized Tree Allocator" << endl;
 }
 
 void TreeAllocator::dump_free_memory() {
@@ -33,7 +33,7 @@ void TreeAllocator::dump_free_memory(tree_block_t* node) {
 }
 
 void* TreeAllocator::alloc(unsigned int req_size) {
-    kout << "Requested " << dec << req_size << " Bytes" << endl;
+    if (DEBUG) kout << "Requested " << dec << req_size << " Bytes" << endl;
 
     // Round to word borders + tree_block size
     unsigned int rreq_size = req_size;
@@ -52,12 +52,12 @@ void* TreeAllocator::alloc(unsigned int req_size) {
     // Finds smallest block that is large enough
     tree_block_t* best_fit = this->rbt_search_bestfit(rreq_size);
     if (best_fit == NULL) {
-        kout << " - No block found" << endl;
+        if (DEBUG) kout << " - No block found" << endl;
         return NULL;
     }
     if (best_fit->allocated) {
         // Something went really wrong
-        kout << " - Block already allocated :(" << endl;
+        if (DEBUG) kout << " - Block already allocated :(" << endl;
         return NULL;
     }
     best_fit->allocated = true;
@@ -88,7 +88,7 @@ void* TreeAllocator::alloc(unsigned int req_size) {
 }
 
 void TreeAllocator::free(void* ptr) {
-    kout << "Freeing " << hex << (unsigned int)ptr << endl;
+    if (DEBUG) kout << "Freeing " << hex << (unsigned int)ptr << endl;
 
     list_block_t* block = (list_block_t*)((char*)ptr - sizeof(list_block_t));
     if (!block->allocated) {

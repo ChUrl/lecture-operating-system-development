@@ -25,16 +25,17 @@ int main() {
     kout.init(5);
 
     // Startmeldung
-    // kout << "HHUos 0.5" << endl
-    //      << "=========" << endl
-    //      << "Unterstuetzte Funktionen:" << endl
-    //      << "   - Bildschirmausgaben" << endl
-    //      << "   - Sound ueber den PC-Lautsprecher" << endl
-    //      << "   - Tastatureingaben per Abfrage" << endl
-    //      << "   - Einfache Heap verwaltung" << endl
-    //      << "   - Tastatureingaben per Interrupt" << endl
-    //      << "   - Koroutinen" << endl
-    //      << endl;
+    if (!DEBUG)
+        kout << "HHUos 0.5" << endl
+             << "=========" << endl
+             << "Unterstuetzte Funktionen:" << endl
+             << "   - Bildschirmausgaben" << endl
+             << "   - Sound ueber den PC-Lautsprecher" << endl
+             << "   - Tastatureingaben per Abfrage" << endl
+             << "   - Einfache Heap verwaltung" << endl
+             << "   - Tastatureingaben per Interrupt" << endl
+             << "   - Koroutinen" << endl
+             << endl;
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */

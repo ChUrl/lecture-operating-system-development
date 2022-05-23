@@ -25,9 +25,7 @@ void BumpAllocator::init() {
     this->allocations = 0;
     this->next = (unsigned char*)heap_start;
 
-    kout << "Initialized Bump Allocator" << endl
-         << " - Heap Start: " << hex << (unsigned int)this->heap_start
-         << ", Heap End: " << hex << (unsigned int)this->heap_end << endl;
+    if (DEBUG) kout << "Initialized Bump Allocator" << endl;
 }
 
 /*****************************************************************************
@@ -53,10 +51,10 @@ void* BumpAllocator::alloc(unsigned int req_size) {
 
     /* Hier muess Code eingefuegt werden */
 
-    kout << "Requested " << hex << req_size << " Bytes" << endl;
+    if (DEBUG) kout << "Requested " << hex << req_size << " Bytes" << endl;
 
     if (req_size + (unsigned int)this->next > this->heap_end) {
-        kout << " - More memory requested than available :(" << endl;
+        if (DEBUG) kout << " - More memory requested than available :(" << endl;
         return NULL;
     }
 
@@ -64,7 +62,7 @@ void* BumpAllocator::alloc(unsigned int req_size) {
     this->next = (unsigned char*)((unsigned int)this->next + req_size);
     this->allocations = this->allocations + 1;
 
-    kout << " - Allocated " << hex << req_size << " Bytes." << endl;
+    if (DEBUG) kout << " - Allocated " << hex << req_size << " Bytes." << endl;
 
     return allocated;
 }
@@ -75,5 +73,5 @@ void* BumpAllocator::alloc(unsigned int req_size) {
  * Beschreibung:    Nicht implementiert.                                     *
  *****************************************************************************/
 void BumpAllocator::free(void* ptr) {
-    kout << "   mm_free: ptr= " << hex << (unsigned int)ptr << ", not supported" << endl;
+    if (DEBUG) kout << "   mm_free: ptr= " << hex << (unsigned int)ptr << ", not supported" << endl;
 }
