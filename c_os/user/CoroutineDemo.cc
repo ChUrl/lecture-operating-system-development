@@ -8,21 +8,16 @@
  * Autor:           Michael Schoettner, HHU, 15.8.2016                       *
  *****************************************************************************/
 
-#include "kernel/Globals.h"
 #include "user/CoroutineDemo.h"
+#include "kernel/Globals.h"
 #include "user/CoroutineLoop.h"
-
-
-// Stacks (koennen alternative auch per 'new' alloziert werden)
-static unsigned int stack[3][1024];
-
 
 /*****************************************************************************
  * Methode:         CoroutineDemo::main                                      *
  *---------------------------------------------------------------------------*
  * Beschreibung:    main-Methode der Anwendung.                              *
  *****************************************************************************/
-void CoroutineDemo::main () {
+void CoroutineDemo::main() {
 
     /* 
      * Hier muss Code eingefuegt werden 
@@ -30,5 +25,15 @@ void CoroutineDemo::main () {
      * Die 3 Koroutinen einrichten, verketten und die 1. starten
      *
      */
+    unsigned int(*stack)[1024] = new unsigned int[3][1024];
 
+    CoroutineLoop corout1(stack[0] + 1024, 0);
+    CoroutineLoop corout2(stack[1] + 1024, 1);
+    CoroutineLoop corout3(stack[2] + 1024, 2);
+
+    corout1.setNext(&corout2);
+    corout2.setNext(&corout3);
+    corout3.setNext(&corout1);
+
+    corout1.start();
 }

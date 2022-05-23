@@ -6,7 +6,7 @@
  * Beschreibung:    Loop ist eine Koroutine, die nichts weiter tut als einen *
  *                  Zaehler hochzuzaehlen und diesen auf dem Bildschirm      *
  *                  anzuzeigen und dann auf die naechste Korotuine umzu-     *
- *                  schalten.				 	 	 	           			 *
+ *                  schalten.                                                *
  *                                                                           *
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *****************************************************************************/
@@ -14,14 +14,20 @@
 #include "user/CoroutineLoop.h"
 #include "kernel/Globals.h"
 
-
 /*****************************************************************************
  * Methode:         CoroutineLoop::run                                       *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Einstiegsfunktion der Koroutine.                         *
  *****************************************************************************/
-void CoroutineLoop::run () {
+void CoroutineLoop::run() {
 
-   /* Hier muss Code eingefuegt werden */
-   
+    /* Hier muss Code eingefuegt werden */
+
+    int i = 0;
+    while (true) {
+        kout.setpos(0, 20 + this->id);
+        kout << "Corout[" << this->id << "]: " << i++ << endl;
+
+        this->switchToNext();
+    }
 }
