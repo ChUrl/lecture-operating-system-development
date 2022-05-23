@@ -6,8 +6,8 @@ build/
 texfrag/
 README
 compile_commands.json
-c_boot/bootsect
-c_boot/setup
-c_tools/build
+boot/bootsect
+boot/setup
+tools/build
 /c_os/.cache/
 /c_os/dep/
