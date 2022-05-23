@@ -34,6 +34,8 @@ public:
 
 // NOTE: I added this (changed this) to use BufferedCGA
 class CGA_Stream : public OutStream, public BufferedCGA {
+    // class CGA_Stream : public OutStream, public CGA {
+
 private:
     CGA_Stream(CGA_Stream& copy);  // Verhindere Kopieren
 
@@ -43,6 +45,7 @@ public:
     bool blink;
 
     CGA_Stream() : OutStream(), BufferedCGA() {
+        // CGA_Stream() : OutStream(), CGA() {
         color_fg = CGA::LIGHT_GREY;
         color_bg = CGA::BLACK;
         blink = false;
