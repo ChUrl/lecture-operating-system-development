@@ -25,7 +25,7 @@ int main() {
     kout.init(5);
 
     // Startmeldung
-    if (!DEBUG)
+    if constexpr (!DEBUG)
         kout << "HHUos 0.5" << endl
              << "=========" << endl
              << "Unterstuetzte Funktionen:" << endl
