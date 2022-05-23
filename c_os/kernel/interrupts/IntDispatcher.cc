@@ -63,12 +63,12 @@ int IntDispatcher::assign(unsigned int vector, ISR& isr) {
     /* hier muss Code eingefuegt werden */
 
     if (vector >= this->size) {
-        if (DEBUG) kout << "Invalid vector number when assigning" << endl;
+        if constexpr (DEBUG) kout << "Invalid vector number when assigning" << endl;
         return -1;
     }
 
     this->map[vector] = &isr;
-    if (DEBUG) kout << "Registered ISR for vector " << dec << vector << endl;
+    if constexpr (DEBUG) kout << "Registered ISR for vector " << dec << vector << endl;
 
     return 0;
 }
@@ -94,7 +94,7 @@ int IntDispatcher::report(unsigned int vector) {
     ISR* isr = this->map[vector];
 
     if (isr == 0) {
-        if (DEBUG) kout << "No ISR registered for vector " << vector << endl;
+        if constexpr (DEBUG) kout << "No ISR registered for vector " << vector << endl;
         return -1;
     }
 

@@ -14,7 +14,7 @@ void TreeAllocator::init() {
     this->free_start->next = (list_block_t*)this->free_start;
     this->free_start->previous = (list_block_t*)this->free_start;
 
-    if (DEBUG) kout << "Initialized Tree Allocator" << endl;
+    if constexpr (DEBUG) kout << "Initialized Tree Allocator" << endl;
 }
 
 void TreeAllocator::dump_free_memory() {
@@ -33,7 +33,7 @@ void TreeAllocator::dump_free_memory(tree_block_t* node) {
 }
 
 void* TreeAllocator::alloc(unsigned int req_size) {
-    if (DEBUG) kout << "Requested " << dec << req_size << " Bytes" << endl;
+    if constexpr (DEBUG) kout << "Requested " << dec << req_size << " Bytes" << endl;
 
     // Round to word borders + tree_block size
     unsigned int rreq_size = req_size;
@@ -41,35 +41,35 @@ void* TreeAllocator::alloc(unsigned int req_size) {
         // the list_block_t is part of every block, but when freeing
         // memory we need enough space to store the rbt metadata
         rreq_size = sizeof(tree_block_t) - sizeof(list_block_t);
-        if (DEBUG) kout << " - Increased block size for rbt metadata" << endl;
+        if constexpr (DEBUG) kout << " - Increased block size for rbt metadata" << endl;
     }
     unsigned int req_size_diff = (BASIC_ALIGN - rreq_size % BASIC_ALIGN) % BASIC_ALIGN;
     rreq_size = rreq_size + req_size_diff;
     if (req_size_diff > 0) {
-        if (DEBUG) kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
+        if constexpr (DEBUG) kout << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
     }
 
     // Finds smallest block that is large enough
     tree_block_t* best_fit = this->rbt_search_bestfit(rreq_size);
     if (best_fit == NULL) {
-        if (DEBUG) kout << " - No block found" << endl;
+        if constexpr (DEBUG) kout << " - No block found" << endl;
         return NULL;
     }
     if (best_fit->allocated) {
         // Something went really wrong
-        if (DEBUG) kout << " - Block already allocated :(" << endl;
+        if constexpr (DEBUG) kout << " - Block already allocated :(" << endl;
         return NULL;
     }
     best_fit->allocated = true;
     unsigned int size = this->get_size(best_fit);
-    if (DEBUG) kout << " - Found best-fit: " << hex << (unsigned int)best_fit << endl;
+    if constexpr (DEBUG) kout << " - Found best-fit: " << hex << (unsigned int)best_fit << endl;
 
     // Remove the block first so we can insert correctly when cutting
     // kout << " - Removing block from freelist" << endl;
     this->rbt_remove(best_fit);
     if (size > HEAP_MIN_FREE_BLOCK_SIZE + rreq_size + sizeof(list_block_t)) {
         // Block can be cut
-        if (DEBUG) kout << " - Allocating " << dec << rreq_size << " Bytes with cutting" << endl;
+        if constexpr (DEBUG) kout << " - Allocating " << dec << rreq_size << " Bytes with cutting" << endl;
 
         // [best_fit_start | sizeof(list_block_t) | rreq_size | new_block_start]
         tree_block_t* new_block = (tree_block_t*)((char*)best_fit + sizeof(list_block_t) + rreq_size);
@@ -80,15 +80,15 @@ void* TreeAllocator::alloc(unsigned int req_size) {
         // Don't cut block
         // The block is already correctly positioned in the linked list so we only
         // need to remove it from the freelist, which is done for both cases
-        if (DEBUG) kout << " - Allocating " << dec << rreq_size << " Bytes without cutting" << endl;
+        if constexpr (DEBUG) kout << " - Allocating " << dec << rreq_size << " Bytes without cutting" << endl;
     }
 
-    if (DEBUG) kout << " - Returned address " << hex << (unsigned int)((char*)best_fit + sizeof(list_block_t)) << endl;
+    if constexpr (DEBUG) kout << " - Returned address " << hex << (unsigned int)((char*)best_fit + sizeof(list_block_t)) << endl;
     return (void*)((char*)best_fit + sizeof(list_block_t));
 }
 
 void TreeAllocator::free(void* ptr) {
-    if (DEBUG) kout << "Freeing " << hex << (unsigned int)ptr << endl;
+    if constexpr (DEBUG) kout << "Freeing " << hex << (unsigned int)ptr << endl;
 
     list_block_t* block = (list_block_t*)((char*)ptr - sizeof(list_block_t));
     if (!block->allocated) {
@@ -107,7 +107,7 @@ void TreeAllocator::free(void* ptr) {
 
     if (!next->allocated) {
         // Merge forward
-        if (DEBUG) kout << " - Merging forward" << endl;
+        if constexpr (DEBUG) kout << " - Merging forward" << endl;
 
         // Remove the next block from all lists as it is now part of our freed block
         this->dll_remove(next);
@@ -120,7 +120,7 @@ void TreeAllocator::free(void* ptr) {
 
     if (!previous->allocated) {
         // Merge backward
-        if (DEBUG) kout << " - Merging backward" << endl;
+        if constexpr (DEBUG) kout << " - Merging backward" << endl;
 
         // Remove the current block from all lists as it is now part of the previous block
         // It doesn't have to be removed from rbt as it wasn't in there as it was allocated before
