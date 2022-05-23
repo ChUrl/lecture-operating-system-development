@@ -10,34 +10,35 @@
  * Autor:           Michael Schoettner, HHU, 11.11.2016                      *
  *****************************************************************************/
 
-#include "kernel/Allocator.h"
 #include "kernel/Globals.h"
-#include "user/HeapDemo.h"
-#include "user/KeyIRQDemo.h"
+#include "user/CoroutineDemo.h"
+
+CoroutineDemo coroutineDemo;
 
 int main() {
     kout.clear();
 
     // Speicherverwaltung initialisieren
-    // allocator.init();  // NOTE: Disabled for coroutines
+    allocator.init();
 
     // Initialize scrollback buffer after allocator.init()
-    // kout.init(5);  // NOTE: Disabled for coroutines
+    kout.init(5);
 
     // Startmeldung
-    kout << "HHUos 0.5" << endl
-         << "=========" << endl
-         << "Unterstuetzte Funktionen:" << endl
-         << "   - Bildschirmausgaben" << endl
-         << "   - Sound ueber den PC-Lautsprecher" << endl
-         << "   - Tastatureingaben per Interrupt" << endl
-         // << "   - Einfache Heap verwaltung" << endl
-         << "   - Koroutinen" << endl
-         << endl;
+    // kout << "HHUos 0.5" << endl
+    //      << "=========" << endl
+    //      << "Unterstuetzte Funktionen:" << endl
+    //      << "   - Bildschirmausgaben" << endl
+    //      << "   - Sound ueber den PC-Lautsprecher" << endl
+    //      << "   - Tastatureingaben per Abfrage" << endl
+    //      << "   - Einfache Heap verwaltung" << endl
+    //      << "   - Tastatureingaben per Interrupt" << endl
+    //      << "   - Koroutinen" << endl
+    //      << endl;
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
-    kb.plugin(intdis, pic);
+    kb.plugin();
 
     // Interrupts erlauben (Tastatur)
     /* hier muss Code eingefuegt werden */
@@ -48,7 +49,7 @@ int main() {
     // keyboard_demo();
     // heap_demo();
     // key_irq_demo();
+    coroutineDemo.main();
 
-    while (1) {};
     return 0;
 }
