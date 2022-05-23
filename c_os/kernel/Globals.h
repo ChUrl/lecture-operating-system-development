@@ -32,4 +32,6 @@ extern unsigned int total_mem;  // RAM total
 // extern LinkedListAllocator   allocator;
 extern TreeAllocator allocator;
 
+constexpr bool DEBUG = true;
+
 #endif
