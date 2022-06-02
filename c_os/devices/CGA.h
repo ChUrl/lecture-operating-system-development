@@ -16,7 +16,6 @@
 
 #include "kernel/IOport.h"
 #include "lib/MyStdLib.h"
-#include <variant>
 
 class CGA {
 private:
