@@ -20,3 +20,4 @@ unsigned int total_mem;  // RAM total
 // BumpAllocator         allocator;
 // LinkedListAllocator allocator;
 TreeAllocator allocator;
+Scheduler scheduler;

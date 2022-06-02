@@ -19,6 +19,7 @@
 #include "kernel/CPU.h"
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
+#include "kernel/threads/Scheduler.h"
 
 extern CPU cpu;                 // CPU-spezifische Funktionen
 extern PCSPK pcspk;             // PC-Lautsprecher
@@ -30,6 +31,7 @@ extern unsigned int total_mem;  // RAM total
 // extern BumpAllocator         allocator;
 // extern LinkedListAllocator allocator;
 extern TreeAllocator allocator;
+extern Scheduler scheduler;
 
 constexpr bool DEBUG = true;
 
