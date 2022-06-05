@@ -19,17 +19,16 @@
 #include "kernel/threads/Thread.h"
 
 class Dispatcher {
-    
 private:
-    Thread* active;     // aktiver Thread
+    Thread* active;  // aktiver Thread
 
-    Dispatcher(const Dispatcher &copy); // Verhindere Kopieren
+    Dispatcher(const Dispatcher& copy) = delete;  // Verhindere Kopieren
 
 public:
-    Dispatcher () : active (0) {}
-    void start (Thread& first);
-    void dispatch (Thread& next);
-    Thread* get_active () { return active; }
+    Dispatcher() : active(0) {}
+    void start(Thread& first);
+    void dispatch(Thread& next);
+    Thread* get_active() { return active; }
 };
 
 #endif

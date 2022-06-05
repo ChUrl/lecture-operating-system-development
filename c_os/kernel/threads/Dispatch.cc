@@ -16,7 +16,6 @@
 
 #include "kernel/threads/Dispatch.h"
 
-
 /*****************************************************************************
  * Methode:         Dispatcher::start                                        *
  *---------------------------------------------------------------------------*
@@ -25,13 +24,12 @@
  * Parameter:                                                                *
  *      first       Zu startender Thread.                                    *
  *****************************************************************************/
-void Dispatcher::start (Thread& first) {
+void Dispatcher::start(Thread& first) {
     if (!active) {
         active = &first;
-        active->start ();
+        active->start();
     }
 }
-
 
 /*****************************************************************************
  * Methode:         Dispatcher::dispatch                                     *
@@ -41,8 +39,8 @@ void Dispatcher::start (Thread& first) {
  * Parameter:                                                                *
  *      next        Thread der die CPU erhalten soll.                        *
  *****************************************************************************/
-void Dispatcher::dispatch (Thread& next) {
+void Dispatcher::dispatch(Thread& next) {
     Thread* current = active;
     active = &next;
-    current->switchTo (next);
+    current->switchTo(next);
 }
