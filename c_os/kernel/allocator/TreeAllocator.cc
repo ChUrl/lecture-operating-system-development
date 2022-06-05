@@ -3,7 +3,6 @@
 #include <stddef.h>
 
 // NOTE: I added this file
-// TODO: Make output toggleable
 
 void TreeAllocator::init() {
     this->free_start = (tree_block_t*)this->heap_start;

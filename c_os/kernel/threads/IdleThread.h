@@ -24,7 +24,7 @@ public:
     void run() override {
         while (true) {
             scheduler.yield();
-            kout << "Idle!" << endl;
+            // kout << "Idle!" << endl;
         }
     }
 };

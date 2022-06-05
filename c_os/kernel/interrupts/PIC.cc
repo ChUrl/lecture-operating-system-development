@@ -91,9 +91,6 @@ bool PIC::status(int irq) {
 
     /* hier muss Code eingefuegt werden */
 
-    // TODO: How is IRQ2 handled (Slave PIC)?
-    //       Does masking IRQ2 disable the whole slave?
-
     unsigned char IMR;
     if (irq < 8) {
         // PIC 1
