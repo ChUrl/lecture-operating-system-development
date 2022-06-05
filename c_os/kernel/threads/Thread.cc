@@ -20,15 +20,17 @@
  * Autor:           Michael, Schoettner, HHU, 13.08.2020                     *
  *****************************************************************************/
 
-#include "kernel/corouts/Coroutine.h"
+#include "kernel/threads/Thread.h"
 
 // Funktionen, die auf der Assembler-Ebene implementiert werden, muessen als
 // extern "C" deklariert werden, da sie nicht dem Name-Mangeling von C++
 // entsprechen.
 extern "C" {
-    void Coroutine_start(struct CoroutineState* regs);
-    void Coroutine_switch(struct CoroutineState* regs_now, struct CoroutineState* reg_then);
+    void Thread_start(struct ThreadState* regs);
+    void Thread_switch(struct ThreadState* regs_now, struct ThreadState* reg_then);
 }
+
+unsigned int ThreadCnt = 0;
 
 /*****************************************************************************
  * Prozedur:        Coroutine_init                                           *
@@ -36,7 +38,7 @@ extern "C" {
  * Beschreibung:    Bereitet den Kontext der Koroutine fuer den ersten       *
  *                  Aufruf vor.                                              *
  *****************************************************************************/
-void Coroutine_init(struct CoroutineState* regs, unsigned int* stack, void (*kickoff)(Coroutine*), void* object) {
+void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(Thread*), void* object) {
 
     register unsigned int** sp = (unsigned int**)stack;
 
@@ -80,7 +82,7 @@ void Coroutine_init(struct CoroutineState* regs, unsigned int* stack, void (*kic
  *                  wuerde ein sinnloser Wert als Ruecksprungadresse         * 
  *                  interpretiert werden und der Rechner abstuerzen.         *
  *****************************************************************************/
-void kickoff(Coroutine* object) {
+void kickoff(Thread* object) {
     object->run();
 
     // object->run() kehrt hoffentlich nie hierher zurueck
@@ -95,8 +97,8 @@ void kickoff(Coroutine* object) {
  * Parameter:                                                                *
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
-Coroutine::Coroutine(unsigned int* stack) {
-    Coroutine_init(&regs, stack, kickoff, this);
+Thread::Thread() : stack(new unsigned int[1024]), tid(ThreadCnt++) {
+    Thread_init(&regs, stack + 1024, kickoff, this);  // Stack grows from top to bottom
 }
 
 /*****************************************************************************
@@ -104,11 +106,11 @@ Coroutine::Coroutine(unsigned int* stack) {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Auf die nächste Koroutine umschalten.                    *
  *****************************************************************************/
-void Coroutine::switchToNext() {
+void Thread::switchTo(Thread& next) {
 
     /* hier muss Code eingefügt werden */
 
-    Coroutine_switch(&this->regs, &((Coroutine*)this->next)->regs);
+    Thread_switch(&this->regs, &next.regs);
 }
 
 /*****************************************************************************
@@ -116,21 +118,9 @@ void Coroutine::switchToNext() {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Aktivierung der Koroutine.                               *
 *****************************************************************************/
-void Coroutine::start() {
+void Thread::start() {
 
     /* hier muss Code eingefügt werden */
 
-    Coroutine_start(&this->regs);
-}
-
-/*****************************************************************************
- * Methode:         Coroutine::start                                         *
- *---------------------------------------------------------------------------*
- * Beschreibung:    Verweis auf nächste Koroutine setzen.                    *
- *****************************************************************************/
-void Coroutine::setNext(Chain* next) {
-
-    /* hier muss Code eingefügt werden */
-
-    this->next = next;
+    Thread_start(&this->regs);
 }

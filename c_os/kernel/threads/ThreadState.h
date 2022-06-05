@@ -28,13 +28,12 @@
 #ifndef __CoroutineState_include__
 #define __CoroutineState_include__
 
-struct CoroutineState {
-    void *ebx;
-    void *esi;
-    void *edi;
-    void *ebp;
-    void *esp;
+struct ThreadState {
+    void* ebx;
+    void* esi;
+    void* edi;
+    void* ebp;
+    void* esp;
 };
 
 #endif
-

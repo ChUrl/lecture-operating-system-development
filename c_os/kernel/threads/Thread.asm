@@ -12,12 +12,12 @@
 ;* Autor:           Olaf Spinczyk, TU Dortmund                               *
 ;*****************************************************************************
 
-%include "kernel/corouts/Coroutine.inc"
+%include "kernel/threads/Thread.inc"
 
 ; EXPORTIERTE FUNKTIONEN
 
-[GLOBAL Coroutine_switch]
-[GLOBAL Coroutine_start]
+[GLOBAL Thread_switch]
+[GLOBAL Thread_start]
 
 ; IMPLEMENTIERUNG DER FUNKTIONEN
 
@@ -34,7 +34,7 @@
 ;;      *REGS
 ;; ESP: RET ADDR
 ;; == Low address ==
-Coroutine_start:
+Thread_start:
 ; *
 ; * Hier muss Code eingefuegt werden
 ; *
@@ -82,7 +82,7 @@ Coroutine_start:
 ;;        *REGS_NOW
 ;; SP --> RET ADDR
 ;; == Low address ==
-Coroutine_switch:
+Thread_switch:
 ; *
 ; * Hier muss Code eingefuegt werden
 ; *

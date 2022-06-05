@@ -25,30 +25,27 @@
 #include "lib/Chain.h"
 
 class Thread : public Chain {
-    
 private:
-    Thread(const Thread &copy); // Verhindere Kopieren
+    Thread(const Thread& copy) = delete;  // Verhindere Kopieren
 
-private:
     struct ThreadState regs;
-    unsigned int *stack;
-   
-public:
-    unsigned int tid;       // Thread-ID (wird im Konstruktor vergeben)
+    unsigned int* stack;
 
-    Thread () { }
-    
+public:
+    unsigned int tid;  // Thread-ID (wird im Konstruktor vergeben)
+
+    Thread();
+
     // Thread aktivieren
-    void start ();
+    void start();
 
     // Umschalten auf Thread 'next'
-    void switchTo (Thread& next);
+    void switchTo(Thread& next);
 
     // Methode des Threads, muss in Sub-Klasse implementiert werden
-    virtual void run () = 0;
+    virtual void run() = 0;
 
-    ~Thread ();
-
- };
+    ~Thread();
+};
 
 #endif
