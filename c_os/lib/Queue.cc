@@ -55,3 +55,7 @@ void Queue::print() const {
     // std::cout << std::endl;
 }
 */
+
+bool Queue::isEmpty() const {
+    return *this->tail == this->head;
+}
