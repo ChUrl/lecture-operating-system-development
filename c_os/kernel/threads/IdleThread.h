@@ -11,25 +11,22 @@
 #ifndef __IdleThread_include__
 #define __IdleThread_include__
 
-
-#include "kernel/threads/Thread.h"
 #include "kernel/Globals.h"
-
+#include "kernel/threads/Thread.h"
 
 class IdleThread : public Thread {
-    
 private:
-    IdleThread(const Thread &copy); // Verhindere Kopieren
+    IdleThread(const Thread& copy) = delete;  // Verhindere Kopieren
 
 public:
-    IdleThread () : Thread () {  }
-    
-    void run () {
-        while (1) {
-            scheduler.yield ();
+    IdleThread() {}
+
+    void run() override {
+        while (true) {
+            scheduler.yield();
+            kout << "Idle!" << endl;
         }
     }
-    
- };
+};
 
 #endif
