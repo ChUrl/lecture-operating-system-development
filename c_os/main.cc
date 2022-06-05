@@ -11,9 +11,6 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-#include "user/CoroutineDemo.h"
-
-const CoroutineDemo coroutineDemo;
 
 int main() {
     kout.clear();
@@ -51,7 +48,10 @@ int main() {
     // keyboard_demo();
     // heap_demo();
     // key_irq_demo();
-    coroutineDemo.main();
+    // coroutineDemo.main();
+
+    // Scheduler starten (schedule() erzeugt den Idle-Thread)
+    scheduler.schedule();
 
     return 0;
 }
