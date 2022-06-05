@@ -11,18 +11,8 @@
 #include "user/HeapDemo.h"
 #include "kernel/Allocator.h"
 #include "kernel/Globals.h"
+#include "lib/Input.h"
 #include "user/MyObj.h"
-
-// Hilfsfunktion: Auf Return-Taste warten
-void waitForReturn() {
-
-    /* hier muss Code eingefuegt werden */
-
-    Key key;
-    do {
-        key = kb.key_hit();
-    } while ((char)key != '\n');
-}
 
 void heap_demo() {
     kout << "HEAP_DEMO ===================================================================" << endl;

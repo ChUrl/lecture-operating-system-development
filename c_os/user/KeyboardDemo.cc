@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+#include "lib/Input.h"
 
 void keyboard_demo() {
 
@@ -17,7 +18,7 @@ void keyboard_demo() {
     kout << "Keyboard Demo: " << endl;
 
     while (true) {
-        kout << kb.key_hit();
+        kout << getch();
         kout.flush();
     }
 }
