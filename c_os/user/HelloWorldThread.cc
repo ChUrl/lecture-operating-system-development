@@ -8,20 +8,18 @@
  * Autor:           Michael Schoettner, HHU, 21.8.2016                       *
  *****************************************************************************/
 
-#include "kernel/Globals.h"
 #include "user/HelloWorldThread.h"
-
-
+#include "kernel/Globals.h"
 
 /*****************************************************************************
  * Methode:         HelloWorldThread::run                                    *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Einstiegsfunktion in unseren Thread.                     *
  *****************************************************************************/
-void HelloWorldThread::run () {
-    
+void HelloWorldThread::run() {
+
     kout << "Hallo Welt von einem Thread!" << endl;
-    
+
     // selbst terminieren
-    scheduler.exit ();
+    scheduler.exit();
 }

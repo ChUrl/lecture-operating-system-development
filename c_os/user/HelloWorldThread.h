@@ -10,21 +10,17 @@
 #ifndef __hello_world_thread_include__
 #define __hello_world_thread_include__
 
-
 #include "kernel/threads/Thread.h"
 
-
 class HelloWorldThread : public Thread {
-    
 private:
-    HelloWorldThread (const HelloWorldThread &copy); // Verhindere Kopieren
+    HelloWorldThread(const HelloWorldThread& copy) = delete;  // Verhindere Kopieren
 
 public:
-    HelloWorldThread () : Thread () { }
+    HelloWorldThread() {}
 
     // Thread-Startmethode
-    void run ();
-
- };
+    void run() override;
+};
 
 #endif

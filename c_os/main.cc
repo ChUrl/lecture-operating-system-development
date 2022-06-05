@@ -11,6 +11,7 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+#include "user/HelloWorldThread.h"
 
 int main() {
     kout.clear();
@@ -50,8 +51,14 @@ int main() {
     // key_irq_demo();
     // coroutineDemo.main();
 
+    // Threads anlegen
+    scheduler.ready(new HelloWorldThread());
+
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
+
+    // TODO: Use templates for queue so threads don't have to be casted down from chain
+    // TODO: Move scrollback control to thread
 
     return 0;
 }
