@@ -73,16 +73,18 @@ bool Keyboard::key_decoded() {
             gather.shift(false);
             break;
         case 56:
-            if (prefix == prefix1)
+            if (prefix == prefix1) {
                 gather.alt_right(false);
-            else
+            } else {
                 gather.alt_left(false);
+            }
             break;
         case 29:
-            if (prefix == prefix1)
+            if (prefix == prefix1) {
                 gather.ctrl_right(false);
-            else
+            } else {
                 gather.ctrl_left(false);
+            }
             break;
         }
 
@@ -108,16 +110,18 @@ bool Keyboard::key_decoded() {
         gather.shift(true);
         break;
     case 56:
-        if (prefix == prefix1)
+        if (prefix == prefix1) {
             gather.alt_right(true);
-        else
+        } else {
             gather.alt_left(true);
+        }
         break;
     case 29:
-        if (prefix == prefix1)
+        if (prefix == prefix1) {
             gather.ctrl_right(true);
-        else
+        } else {
             gather.ctrl_left(true);
+        }
         break;
     case 58:
         gather.caps_lock(!gather.caps_lock());
@@ -153,10 +157,7 @@ bool Keyboard::key_decoded() {
     // Also ist es jetzt abgehandelt.
     prefix = 0;
 
-    if (done)
-        return true;  // Tastaturabfrage abgeschlossen
-    else
-        return false;
+    return done;
 }
 
 /*****************************************************************************
@@ -333,9 +334,8 @@ void Keyboard::plugin() {
 void scroll_mode(Key key);
 
 void Keyboard::trigger() {
-    // TODO: Get data from PS/2 Mouse if necessary
-
     Key key = this->key_hit();
+    this->lastkey = key.ascii();
 
     // NOTE: My keyboard has no delete key...
     if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
@@ -343,8 +343,6 @@ void Keyboard::trigger() {
     } else if ((char)key == 'k' || (char)key == 'j') {
         scroll_mode(key);
     }
-
-    // TODO: Keyboard insert mode
 }
 
 // TODO: Where to place this?

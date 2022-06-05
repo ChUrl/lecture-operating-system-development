@@ -6,21 +6,19 @@
  * Beschreibung:    Treiber für den Tastaturcontroller des PCs.              *
  *                                                                           *
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
- *                  Modifikationen, Michael Schoettner, 17.8.2016            *
+ *                  Modifikationen, Michael Schoettner, 2.6.2022             *
  *****************************************************************************/
 #ifndef __Keyboard_include__
 #define __Keyboard_include__
 
 #include "devices/Key.h"
-#include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/ISR.h"
-#include "kernel/interrupts/PIC.h"
 #include "kernel/IOport.h"
 
 class Keyboard : public ISR {
 
 private:
-    Keyboard(const Keyboard& copy);  // Verhindere Kopieren
+    Keyboard(const Keyboard& copy) = delete;  // Verhindere Kopieren
 
     unsigned char code;    // Byte von Tastatur
     unsigned char prefix;  // Prefix von Tastatur
@@ -73,12 +71,14 @@ private:
     // Ermittelt anhand von Tabellen den ASCII-Code.
     void get_ascii_code();
 
-public:
-    // Initialisierung der Tastatur.
-    Keyboard();
-
     // Tastaturabfrage (vorerst Polling)
     Key key_hit();
+
+public:
+    unsigned int lastkey;  // speichert den ASCII-Code der zuletzt gedrückten Taste
+
+    // Initialisierung der Tastatur.
+    Keyboard();
 
     // Fuehrt einen Neustart des Rechners durch.
     void reboot();

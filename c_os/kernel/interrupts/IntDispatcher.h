@@ -34,7 +34,7 @@ public:
     IntDispatcher();
 
     // Registrierung einer ISR. (Rueckgabewert: 0 = Erfolg, -1 = Fehler)
-    int assign(unsigned int vector, ISR& gate);
+    int assign(unsigned int vector, ISR& isr);
 
     // ISR fuer 'vector' ausfuehren
     int report(unsigned int vector);
