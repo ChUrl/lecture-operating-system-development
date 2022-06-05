@@ -23,22 +23,20 @@
 #include "lib/Chain.h"
 
 class Queue {
-
 private:
-    Queue(const Queue& copy);  // Verhindere Kopieren
+    Queue(const Queue& copy) = delete;  // Verhindere Kopieren
 
 protected:
     Chain* head;
     Chain** tail;
 
 public:
-    Queue() {
-        head = 0;
-        tail = &head;
-    }
+    Queue() : head(0), tail(&head) {}
+
     void enqueue(Chain* item);
     Chain* dequeue();
-    void remove(Chain*);
+    void remove(Chain* item);
+    // void print() const;
 };
 
 #endif
