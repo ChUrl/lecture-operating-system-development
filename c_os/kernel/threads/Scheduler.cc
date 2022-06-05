@@ -12,22 +12,25 @@
 #include "kernel/threads/Scheduler.h"
 #include "kernel/threads/IdleThread.h"
 
-
-
 /*****************************************************************************
  * Methode:         Scheduler::schedule                                      *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Scheduler starten. Wird nur einmalig aus main.cc gerufen.*
  *****************************************************************************/
-void Scheduler::schedule () {
+void Scheduler::schedule() {
 
     /* hier muss Code eingefuegt werden */
-    
-    /* Bevor diese Methode anufgerufen wird, muss zumindest der Idle-Thread 
+
+    Thread* idle = new IdleThread();
+    this->readyQueue.enqueue(idle);
+
+    /* Bevor diese Methode anufgerufen wird, muss zumindest der Idle-Thread
      * in der Queue eingefuegt worden sein. 
      */
-}
 
+    Thread& first = *(Thread*)this->readyQueue.dequeue();
+    this->start(first);
+}
 
 /*****************************************************************************
  * Methode:         Scheduler::ready                                         *
@@ -37,12 +40,12 @@ void Scheduler::schedule () {
  * Parameter:                                                                *
  *      that        Einzutragender Thread                                    *
  *****************************************************************************/
-void Scheduler::ready (Thread * that) {
+void Scheduler::ready(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
 
+    this->readyQueue.enqueue(that);
 }
-
 
 /*****************************************************************************
  * Methode:         Scheduler::exit                                          *
@@ -52,12 +55,13 @@ void Scheduler::ready (Thread * that) {
  *                  umgeschaltet werden. Der aktuell laufende Thread ist     *
  *                  nicht in der readyQueue.                                 *
  *****************************************************************************/
-void Scheduler::exit () {
+void Scheduler::exit() {
 
     /* hier muss Code eingefuegt werden */
 
+    Thread& next = *(Thread*)this->readyQueue.dequeue();
+    this->dispatch(next);
 }
-
 
 /*****************************************************************************
  * Methode:         Scheduler::kill                                          *
@@ -70,12 +74,10 @@ void Scheduler::exit () {
  * Parameter:                                                                *
  *      that        Zu terminierender Thread                                 *
  *****************************************************************************/
-void Scheduler::kill (Thread * that) {
+void Scheduler::kill(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
-
 }
-
 
 /*****************************************************************************
  * Methode:         Scheduler::yield                                         *
@@ -88,8 +90,17 @@ void Scheduler::kill (Thread * that) {
  *                  Achtung: Falls nur der Idle-Thread läuft, so ist die     *
  *                           readyQueue leer.                                *
  *****************************************************************************/
-void Scheduler::yield () {
+void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
+    if (this->readyQueue.isEmpty()) {
+        // Idle thread running
+        return;
+    }
+
+    this->readyQueue.enqueue(this->get_active());
+
+    Thread& next = *(Thread*)this->readyQueue.dequeue();
+    this->dispatch(next);
 }
