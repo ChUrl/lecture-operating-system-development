@@ -10,6 +10,7 @@
 #ifndef __hello_world_thread_include__
 #define __hello_world_thread_include__
 
+#include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
 
 class HelloWorldThread : public Thread {
@@ -17,7 +18,9 @@ private:
     HelloWorldThread(const HelloWorldThread& copy) = delete;  // Verhindere Kopieren
 
 public:
-    HelloWorldThread() {}
+    HelloWorldThread() : Thread() {
+        kout << "Initialized HelloWorldThread" << endl;
+    }
 
     // Thread-Startmethode
     void run() override;
