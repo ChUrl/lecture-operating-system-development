@@ -10,22 +10,22 @@
 #ifndef __coopthreaddemo_include__
 #define __coopthreaddemo_include__
 
-
+#include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
 
-
 class CoopThreadDemo : public Thread {
-    
+
 private:
-    CoopThreadDemo (const CoopThreadDemo &copy); // Verhindere Kopieren
+    CoopThreadDemo(const CoopThreadDemo& copy) = delete;  // Verhindere Kopieren
 
 public:
     // Gib dem Anwendungsthread einen Stack.
-    CoopThreadDemo () : Thread () { }
+    CoopThreadDemo() {
+        kout << "Initialized CoopThreadDemo" << endl;
+    }
 
     // Thread-Startmethode
-    void run ();
-
- };
+    void run() override;
+};
 
 #endif

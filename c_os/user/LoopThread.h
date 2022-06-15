@@ -12,18 +12,18 @@
 #include "kernel/threads/Thread.h"
 
 class LoopThread : public Thread {
-    
+
 private:
     int id;
 
-    LoopThread (const LoopThread &copy); // Verhindere Kopieren
-    
+    LoopThread(const LoopThread& copy) = delete;  // Verhindere Kopieren
+
 public:
     // Gibt der Loop einen Stack und eine Id.
-    LoopThread (int i) : Thread () { id = i; }
+    LoopThread(int i) : id(i) {}
 
     // Zaehlt einen Zaehler hoch und gibt ihn auf dem Bildschirm aus.
-    void run ();
+    void run() override;
 };
 
 #endif
