@@ -77,6 +77,8 @@ void Scheduler::exit() {
 void Scheduler::kill(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
+
+    this->readyQueue.remove(that);
 }
 
 /*****************************************************************************
@@ -94,13 +96,12 @@ void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
-    if (this->readyQueue.isEmpty()) {
-        // Idle thread running
-        return;
-    }
-
-    this->readyQueue.enqueue(this->get_active());
+    // if (this->readyQueue.isEmpty()) {
+    //     // Idle thread running
+    //     return;
+    // }
 
     Thread& next = *(Thread*)this->readyQueue.dequeue();
+    this->readyQueue.enqueue(this->get_active());
     this->dispatch(next);
 }
