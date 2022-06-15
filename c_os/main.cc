@@ -11,6 +11,7 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+#include "user/CoopThreadDemo.h"
 #include "user/HelloWorldThread.h"
 
 int main() {
@@ -24,7 +25,7 @@ int main() {
 
     // Startmeldung
     if constexpr (!DEBUG) {
-        kout << "HHUos 0.5\n"
+        kout << "HHUos 0.6\n"
              << "=========\n"
              << "Unterstuetzte Funktionen:\n"
              << "   - Bildschirmausgaben\n"
@@ -32,7 +33,7 @@ int main() {
              << "   - Tastatureingaben per Abfrage\n"
              << "   - Einfache Heap verwaltung\n"
              << "   - Tastatureingaben per Interrupt\n"
-             << "   - Koroutinen\n"
+             << "   - Kooperative Threads\n"
              << endl;
     }
 
@@ -52,7 +53,8 @@ int main() {
     // coroutineDemo.main();
 
     // Threads anlegen
-    scheduler.ready(new HelloWorldThread());
+    // scheduler.ready(new HelloWorldThread());
+    scheduler.ready(new CoopThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
