@@ -36,7 +36,7 @@ public:
     void enqueue(Chain* item);
     Chain* dequeue();
     void remove(Chain* item);
-    // void print() const;
+    void print() const;
     bool isEmpty() const;
 };
 

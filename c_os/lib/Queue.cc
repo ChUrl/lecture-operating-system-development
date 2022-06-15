@@ -10,7 +10,7 @@ void Queue::enqueue(Chain* item) {
 }
 
 Chain* Queue::dequeue() {
-    if (*this->tail == this->head) {
+    if (this->isEmpty()) {
         // This should not ever happen as the idle thread exists always
         // std::cout << "Dequeue called on empty queue." << std::endl;
         return NULL;
@@ -20,7 +20,7 @@ Chain* Queue::dequeue() {
     this->head = this->head->next;  // If *item was the only item this->head->next
                                     // is equal to this->tail
 
-    if (*this->tail == this->head) {
+    if (this->isEmpty()) {
         // Reset after last element was removed
         this->head = 0;
         this->tail = &this->head;
@@ -31,11 +31,46 @@ Chain* Queue::dequeue() {
     return item;
 }
 
-void Queue::remove(Chain* item) {}
+void Queue::remove(Chain* item) {
+    if (this->isEmpty()) {
+        // std::cout << "Remove called on empty queue" << std::endl;
+        return;
+    }
 
-/*
+    Chain* current = this->head;
+    Chain* lastnext = NULL;
+    while (current != item) {
+        if (current->next == *this->tail) {
+            // std::cout << "Element not in queue." << std::endl;
+            return;
+        }
+
+        lastnext = current;
+        current = current->next;
+    }
+
+    // std::cout << "Remove " << item->val << std::endl;
+
+    if (current == this->head) {
+        // current is first element
+        this->head = current->next;
+    } else if (current->next == *this->tail) {
+        // current is last element
+        this->tail = &lastnext->next;
+    } else {
+        // current is in the middle
+        lastnext->next = current->next;
+    }
+
+    if (this->isEmpty()) {
+        // Reset after last element was removed
+        this->head = 0;
+        this->tail = &this->head;
+    }
+}
+
 void Queue::print() const {
-    if (*this->tail == this->head) {
+    if (this->isEmpty()) {
         // Queue is empty
         // std::cout << "List is empty!" << std::endl;
         return;
@@ -44,9 +79,9 @@ void Queue::print() const {
     // std::cout << "List: ";
 
     Chain* current = this->head;
-    // std::cout << current->val << " ";  // At least one element in queue
+    // std::cout << current->val << " "; // At least one element in queue
 
-    while (&current->next != this->tail) {
+    while (current->next != *this->tail) {
         // More than one element in queue
         current = current->next;
         // std::cout << current->val << " ";
@@ -54,7 +89,6 @@ void Queue::print() const {
 
     // std::cout << std::endl;
 }
-*/
 
 bool Queue::isEmpty() const {
     return *this->tail == this->head;
