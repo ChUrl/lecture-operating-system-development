@@ -13,6 +13,7 @@
 #include "kernel/Globals.h"
 #include "user/CoopThreadDemo.h"
 #include "user/HelloWorldThread.h"
+#include "user/VBEdemo.h"
 
 int main() {
     kout.clear();
@@ -25,7 +26,7 @@ int main() {
 
     // Startmeldung
     if constexpr (!DEBUG) {
-        kout << "HHUos 0.6\n"
+        kout << "HHUos 0.7\n"
              << "=========\n"
              << "Unterstuetzte Funktionen:\n"
              << "   - Bildschirmausgaben\n"
@@ -34,6 +35,7 @@ int main() {
              << "   - Einfache Heap verwaltung\n"
              << "   - Tastatureingaben per Interrupt\n"
              << "   - Kooperative Threads\n"
+             << "   - VESA Graphics Mode\n"
              << endl;
     }
 
@@ -54,7 +56,9 @@ int main() {
 
     // Threads anlegen
     // scheduler.ready(new HelloWorldThread());
-    scheduler.ready(new CoopThreadDemo());
+    // scheduler.ready(new CoopThreadDemo());
+
+    scheduler.ready(new VBEdemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();

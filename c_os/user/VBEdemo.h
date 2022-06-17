@@ -10,34 +10,32 @@
 #ifndef __VBEdemo_include__
 #define __VBEdemo_include__
 
-
 #include "kernel/threads/Thread.h"
 
-
 class VBEdemo : public Thread {
-    
+
 private:
-    VBEdemo (const VBEdemo &copy); // Verhindere Kopieren
+    VBEdemo(const VBEdemo& copy) = delete;  // Verhindere Kopieren
 
     // Hilfsfunktionen fuer drawColors()
-    int linInterPol1D (int x, int xr, int l, int r);
-    int linInterPol2D (int x, int y, int lt, int rt, int lb, int rb);
+    int linInterPol1D(int x, int xr, int l, int r);
+    int linInterPol2D(int x, int y, int lt, int rt, int lb, int rb);
 
 public:
     // Gib dem Anwendungsthread einen Stack.
-    VBEdemo () : Thread () { }
+    VBEdemo() {}
 
     // Thread-Startmethode
-    void run ();
+    void run() override;
 
     // Farbraum ausgeben
-    void drawColors ();
+    void drawColors();
 
     // Bitmap aus GIMP ausgeben
-    void drawBitmap ();
+    void drawBitmap();
 
     // Fonts ausgeben
-    void drawFonts ();
+    void drawFonts();
 };
 
 #endif
