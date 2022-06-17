@@ -13,9 +13,11 @@
 #include "devices/CGA_Stream.h"
 #include "devices/Keyboard.h"
 #include "devices/PCSPK.h"
+#include "devices/VESA.h"
 #include "kernel/allocator/BumpAllocator.h"
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/allocator/TreeAllocator.h"
+#include "kernel/BIOS.h"
 #include "kernel/CPU.h"
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
@@ -32,6 +34,8 @@ extern unsigned int total_mem;  // RAM total
 // extern LinkedListAllocator allocator;
 extern TreeAllocator allocator;
 extern Scheduler scheduler;
+extern BIOS bios;  // Schnittstelle zum 16-Bit BIOS
+extern VESA vesa;  // VESA-Treiber
 
 constexpr bool DEBUG = true;
 

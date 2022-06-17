@@ -21,3 +21,5 @@ unsigned int total_mem;  // RAM total
 // LinkedListAllocator allocator;
 TreeAllocator allocator;
 Scheduler scheduler;
+BIOS bios;  // Schnittstelle zum 16-Bit BIOS
+VESA vesa;  // VESA-Treiber

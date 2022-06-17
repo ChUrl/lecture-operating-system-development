@@ -9,6 +9,7 @@
 ;*                  die weitere Ausfuehrung durch C-Code erfolgen kann.       *
 ;*                                                                            *
 ;* Autor:           Olaf Spinczyk, TU Dortmund                                *
+;*                  Michael Schoettner, HHU, 9.9.2016                         *
 ;******************************************************************************
 
 ; Multiboot-Konstanten
@@ -29,6 +30,7 @@ MULTIBOOT_EAX_MAGIC	equ	0x2badb002
 [GLOBAL startup]
 [GLOBAL idt]
 [GLOBAL __cxa_pure_virtual]
+[GLOBAL bios_call]
 
 ; Michael Schoettner:
 ; Nachfolgender label steht fuer das 'delete', welches jetzt implementiert
@@ -235,6 +237,22 @@ __cxa_pure_virtual:
 _ZdlPv:
 	ret
 
+;
+; bios_call
+;
+; BIOS-Aufruf (siehe BIOS.cc)
+;
+bios_call:
+    lidt    [idt16_descr]
+    pushf
+    pusha
+    call  0x18:0
+    popa
+    popf
+    lidt	[idt_descr]
+    ret
+
+
 [SECTION .data]
 	
 ;  'interrupt descriptor table' mit 256 Eintraegen.
@@ -284,6 +302,20 @@ gdt:
 	dw	0x9200		; data read/write
 	dw	0x00CF		; granularity=4096, 386 (+5th nibble of limit)
 
+    dw  0xFFFF      ; 4Gb - (0x100000*0x1000 = 4Gb)
+    dw	0x4000      ; 0x4000 -> base address=0x24000 (siehe BIOS.cc)
+    dw  09A02h      ; 0x2 -> base address =0x24000 (siehe BIOS.cc) und code read/exec;
+    dw  0008Fh      ; granularity=4096, 16-bit code
+
 gdt_48:
-	dw	0x18		; GDT Limit=24, 3 GDT Eintraege
+	dw	0x20		; GDT Limit=24, 3 GDT Eintraege
 	dd	gdt         ; Physikalische Adresse der GDT
+
+
+;
+; IDT des Realmode ;
+; (Michael Schoettner)
+;
+idt16_descr:
+    dw	1024    ; idt enthaelt max. 1024 Eintraege
+    dd	0       ; Adresse 0

@@ -186,10 +186,15 @@ gdt:
 	dw	0x9200		; data read/write
 	dw	0x00CF		; granularity=4096, 386 (+5th nibble of limit)
 
+    dw  0xFFFF      ; 4Gb - (0x100000*0x1000 = 4Gb)
+    dw	0x4000      ; 0x4000 -> base address=0x24000 (siehe BIOS.cc)
+    dw  09A02h      ; 0x2 -> base address =0x24000 (siehe BIOS.cc) und code read/exec;
+    dw  0008Fh      ; granularity=4096, 16-bit code
+
 idt_48:
 	dw	0		; idt limit=0
 	dw	0,0		; idt base=0L
 
 gdt_48:
-	dw	0x18		; GDT Limit=24, 3 GDT Eintraege
+	dw	0x20		; GDT Limit=24, 3 GDT Eintraege
 	dd	SETUPSEG*0x10+gdt; Physikalische Adresse der GDT
