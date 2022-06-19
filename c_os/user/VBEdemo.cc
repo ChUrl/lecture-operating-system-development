@@ -57,12 +57,14 @@ void VBEdemo::drawColors() {
  * Beschreibung:    Bitmap aus GIMP ausgeben.                                *
  *****************************************************************************/
 void VBEdemo::drawBitmap() {
-    unsigned int sprite_height = hhu.height;
     unsigned int sprite_width = hhu.width;
+    unsigned int sprite_height = hhu.height;
     unsigned int sprite_bpp = hhu.bytes_per_pixel;
     unsigned char* sprite_pixel = (unsigned char*)hhu.pixel_data;
 
     /* Hier muss Code eingefuegt werden */
+
+    vesa.drawSprite(sprite_width, sprite_height, sprite_bpp, sprite_pixel);
 }
 
 /*****************************************************************************
@@ -90,6 +92,9 @@ void VBEdemo::run() {
     drawColors();
 
     /* Hier muss Code eingefuegt werden */
+    vesa.drawRectangle(100, 100, 300, 300, 0);
+    drawBitmap();
+    drawFonts();
 
     // selbst terminieren
     scheduler.exit();
