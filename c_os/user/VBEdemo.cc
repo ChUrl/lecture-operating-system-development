@@ -75,6 +75,13 @@ void VBEdemo::drawBitmap() {
 void VBEdemo::drawFonts() {
 
     /* Hier muss Code eingefuegt werden */
+
+    vesa.drawString(std_font_8x8, 0, 300, 0, "STD FONT 8x8", 12);
+    vesa.drawString(std_font_8x16, 0, 320, 0, "STD FONT 8x16", 13);
+    vesa.drawString(acorn_font_8x8, 0, 340, 0, "ACORN FONT 8x8", 14);
+    vesa.drawString(sun_font_8x16, 0, 360, 0, "SUN FONT 8x16", 13);
+    vesa.drawString(sun_font_12x22, 0, 380, 0, "SUN FONT 12x22", 14);
+    vesa.drawString(pearl_font_8x8, 0, 400, 0, "PEARL FONT 8x8", 14);
 }
 
 /*****************************************************************************
