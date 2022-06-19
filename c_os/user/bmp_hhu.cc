@@ -1,12 +1,14 @@
 /* GIMP RGB C-Source image dump (hhulogo.c) */
 
 static const struct {
-  unsigned int  	 width;
-  unsigned int  	 height;
-  unsigned int  	 bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char 	 pixel_data[200 * 52 * 3 + 1];
+    unsigned int width;
+    unsigned int height;
+    unsigned int bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */
+    unsigned char pixel_data[200 * 52 * 3 + 1];
 } hhu = {
-  200, 52, 3,
+  200,
+  52,
+  3,
   "\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376"
   "\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376"
   "\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376"
@@ -1572,4 +1574,3 @@ static const struct {
   "\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376\376"
   "\376\376\376\376\376\376\376\376\376",
 };
-
