@@ -152,11 +152,9 @@ void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned in
     }
 }
 
-// (x1, y1)-------------------------(x2, y1)
-//    |                                |
-//    |                                |
-//    |                                |
-// (x1, y2)-------------------------(x2, y2)
+// (x1, y1)---(x2, y1)
+//    |          |
+// (x1, y2)---(x2, y2)
 void LFBgraphics::drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) {
     this->drawStraightLine(x1, y1, x2, y1, col);
     this->drawStraightLine(x2, y1, x2, y2, col);
