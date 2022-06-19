@@ -37,10 +37,8 @@ int abs(int a);
  *                  sich in den C-Dateien in fonts/ von selbst.              *
  *****************************************************************************/
 inline void LFBgraphics::drawMonoBitmap(unsigned int x, unsigned int y,
-                                        unsigned int width,
-                                        unsigned int height,
-                                        unsigned char* bitmap,
-                                        unsigned int color) {
+                                        unsigned int width, unsigned int height,
+                                        unsigned char* bitmap, unsigned int color) {
     // Breite in Bytes
     unsigned short width_byte = width / 8 + ((width % 8 != 0) ? 1 : 0);
 
@@ -95,7 +93,9 @@ void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) {
         return;
     }
 
-    if (mode == 0) ptr = (unsigned char*)hfb;
+    if (mode == BUFFER_INVISIBLE) {
+        ptr = (unsigned char*)hfb;
+    }
 
     // Pixel ausserhalb des sichtbaren Bereichs?
     if (x < 0 || x >= xres || y < 0 || y > yres) {
@@ -131,6 +131,62 @@ void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) {
         *ptr = ((col >> 16) & 0xFF);
         ptr++;
         return;
+    }
+}
+
+void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) {
+    // Don't set mode inside the drawing function to use them in animations
+
+    if (x1 == x2 && y2 > y1) {
+        // Vertical line
+        for (unsigned int i = y1; i <= y2; ++i) {
+            this->drawPixel(x1, i, col);
+        }
+    } else if (y1 == y2 && x2 > x1) {
+        // Horizontal line
+        for (unsigned int i = x1; i <= x2; ++i) {
+            this->drawPixel(i, y1, col);
+        }
+    } else {
+        kout << "Error (LFBgraphics::drawStraightLine): Line is not straight" << endl;
+    }
+}
+
+// (x1, y1)-------------------------(x2, y1)
+//    |                                |
+//    |                                |
+//    |                                |
+// (x1, y2)-------------------------(x2, y2)
+void LFBgraphics::drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) {
+    this->drawStraightLine(x1, y1, x2, y1, col);
+    this->drawStraightLine(x2, y1, x2, y2, col);
+    this->drawStraightLine(x1, y2, x2, y2, col);
+    this->drawStraightLine(x1, y1, x1, y2, col);
+}
+
+void LFBgraphics::drawCircle(unsigned int x, unsigned int y, unsigned int rad, unsigned int col) {
+    // TODO
+}
+
+void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data) {
+    unsigned char* ptr;
+    for (unsigned int x = 0; x < width; ++x) {
+        for (unsigned int y = 0; y < height; ++y) {
+            ptr = (unsigned char*)pixel_data + (x + y * width) * bytes_pp;
+
+            switch (bytes_pp) {
+            case 2:
+                // TODO: Never tested, probably doesn't work
+                this->drawPixel(x, y, RGB_24(*ptr & 0b11111000, (*ptr & 0b111) | (*(ptr + 1) & 0b11100000),
+                                             *(ptr + 1) & 0b11111));  // RGB 565
+                break;
+            case 3:
+            case 4:
+                // Alpha gets ignored anyway
+                this->drawPixel(x, y, RGB_24(*ptr, *(ptr + 1), *(ptr + 2)));
+                break;
+            }
+        }
     }
 }
 
@@ -195,7 +251,9 @@ void LFBgraphics::copyHiddenToVisible() {
     unsigned int* dptr = (unsigned int*)lfb;
     unsigned int i;
 
-    if (hfb == 0 || lfb == 0) return;
+    if (hfb == 0 || lfb == 0) {
+        return;
+    }
 
     switch (bpp) {
     case 8:

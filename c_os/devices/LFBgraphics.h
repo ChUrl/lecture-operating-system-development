@@ -48,6 +48,13 @@ public:
     void drawString(Font& fnt, unsigned int x, unsigned int y,
                     unsigned int col, char* str, unsigned int len);
 
+    // TODO: Filled shapes
+    void drawCircle(unsigned int x, unsigned int y, unsigned int rad, unsigned int col);
+    void drawStraightLine(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col);
+    void drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col);
+
+    void drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data);
+
     // stellt ein, ob in den sichtbaren Puffer gezeichnet wird
     void setDrawingBuff(int v);
 
