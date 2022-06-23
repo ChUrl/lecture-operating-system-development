@@ -175,7 +175,7 @@ void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned i
             switch (bytes_pp) {
             case 2:
                 // TODO: Never tested, probably doesn't work
-                this->drawPixel(x, y, RGB_24(*ptr & 0b11111000, (*ptr & 0b111) | (*(ptr + 1) & 0b11100000),
+                this->drawPixel(x, y, RGB_24(*ptr & 0b11111000, ((*ptr & 0b111) << 3) | (*(ptr + 1) >> 5),
                                              *(ptr + 1) & 0b11111));  // RGB 565
                 break;
             case 3:
