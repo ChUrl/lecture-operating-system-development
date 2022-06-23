@@ -9,7 +9,7 @@
 ;*                  die weitere Ausfuehrung durch C-Code erfolgen kann.       *
 ;*                                                                            *
 ;* Autor:           Olaf Spinczyk, TU Dortmund                                *
-;*                  Michael Schoettner, HHU, 9.9.2016                         *
+;*                  Michael Schoettner, HHU, 15.12.2018                       *
 ;******************************************************************************
 
 ; Multiboot-Konstanten
@@ -31,6 +31,10 @@ MULTIBOOT_EAX_MAGIC	equ	0x2badb002
 [GLOBAL idt]
 [GLOBAL __cxa_pure_virtual]
 [GLOBAL bios_call]
+[GLOBAL invalidate_tlb_entry]
+[GLOBAL paging_on]
+[GLOBAL get_page_fault_address]
+[GLOBAL get_int_esp]
 
 ; Michael Schoettner:
 ; Nachfolgender label steht fuer das 'delete', welches jetzt implementiert
@@ -138,7 +142,9 @@ _fini_done:
 
 %macro wrapper 1
 wrapper_%1:
-	push	eax
+	pushad       ; alle Register sichern (fuer den Bluescreen)
+	mov ecx, int_esp ; Stack_zeiger sichern, fuer Zugriff im Bluescreen
+	mov [ecx], esp
 	mov	al,%1
 	jmp	wrapper_body
 %endmacro
@@ -161,7 +167,7 @@ wrapper_body:
 	add	esp,4		; Parameter vom Stack entfernen
 	pop	edx         ; fluechtige Register wieder herstellen
 	pop	ecx
-	pop	eax
+	popad           ; alle Register wiederherstellen
 	iret            ; fertig!
 
 ;
@@ -252,6 +258,46 @@ bios_call:
     lidt	[idt_descr]
     ret
 
+; Paging aktivieren
+; (siehe Paging.cc)
+paging_on:
+    mov eax,[4+esp]     ; Parameter Addr. Page-Dir. ins eax Register
+    mov ebx, cr4
+    or  ebx, 0x10       ; 4 MB Pages aktivieren
+    mov cr4, ebx        ; CR4 schreiben
+    mov cr3, eax        ; Page-Directory laden
+    mov ebx, cr0
+    or  ebx, 0x80010000 ; Paging aktivieren
+    mov cr0, ebx
+    ret
+
+; Paging-Fault-Adresse holen
+; (siehe Paging.cc)
+get_page_fault_address:
+    mov eax,cr2
+    ret
+
+; Invalidiert eine Seite im TLB. Dies notwendig, falls eine
+; die Bits Present, R/W in einem Seitentabelleneintrag  
+; geaendert werden. Falls die Seite im TLB gespeichert ist
+; wuerde die MMU nichts von diesen Aenderungen erkennen,
+; da die MMU dann nicht auf die Seitentabellen zugreift.
+; (siehe Paging.cc)
+invalidate_tlb_entry:
+	mov 	eax, [esp+4]
+ 	invlpg 	[eax]
+	ret
+
+; Auslesen von 'int_esp'
+; wird im Bluescreen benoetigt, um den Stacks zuzugreifen
+;
+; C Prototyp: void get_int_esp (unsigned int** esp);
+get_int_esp:
+    mov	eax,[4+esp]     ; esp
+    mov ecx, int_esp
+    mov [eax], ecx
+    ret
+
 
 [SECTION .data]
 	
@@ -319,3 +365,22 @@ gdt_48:
 idt16_descr:
     dw	1024    ; idt enthaelt max. 1024 Eintraege
     dd	0       ; Adresse 0
+
+;
+; Stack-Zeiger fuer Bluescreen
+; (genauerer Stack-Aufbau siehe Bluescreen.cc)
+;
+; |-------------|
+; |    EFLAGS   |
+; |-------------|
+; |      CS     |
+; |-------------|
+; |     EIP     |
+; |-------------|
+; | [ErrorCode] |
+; |-------------|
+; | alle Regs.  |
+; | (PUSHAD)    |
+; |-------------| <-- int_esp
+int_esp:
+    db 0,0,0,0
