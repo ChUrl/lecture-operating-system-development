@@ -56,17 +56,15 @@
 extern void pg_init();
 
 // alloziert eine 4 KB Page
-extern unsigned int * pg_alloc_page();
+extern unsigned int* pg_alloc_page();
 
 // Schreibschutz auf Seite setzen -> fuer debugging nuetzlich
-extern void pg_write_protect_page(unsigned int *p_page);
+extern void pg_write_protect_page(unsigned int* p_page);
 
 // Present Bit loeschen
-extern void pg_notpresent_page(unsigned int *p_page);
+extern void pg_notpresent_page(unsigned int* p_page);
 
 // gibt eine 4 KB Page frei
-extern void pg_free_page(unsigned int *p_page);
+extern void pg_free_page(unsigned int* p_page);
 
 #endif
-
-
