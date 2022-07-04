@@ -51,8 +51,9 @@ int main() {
     cpu.enable_int();
 
     // Activate paging
-    // Scheduler triggers bluescreen?
-    // pg_init();
+    // This has to happen after the allocator is initialized but before the scheduler is started
+    // TODO: Scheduler triggers bluescreen?
+    pg_init();
 
     // Trigger Bluescreen
     // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
@@ -68,7 +69,7 @@ int main() {
 
     // Demo threads anlegen
     // scheduler.ready(new HelloWorldThread());
-    // scheduler.ready(new CoopThreadDemo());
+    scheduler.ready(new CoopThreadDemo());
     // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
