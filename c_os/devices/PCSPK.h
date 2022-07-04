@@ -71,9 +71,6 @@ private:
     // Verzoegerung um X ms (in 1ms Schritten; Min. 1ms)
     inline void delay(int time);
 
-    // Zaehler von PIT Channel 0 auslesen (wird fuer delay benoetigt)
-    inline unsigned int readCounter();
-
 public:
     // Konstruktor. Initialisieren der Ports.
     PCSPK() : control(0x43), data0(0x40), data2(0x42), ppi(0x61) {}

@@ -57,23 +57,6 @@ void PCSPK::off() {
 }
 
 /*****************************************************************************
- * Methode:         PCSPK::readCounter                                       *
- *---------------------------------------------------------------------------*
- * Beschreibung:    Zaehler von PIT Channel 0 auslesen.                      * 
- *                  (wird fuer delay benoetigt).                             *
- *                                                                           *
- * Rückgabewerte:   counter                                                  *
- *****************************************************************************/
-inline unsigned int PCSPK::readCounter() {
-    unsigned char lo, hi;
-
-    control.outb(0x0);  // Latch Command
-    lo = data0.inb();   // Lobyte des Counters auslesen
-    hi = data0.inb();   // Hibyte des Counters auslesen
-    return (hi << 8) | lo;
-}
-
-/*****************************************************************************
  * Methode:         PCSPK::delay                                             *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Verzoegerung um X ms (in 1ms Schritten; Min. 1ms).       *
@@ -83,6 +66,11 @@ inline unsigned int PCSPK::readCounter() {
 inline void PCSPK::delay(int time) {
 
     /* Hier muess Code eingefuegt werden */
+
+    unsigned long start_time = systime;
+
+    // systime is incremented in 10ms steps
+    while ((systime - start_time) * 10 < time) {}
 
 }
 

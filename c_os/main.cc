@@ -75,6 +75,8 @@ int main() {
     // scheduler.ready(new CoopThreadDemo());
     // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
 
+    // pcspk.tetris();
+
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
 
