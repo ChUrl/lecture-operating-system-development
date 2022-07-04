@@ -96,10 +96,12 @@ void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
-    // if (this->readyQueue.isEmpty()) {
-    //     // Idle thread running
-    //     return;
-    // }
+    // When only one thread exists (IdleThread) it can't yield as the readyqueue becomes empty
+    // and this is not handled anywhere else
+    if (this->readyQueue.isEmpty()) {
+        // Idle thread running
+        return;
+    }
 
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());

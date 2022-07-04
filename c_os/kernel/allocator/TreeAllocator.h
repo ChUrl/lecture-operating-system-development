@@ -45,7 +45,7 @@ private:
 
     void dump_free_memory(tree_block_t* node);
 
-    // NOTE: Would be nice to have this stuff somewhere else for general use,
+    // NOTE: Would be nice to have this stuff somewhere else for general use (scheduling?)
     //       but that would require different rbt_node/dll_node structures.
     //       If I need this again later I should move it.
     void rbt_rot_l(tree_block_t* x);

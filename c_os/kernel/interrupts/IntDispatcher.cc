@@ -13,6 +13,7 @@
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/CPU.h"
 #include "kernel/Globals.h"
+#include "kernel/interrupts/Bluescreen.h"
 
 extern "C" void int_disp(unsigned int slot);
 
@@ -31,9 +32,16 @@ extern "C" void int_disp(unsigned int slot);
 void int_disp(unsigned int vector) {
 
     /* hier muss Code eingefuegt werden */
+    if (vector < 32) {
+        bs_dump(vector);
+        cpu.halt();
+    }
 
-    // kout << "Ein Interrupt ist aufgetreten (vector: " << vector << ")" << endl;
-    intdis.report(vector);
+    if (intdis.report(vector) < 0) {
+        kout << "Panic: unexpected interrupt " << vector;
+        kout << " - processor halted." << endl;
+        cpu.halt();
+    }
 }
 
 /*****************************************************************************

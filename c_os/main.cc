@@ -11,6 +11,8 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+#include "kernel/Paging.h"
+#include "kernel/threads/IdleThread.h"
 #include "user/CoopThreadDemo.h"
 #include "user/HelloWorldThread.h"
 #include "user/VBEdemo.h"
@@ -22,11 +24,11 @@ int main() {
     allocator.init();
 
     // Initialize scrollback buffer after allocator.init()
-    kout.init(5);
+    // kout.init(5);
 
     // Startmeldung
     if constexpr (!DEBUG) {
-        kout << "HHUos 0.7\n"
+        kout << "HHUos 0.8\n"
              << "=========\n"
              << "Unterstuetzte Funktionen:\n"
              << "   - Bildschirmausgaben\n"
@@ -36,6 +38,7 @@ int main() {
              << "   - Tastatureingaben per Interrupt\n"
              << "   - Kooperative Threads\n"
              << "   - VESA Graphics Mode\n"
+             << "   - Paging\n"
              << endl;
     }
 
@@ -47,18 +50,27 @@ int main() {
     /* hier muss Code eingefuegt werden */
     cpu.enable_int();
 
-    // text_demo();
-    // sound_demo();
-    // keyboard_demo();
-    // heap_demo();
-    // key_irq_demo();
-    // coroutineDemo.main();
+    // Activate paging
+    // This has to happen after the allocator is initialized but before the scheduler is started
+    // TODO: Scheduler triggers bluescreen?
+    pg_init();
 
-    // Threads anlegen
+    // Trigger Bluescreen
+    // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
+
+    // BlueScreen 1
+    // asm("int $3");
+
+    // BlueScreen 2
+    // unsigned int* page = pg_alloc_page();
+    // *page = 42; // Should work
+    // pg_write_protect_page(page);
+    // *page = 42;  // should trigger BlueScreen
+
+    // Demo threads anlegen
     // scheduler.ready(new HelloWorldThread());
-    // scheduler.ready(new CoopThreadDemo());
-
-    scheduler.ready(new VBEdemo());
+    scheduler.ready(new CoopThreadDemo());
+    // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
@@ -66,5 +78,6 @@ int main() {
     // TODO: Use templates for queue so threads don't have to be casted down from chain
     // TODO: Move scrollback control to thread
 
+    // Scheduler doesn't return
     return 0;
 }

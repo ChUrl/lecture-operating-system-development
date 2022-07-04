@@ -70,10 +70,13 @@ DELETE = rm
 ASM = nasm
 CC ?= gcc
 CXX ?= g++
-CFLAGS := $(CFLAGS) -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -mpreferred-stack-boundary=2 -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr
-CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++17
+
+# I added O0 to allow paging/bluescreen to work (We need the ebp on the stack)
+CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -mpreferred-stack-boundary=2 -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr
+
 # I added -std=c++17 for if constexpr, but it isn't necessary for anything critical
 # Needed for template concepts, but we don't have it available: -std=c++20
+CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++17
 
 BOOT = ../boot
 TOOLS = ../tools
