@@ -21,16 +21,11 @@ void Scheduler::schedule() {
 
     /* hier muss Code eingefuegt werden */
 
-    Thread* idle = new IdleThread();
-    // this->readyQueue.enqueue(idle);
-    this->ready(idle);
-
-    /* Bevor diese Methode anufgerufen wird, muss zumindest der Idle-Thread
-     * in der Queue eingefuegt worden sein. 
-     */
-
-    Thread& first = *(Thread*)this->readyQueue.dequeue();
-    this->start(first);
+    // We need to start the idle thread first as this one sets the scheduler to initialized
+    // Other wise preemption will be blocked and nothing will happen if the first threads
+    // ready() function is blocking
+    this->start(*(Thread*)new IdleThread()); // The idle thread set initialized to true, so preemption
+                        // only starts after this
 }
 
 /*****************************************************************************
@@ -115,9 +110,6 @@ void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
-    // Thread-Wechsel durch PIT verhindern
-    // cpu.disable_int ();
-
     // When only one thread exists (IdleThread) it can't yield as the readyqueue becomes empty
     // and this is not handled anywhere else
     if (this->readyQueue.isEmpty()) {
@@ -125,12 +117,12 @@ void Scheduler::yield() {
         return;
     }
 
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());
     this->dispatch(next);
-
-    // Thread-Wechsel durch PIT jetzt wieder erlauben
-    // cpu.enable_int ();
 }
 
 /*****************************************************************************
@@ -142,6 +134,17 @@ void Scheduler::yield() {
  *****************************************************************************/
 void Scheduler::preempt () {
 
-   /* Hier muss Code eingefuegt werden */
+    /* Hier muss Code eingefuegt werden */
 
+    if (this->readyQueue.isEmpty()) {
+        // Idle thread running
+        return;
+    }
+
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
+    Thread& next = *(Thread*)this->readyQueue.dequeue();
+    this->readyQueue.enqueue(this->get_active());
+    this->dispatch(next);
 }
