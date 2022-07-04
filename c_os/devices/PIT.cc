@@ -85,7 +85,7 @@ void PIT::trigger () {
 
     // Preemption
     if (scheduler.isInitialized()) {
-
+        scheduler.preempt();
     }
 
 
