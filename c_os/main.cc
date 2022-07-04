@@ -56,27 +56,29 @@ int main() {
     pg_init();
 
     // Trigger Bluescreen
-    // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
+    kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
 
     // BlueScreen 1
     // asm("int $3");
 
     // BlueScreen 2
-    // unsigned int* page = pg_alloc_page();
-    // *page = 42; // Should work
-    // pg_write_protect_page(page);
-    // *page = 42;  // should trigger BlueScreen
+    unsigned int* page = pg_alloc_page();
+    *page = 42;
+    pg_write_protect_page(page);
+    invalidate_tlb_entry(page); // If we don't invalidate after first access the write protection
+                                // won't work as no lookup is performed (address in tlb)
+    *page = 42; // We map logical to physical 1:1 so no need to do any lookup
+                // If tlb is invalidated this access produces a pagefault
 
     // Demo threads anlegen
     // scheduler.ready(new HelloWorldThread());
-    scheduler.ready(new CoopThreadDemo());
+    // scheduler.ready(new CoopThreadDemo());
     // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
 
     // TODO: Use templates for queue so threads don't have to be casted down from chain
-    // TODO: Move scrollback control to thread
 
     // Scheduler doesn't return
     return 0;
