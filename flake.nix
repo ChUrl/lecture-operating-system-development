@@ -15,6 +15,8 @@
             gnumake
             gcc
             nasm
+            glibc_multi
+            qemu
           ];
 
           # Build inputs are for target platform, app will be linked against those
