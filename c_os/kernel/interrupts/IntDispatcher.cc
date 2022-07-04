@@ -32,6 +32,7 @@ extern "C" void int_disp(unsigned int slot);
 void int_disp(unsigned int vector) {
 
     /* hier muss Code eingefuegt werden */
+
     if (vector < 32) {
         bs_dump(vector);
         cpu.halt();

@@ -45,6 +45,7 @@ int main() {
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
     kb.plugin();
+    pit.plugin();
 
     // Interrupts erlauben (Tastatur)
     /* hier muss Code eingefuegt werden */

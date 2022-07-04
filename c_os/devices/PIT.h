@@ -16,11 +16,14 @@
 class PIT : public ISR {
     
 private:
-    PIT(const PIT &copy); // Verhindere Kopieren
+    PIT(const PIT &copy) = delete; // Verhindere Kopieren
          
-private:
     enum { time_base = 838 };  /* ns */
     int timer_interval;
+
+    char indicator[4] = {'|', '/', '-', '\\'};
+    unsigned int indicator_pos = 0;
+    unsigned long last_indicator_refresh = 0;
 
 public:
     // Zeitgeber initialisieren.
