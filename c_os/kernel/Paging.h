@@ -52,28 +52,6 @@
 #ifndef __Paging_include__
 #define __Paging_include__
 
-// Bits fuer Eintraege in der Page-Table
-#define PAGE_PRESENT 0x001
-#define PAGE_WRITEABLE 0x002
-#define PAGE_BIGSIZE 0x080
-#define PAGE_RESERVED 0x800  // Bit 11 ist frei fuer das OS
-
-// Adresse des Page-Directory (benoetigt 4 KB)
-#define PAGE_DIRECTORY 0x200000
-
-// Adresse der Page-Table (benoetigt 4 KB)
-#define PAGE_TABLE 0x201000
-
-// Start- und End-Adresse der 4 KB Seiten die durch die Page-Table adressiert werden
-#define FST_ALLOCABLE_PAGE 0x202000
-#define LST_ALLOCABLE_PAGE 0x2FF000
-
-// Externe Funktionen in startup.asm
-extern "C" {
-    void paging_on(unsigned int* p_pdir);          // Paging einschalten
-    void invalidate_tlb_entry(unsigned int* ptr);  // Page in TLB invalid.
-}
-
 // ativiert paging
 extern void pg_init();
 
