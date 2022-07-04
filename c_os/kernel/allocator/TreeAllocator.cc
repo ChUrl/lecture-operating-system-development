@@ -10,6 +10,7 @@ void TreeAllocator::init() {
     this->free_start->left = NULL;
     this->free_start->right = NULL;
     this->free_start->parent = NULL;
+    this->free_start->red = false; // The root is always black
     this->free_start->next = (list_block_t*)this->free_start;
     this->free_start->previous = (list_block_t*)this->free_start;
 
@@ -59,9 +60,6 @@ void* TreeAllocator::alloc(unsigned int req_size) {
     unsigned int size = this->get_size(best_fit);
     if constexpr (DEBUG) { kout << " - Found best-fit: " << hex << (unsigned int)best_fit << endl; }
 
-    // Remove the block first so we can insert correctly when cutting
-    // kout << " - Removing block from freelist" << endl;
-    this->rbt_remove(best_fit);
     if (size > HEAP_MIN_FREE_BLOCK_SIZE + rreq_size + sizeof(list_block_t)) {
         // Block can be cut
         if constexpr (DEBUG) { kout << " - Allocating " << dec << rreq_size << " Bytes with cutting" << endl; }
@@ -77,6 +75,11 @@ void* TreeAllocator::alloc(unsigned int req_size) {
         // need to remove it from the freelist, which is done for both cases
         if constexpr (DEBUG) { kout << " - Allocating " << dec << rreq_size << " Bytes without cutting" << endl; }
     }
+    // Remove the old block from the freelist
+    // BUG: If the first allocation allocates the whole heap, this removal will crash the paging
+    //      as the freelist will no longer contain any notes, gives NullPointerException as it's not handled
+    // kout << " - Removing block from freelist" << endl;
+    this->rbt_remove(best_fit);
 
     if constexpr (DEBUG) { kout << " - Returned address " << hex << (unsigned int)((char*)best_fit + sizeof(list_block_t)) << endl; }
     return (void*)((char*)best_fit + sizeof(list_block_t));

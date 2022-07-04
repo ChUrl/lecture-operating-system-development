@@ -30,9 +30,9 @@ extern Keyboard kb;             // Tastatur
 extern IntDispatcher intdis;    // Unterbrechungsverteilung
 extern PIC pic;                 // Interrupt-Controller
 extern unsigned int total_mem;  // RAM total
-extern BumpAllocator         allocator;
+// extern BumpAllocator         allocator;
 // extern LinkedListAllocator allocator;
-// extern TreeAllocator allocator;
+extern TreeAllocator allocator;
 extern Scheduler scheduler;
 extern BIOS bios;  // Schnittstelle zum 16-Bit BIOS
 extern VESA vesa;  // VESA-Treiber

@@ -17,9 +17,9 @@ Keyboard kb;             // Tastatur
 IntDispatcher intdis;    // Unterbrechungsverteilung
 PIC pic;                 // Interrupt-Controller
 unsigned int total_mem;  // RAM total
-BumpAllocator         allocator;
+// BumpAllocator         allocator;
 // LinkedListAllocator allocator;
-// TreeAllocator allocator;
+TreeAllocator allocator;
 Scheduler scheduler;
 BIOS bios;  // Schnittstelle zum 16-Bit BIOS
 VESA vesa;  // VESA-Treiber
