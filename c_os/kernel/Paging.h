@@ -31,18 +31,18 @@
  *                     0x25000: Altes ESP sichern, vor BIOS-Aufruf           *
  *                     0x26000: 16-Bit Code-Segment fuer BIOS-Aufurf         *
  *                  System-Code                                              *
- *                    0x100000:	System-Code, kopiert nach Umschalten in      *
+ *                    0x100000: System-Code, kopiert nach Umschalten in      *
  *                              den Protected Mode kopiert (GRUB kann nur    *
  *                              an Adressen >1M laden)                       *
  *           Globale Variablen: Direkt nach dem Code liegen die globalen     *
  *                              Variablen.                                   *
  *                      Paging:                                              *
- *                    0x200000:	Page-Directory                               *
- *                    0x201000:	Page-Table                                   *
- *                    0x202000:	erste allozierbare Page (via Paging.cc)      *
- *                    0x3FF000:	letzte allozierbare Page                     *
+ *                    0x200000: Page-Directory                               *
+ *                    0x201000: Page-Table                                   *
+ *                    0x202000: erste allozierbare Page (via Paging.cc)      *
+ *                    0x3FF000: letzte allozierbare Page                     *
  *                        Heap:                                              *
- *                    0x400000:	Start-Adresse der Heap-Verwaltung            *
+ *                    0x400000: Start-Adresse der Heap-Verwaltung            *
  *                        Ende: Letzte Adresse des phys. Speichers           *
  *                                                                           *
  *                                                                           *
