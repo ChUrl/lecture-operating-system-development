@@ -35,14 +35,13 @@ class Thread : public Chain {
 private:
     Thread(const Thread& copy) = delete;  // Verhindere Kopieren
 
-    struct ThreadState regs;
     unsigned int* stack;
 
 public:
     unsigned int tid;  // Thread-ID (wird im Konstruktor vergeben)
+    struct ThreadState regs;
 
     Thread();
-
     ~Thread();
 
     // Thread aktivieren
