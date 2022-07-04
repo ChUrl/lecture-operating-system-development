@@ -24,7 +24,7 @@
             # llvmPackages_14.clang-unwrapped
             # clang_14 # LSP + formatting
             # libcxxStdenv
-            # clang-tools_14
+            clang-tools_14
             # llvmPackages.libcxxClang # LSP + formatting
           ];
 
