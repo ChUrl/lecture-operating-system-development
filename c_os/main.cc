@@ -16,6 +16,8 @@
 #include "user/CoopThreadDemo.h"
 #include "user/HelloWorldThread.h"
 #include "user/VBEdemo.h"
+#include "user/PCSPKdemo.h"
+#include "user/PreemptiveThreadDemo.h"
 
 int main() {
     kout.clear();
@@ -28,7 +30,7 @@ int main() {
 
     // Startmeldung
     if constexpr (!DEBUG) {
-        kout << "HHUos 0.8\n"
+        kout << "HHUos 0.9\n"
              << "=========\n"
              << "Unterstuetzte Funktionen:\n"
              << "   - Bildschirmausgaben\n"
@@ -38,7 +40,8 @@ int main() {
              << "   - Tastatureingaben per Interrupt\n"
              << "   - Kooperative Threads\n"
              << "   - VESA Graphics Mode\n"
-             << "   - Paging\n"
+             << "   - Einfaches Paging\n"
+             << "   - Preemptive Threads\n"
              << endl;
     }
 
@@ -74,8 +77,8 @@ int main() {
     // scheduler.ready(new HelloWorldThread());
     // scheduler.ready(new CoopThreadDemo());
     // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
-
-    // pcspk.tetris();
+    scheduler.ready(new PCSPKdemo());
+    scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
