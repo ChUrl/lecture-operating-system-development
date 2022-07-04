@@ -86,28 +86,54 @@ Thread_switch:
 ; *
 ; * Hier muss Code eingefuegt werden
 ; *
-
-    ;; Make eax point to beginning of regs_now in memory
-    mov eax, [esp + 0x4]
-
     ;; Save current coroutine registers
-    mov [eax + ebx_offset], ebx
+    ;; == High address ==
+    ;;        *REGS_THEN
+    ;;        *REGS_NOW
+    ;;        RET ADDR
+    ;; SP --> EAX
+    ;; == Low address ==
+    push eax                    ; backup eax before using it as index
+    mov eax, [esp + 0x8]
+
+    pushf                       ; store eflags
+    pop ebx
+    mov [eax + efl_offset], ebx
+
+    add esp, 0x4                ; store the original esp
+    mov [eax + esp_offset], esp
+    sub esp, 0x4
+
+    mov [eax + ebx_offset], ebx ; store other regs
     mov [eax + esi_offset], esi
     mov [eax + edi_offset], edi
     mov [eax + ebp_offset], ebp
-    mov [eax + esp_offset], esp
+    mov [eax + ecx_offset], ecx
+    mov [eax + edx_offset], edx
 
-    ;; Make eax point to beginning of regs_then in memory
+    pop ebx                     ; store eax
+    mov [eax + eax_offset], ebx
+
+    ;; Load next coroutine registers ============================================================
     mov eax, [esp + 0x8]
 
-    ;; Load next coroutine registers
-    mov ebx, [eax + ebx_offset]
+    mov ebx, [eax + efl_offset]     ; restore eflags
+    push ebx                        ; could be pushed directly from address but i didn't want to specify wordsize
+    popf
+
+    mov ebx, [eax + ebx_offset] ; restore other regs
     mov esi, [eax + esi_offset]
     mov edi, [eax + edi_offset]
     mov ebp, [eax + ebp_offset]
     mov esp, [eax + esp_offset]
+    mov ecx, [eax + ecx_offset]
+    mov edx, [eax + edx_offset]
 
-    ;; Stackpointer now points to kickoff address, ret jumps there
-    ;; NOTE: The stackpointer only points to kickoff if the next coroutine was just initialized.
+    mov eax, [eax + eax_offset] ; restore eax
+
+    ;; Enable interrupts again
+    sti
+
+    ;; NOTE: The stackpointer points to kickoff if the next coroutine was just initialized.
     ;;       Otherwise it just points somewhere in the next coroutines stack
     ret
