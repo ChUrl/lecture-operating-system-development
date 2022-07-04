@@ -84,28 +84,6 @@ inline void PCSPK::delay(int time) {
 
     /* Hier muess Code eingefuegt werden */
 
-    // 1.19 MHz => 1s for full countdown
-    unsigned short cntStart = 1193180 / 1000;  // 1s / 1000 = 1ms countdown
-
-    // 00110000 => 0x30: Counter0, LoByte/HiByte, Mode0, Binary
-    // 00110010 => 0x32: Counter0, LoByte/HiByte, Mode1, Binary
-    // 00110100 => 0x34: Counter0, LoByte/HiByte, Mode2, Binary
-    // 00110110 => 0x36: Counter0, LoByte/HiByte, Mode3, Binary
-    control.outb(0x34);           // Zaehler-0 konfigurieren
-    data0.outb(cntStart & 0xFF);  // Zaehler-0 laden (Lobyte)
-    data0.outb(cntStart >> 8);    // Zaehler-0 laden (Hibyte)
-
-    int initial_count, current_count;
-    for (int i = 0; i < time; ++i) {
-        initial_count = readCounter();
-        while (1) {
-            current_count = readCounter();
-
-            if (current_count > initial_count) break;  // The counter has already been reset
-
-            initial_count = current_count;
-        }
-    }
 }
 
 /*****************************************************************************

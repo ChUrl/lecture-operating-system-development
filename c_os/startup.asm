@@ -8,9 +8,17 @@
 ;*                  Es wird alles vorbereitet, damit so schnell wie moeglich  *
 ;*                  die weitere Ausfuehrung durch C-Code erfolgen kann.       *
 ;*                                                                            *
+;*                  Hier erweitert, um BIOS callund Paging-Aktivierung,       *
+;*                  Unterstuetzung des Bluescreens und preemptives            * 
+;*                  Thread-Switching.                                         *
+;*                                                                            *
 ;* Autor:           Olaf Spinczyk, TU Dortmund                                *
-;*                  Michael Schoettner, HHU, 15.12.2018                       *
+;*                  Michael Schoettner, HHU, 3.7.2022                        *
 ;******************************************************************************
+
+; fuer preemptives Umschalten zwischen Threads
+%include "kernel/threads/Thread.inc"
+
 
 ; Multiboot-Konstanten
 MULTIBOOT_PAGE_ALIGN	equ	1<<0
@@ -35,6 +43,7 @@ MULTIBOOT_EAX_MAGIC	equ	0x2badb002
 [GLOBAL paging_on]
 [GLOBAL get_page_fault_address]
 [GLOBAL get_int_esp]
+
 
 ; Michael Schoettner:
 ; Nachfolgender label steht fuer das 'delete', welches jetzt implementiert
@@ -158,17 +167,17 @@ wrapper i
 
 ; Gemeinsamer Rumpf
 wrapper_body:
-	cld             ; das erwartet der gcc so.
-	push	ecx		; Sichern der fluechtigen Register
-	push	edx
-	and	eax,0xff	; Der generierte Wrapper liefert nur 8 Bits
-	push	eax		; Nummer der Unterbrechung uebergeben
-	call	int_disp
-	add	esp,4		; Parameter vom Stack entfernen
-	pop	edx         ; fluechtige Register wieder herstellen
-	pop	ecx
-	popad           ; alle Register wiederherstellen
-	iret            ; fertig!
+    cld             ; das erwartet der gcc so.
+    push	ecx		; Sichern der fluechtigen Register
+    push	edx
+    and	eax,0xff	; Der generierte Wrapper liefert nur 8 Bits
+    push	eax		; Nummer der Unterbrechung uebergeben
+    call	int_disp; Interrupt-Dispatcher aufrufen
+    add esp,4       ; Parameter vom Stack entfernen
+    pop	edx         ; fluechtige Register wieder herstellen
+    pop	ecx
+    popad	        ; alle Register wiederherstellen
+    iret            ; fertig!
 
 ;
 ; setup_idt
@@ -371,7 +380,7 @@ idt16_descr:
 ; (genauerer Stack-Aufbau siehe Bluescreen.cc)
 ;
 ; |-------------|
-; |    EFLAGS   |
+; |    EFLAGS   |
 ; |-------------|
 ; |      CS     |
 ; |-------------|
@@ -379,8 +388,9 @@ idt16_descr:
 ; |-------------|
 ; | [ErrorCode] |
 ; |-------------|
-; | alle Regs.  |
-; | (PUSHAD)    |
+; | alle Regs.  |
+; | (PUSHAD)    |
 ; |-------------| <-- int_esp
 int_esp:
-    db 0,0,0,0
+    db 0,0,0,0   
+   

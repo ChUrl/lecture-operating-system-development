@@ -22,6 +22,7 @@
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/threads/Scheduler.h"
+#include "devices/PIT.h"
 
 extern CPU cpu;                 // CPU-spezifische Funktionen
 extern PCSPK pcspk;             // PC-Lautsprecher
@@ -29,7 +30,9 @@ extern CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
 extern Keyboard kb;             // Tastatur
 extern IntDispatcher intdis;    // Unterbrechungsverteilung
 extern PIC pic;                 // Interrupt-Controller
+extern PIT              pit;        // Zeitgeber
 extern unsigned int total_mem;  // RAM total
+extern unsigned long    systime;    // wird all 10ms hochgezaehlt
 // extern BumpAllocator         allocator;
 // extern LinkedListAllocator allocator;
 extern TreeAllocator allocator;

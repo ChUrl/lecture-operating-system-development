@@ -24,3 +24,7 @@ esi_offset:	resd 1
 edi_offset:	resd 1
 ebp_offset:	resd 1
 esp_offset:	resd 1
+eax_offset:	resd 1
+ecx_offset:	resd 1
+edx_offset:	resd 1
+efl_offset:	resd 1

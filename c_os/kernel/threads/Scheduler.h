@@ -22,8 +22,20 @@ private:
 
     Queue readyQueue;  // auf die CPU wartende Threads
 
+    // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
+    // bevor er initialisiert wurde
+    bool initialized;
+
 public:
-    Scheduler() {}
+    Scheduler() : initialized(false) {}
+
+    // Scheduler initialisiert?
+    // Zeitgeber-Unterbrechung kommt evt. bevor der Scheduler fertig
+    // intiialisiert wurde!
+    bool isInitialized() { return initialized; }
+
+    // ruft nur der Idle-Thread (erster Thread der vom Scheduler gestartet wird)
+    void setInitialized() { initialized = true; }
 
     // Scheduler starten
     void schedule();
@@ -39,6 +51,10 @@ public:
 
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield();
+
+
+    // Thread umschalten; wird aus der ISR des PITs gerufen
+    void preempt ();
 };
 
 #endif

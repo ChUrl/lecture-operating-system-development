@@ -22,6 +22,9 @@ public:
     IdleThread() {}
 
     void run() override {
+        // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
+        scheduler.setInitialized();
+
         while (true) {
             scheduler.yield();
             // kout << "Idle!" << endl;

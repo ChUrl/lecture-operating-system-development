@@ -70,6 +70,15 @@ void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(
     regs->edi = 0;
     regs->ebp = 0;
     regs->esp = sp;  // esp now points to the location of the address of kickoff
+
+    // nachfolgend die fluechtige Register
+    // wichtig fuer preemptives Multitasking
+    regs->eax = 0;
+    regs->ecx = 0;
+    regs->edx = 0;
+
+    // flags initialisieren
+    regs->efl = (void*)0x200; // Interrupt-Enable
 }
 
 /*****************************************************************************

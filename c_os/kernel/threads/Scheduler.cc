@@ -22,7 +22,8 @@ void Scheduler::schedule() {
     /* hier muss Code eingefuegt werden */
 
     Thread* idle = new IdleThread();
-    this->readyQueue.enqueue(idle);
+    // this->readyQueue.enqueue(idle);
+    this->ready(idle);
 
     /* Bevor diese Methode anufgerufen wird, muss zumindest der Idle-Thread
      * in der Queue eingefuegt worden sein. 
@@ -44,7 +45,13 @@ void Scheduler::ready(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
 
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
     this->readyQueue.enqueue(that);
+
+    // Thread-Wechsel durch PIT jetzt wieder erlauben
+    cpu.enable_int ();
 }
 
 /*****************************************************************************
@@ -59,8 +66,14 @@ void Scheduler::exit() {
 
     /* hier muss Code eingefuegt werden */
 
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->dispatch(next);
+
+    // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
+    // dispatch kehr nicht zurueck
 }
 
 /*****************************************************************************
@@ -78,7 +91,13 @@ void Scheduler::kill(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
 
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
     this->readyQueue.remove(that);
+
+    // Thread-Wechsel durch PIT jetzt wieder erlauben
+    cpu.enable_int ();
 }
 
 /*****************************************************************************
@@ -96,6 +115,9 @@ void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
+    // Thread-Wechsel durch PIT verhindern
+    cpu.disable_int ();
+
     // When only one thread exists (IdleThread) it can't yield as the readyqueue becomes empty
     // and this is not handled anywhere else
     if (this->readyQueue.isEmpty()) {
@@ -106,4 +128,20 @@ void Scheduler::yield() {
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());
     this->dispatch(next);
+
+    // Thread-Wechsel durch PIT jetzt wieder erlauben
+    cpu.enable_int ();
+}
+
+/*****************************************************************************
+ * Methode:         Scheduler::preempt                                       *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Diese Funktion wird aus der ISR des PITs aufgerufen und  *
+ *                  schaltet auf den naechsten Thread um, sofern einer vor-  *
+ *                  handen ist.                                              *
+ *****************************************************************************/
+void Scheduler::preempt () {
+
+   /* Hier muss Code eingefuegt werden */
+
 }

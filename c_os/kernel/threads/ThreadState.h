@@ -34,6 +34,12 @@ struct ThreadState {
     void* edi;
     void* ebp;
     void* esp;
+    // nachfolgend die fluechtige Register
+    // wichtig fuer preemptives Multitasking
+    void *eax;
+    void *ecx;
+    void *edx;
+    void *efl;
 };
 
 #endif
