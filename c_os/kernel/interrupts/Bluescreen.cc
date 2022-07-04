@@ -163,7 +163,7 @@ void bs_dump(unsigned int exceptionNr) {
     unsigned int has_error_code = 0;
 
     bs_clear();
-    bs_print_string("HHUos crashed with Exception\0");
+    bs_print_string("HHUos crashed with Exception \0");
 
     // Exception mit Error-Code?
     if ((exceptionNr >= 8 && exceptionNr <= 14) || exceptionNr == 17 || exceptionNr == 30) {
