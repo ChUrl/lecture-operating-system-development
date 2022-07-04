@@ -15,9 +15,9 @@
 #include "kernel/threads/IdleThread.h"
 #include "user/CoopThreadDemo.h"
 #include "user/HelloWorldThread.h"
-#include "user/VBEdemo.h"
 #include "user/PCSPKdemo.h"
 #include "user/PreemptiveThreadDemo.h"
+#include "user/VBEdemo.h"
 
 int main() {
     kout.clear();

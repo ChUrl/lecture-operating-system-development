@@ -24,8 +24,8 @@ void Scheduler::schedule() {
     // We need to start the idle thread first as this one sets the scheduler to initialized
     // Other wise preemption will be blocked and nothing will happen if the first threads
     // ready() function is blocking
-    this->start(*(Thread*)new IdleThread()); // The idle thread set initialized to true, so preemption
-                        // only starts after this
+    this->start(*(Thread*)new IdleThread());  // The idle thread set initialized to true, so preemption
+                                              // only starts after this
 }
 
 /*****************************************************************************
@@ -41,12 +41,12 @@ void Scheduler::ready(Thread* that) {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int ();
+    cpu.disable_int();
 
     this->readyQueue.enqueue(that);
 
     // Thread-Wechsel durch PIT jetzt wieder erlauben
-    cpu.enable_int ();
+    cpu.enable_int();
 }
 
 /*****************************************************************************
@@ -62,7 +62,7 @@ void Scheduler::exit() {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int ();
+    cpu.disable_int();
 
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->dispatch(next);
@@ -87,12 +87,12 @@ void Scheduler::kill(Thread* that) {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int ();
+    cpu.disable_int();
 
     this->readyQueue.remove(that);
 
     // Thread-Wechsel durch PIT jetzt wieder erlauben
-    cpu.enable_int ();
+    cpu.enable_int();
 }
 
 /*****************************************************************************
@@ -118,7 +118,7 @@ void Scheduler::yield() {
     }
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int ();
+    cpu.disable_int();
 
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());
@@ -132,7 +132,7 @@ void Scheduler::yield() {
  *                  schaltet auf den naechsten Thread um, sofern einer vor-  *
  *                  handen ist.                                              *
  *****************************************************************************/
-void Scheduler::preempt () {
+void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
@@ -142,7 +142,7 @@ void Scheduler::preempt () {
     }
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int ();
+    cpu.disable_int();
 
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());

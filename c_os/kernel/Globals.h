@@ -13,6 +13,7 @@
 #include "devices/CGA_Stream.h"
 #include "devices/Keyboard.h"
 #include "devices/PCSPK.h"
+#include "devices/PIT.h"
 #include "devices/VESA.h"
 #include "kernel/allocator/BumpAllocator.h"
 #include "kernel/allocator/LinkedListAllocator.h"
@@ -22,24 +23,26 @@
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/threads/Scheduler.h"
-#include "devices/PIT.h"
 
-extern CPU cpu;                 // CPU-spezifische Funktionen
-extern PCSPK pcspk;             // PC-Lautsprecher
-extern CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
-extern Keyboard kb;             // Tastatur
-extern IntDispatcher intdis;    // Unterbrechungsverteilung
-extern PIC pic;                 // Interrupt-Controller
-extern PIT              pit;        // Zeitgeber
-extern unsigned int total_mem;  // RAM total
-extern unsigned long    systime;    // wird all 10ms hochgezaehlt
+extern CPU cpu;          // CPU-spezifische Funktionen
+extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
+extern BIOS bios;        // Schnittstelle zum 16-Bit BIOS
+extern VESA vesa;        // VESA-Treiber
+
+extern PIC pic;               // Interrupt-Controller
+extern IntDispatcher intdis;  // Unterbrechungsverteilung
+extern PIT pit;               // Zeitgeber
+extern Keyboard kb;           // Tastatur
+extern PCSPK pcspk;           // PC-Lautsprecher
+
 // extern BumpAllocator         allocator;
 // extern LinkedListAllocator allocator;
 extern TreeAllocator allocator;
 extern Scheduler scheduler;
-extern BIOS bios;  // Schnittstelle zum 16-Bit BIOS
-extern VESA vesa;  // VESA-Treiber
 
 constexpr bool DEBUG = true;
+
+extern unsigned int total_mem;  // RAM total
+extern unsigned long systime;   // wird all 10ms hochgezaehlt
 
 #endif

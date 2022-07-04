@@ -1,8 +1,8 @@
 #ifndef __pre_loopthread_include__
 #define __pre_loopthread_include__
 
-#include "kernel/threads/Thread.h"
 #include "kernel/Globals.h"
+#include "kernel/threads/Thread.h"
 
 class PreemptiveLoopThread : public Thread {
 

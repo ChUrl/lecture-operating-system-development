@@ -92,7 +92,7 @@ unsigned int* pg_alloc_page() {
         // pruefe ob Page frei
         if (((*p_page) & PAGE_RESERVED) == 0) {
             *p_page = (*p_page | PAGE_RESERVED);
-            return (unsigned int*)(i << 12); // Address without flags (Offset 0)
+            return (unsigned int*)(i << 12);  // Address without flags (Offset 0)
         }
     }
     return 0;
@@ -108,10 +108,10 @@ void pg_write_protect_page(unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
-    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12); // Pagetable entry
+    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12);  // Pagetable entry
 
     unsigned int mask = PAGE_WRITEABLE;  // fill to 32bit
-    *page = *page & ~mask;           // set writable to 0
+    *page = *page & ~mask;               // set writable to 0
 }
 
 /*****************************************************************************
@@ -123,7 +123,7 @@ void pg_notpresent_page(unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
-    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12); // Pagetable entry
+    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12);  // Pagetable entry
 
     unsigned int mask = PAGE_PRESENT;
     *page = *page & ~mask;  // set present to 0

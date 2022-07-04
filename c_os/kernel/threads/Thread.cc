@@ -78,7 +78,7 @@ void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(
     regs->edx = 0;
 
     // flags initialisieren
-    regs->efl = (void*)0x200; // Interrupt-Enable
+    regs->efl = (void*)0x200;  // Interrupt-Enable
 }
 
 /*****************************************************************************

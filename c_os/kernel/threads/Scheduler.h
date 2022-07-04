@@ -52,9 +52,8 @@ public:
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield();
 
-
     // Thread umschalten; wird aus der ISR des PITs gerufen
-    void preempt ();
+    void preempt();
 };
 
 #endif

@@ -10,18 +10,21 @@
 
 #include "kernel/Globals.h"
 
-CPU cpu;                 // CPU-spezifische Funktionen
-PCSPK pcspk;             // PC-Lautsprecher
-CGA_Stream kout;         // Ausgabe-Strom fuer Kernel
-Keyboard kb;             // Tastatur
-IntDispatcher intdis;    // Unterbrechungsverteilung
-PIC pic;                 // Interrupt-Controller
-unsigned int total_mem;  // RAM total
-unsigned long systime = 0;
+CPU cpu;          // CPU-spezifische Funktionen
+CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
+BIOS bios;        // Schnittstelle zum 16-Bit BIOS
+VESA vesa;        // VESA-Treiber
+
+PIC pic;               // Interrupt-Controller
+IntDispatcher intdis;  // Unterbrechungsverteilung
+PIT pit(10000);
+Keyboard kb;  // Tastatur
+PCSPK pcspk;  // PC-Lautsprecher
+
 // BumpAllocator         allocator;
 // LinkedListAllocator allocator;
 TreeAllocator allocator;
 Scheduler scheduler;
-BIOS bios;  // Schnittstelle zum 16-Bit BIOS
-VESA vesa;  // VESA-Treiber
-PIT pit(10000);
+
+unsigned int total_mem;  // RAM total
+unsigned long systime = 0;
