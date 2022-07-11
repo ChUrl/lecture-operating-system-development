@@ -4,7 +4,7 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Implementierung eines Spinlocks mithilfe der cmpxchg     *
- *					Instruktion. 											 *
+ *                  Instruktion.                                             *
  *                                                                           *
  * Autor:           Michael Schoettner, 2.2.2018                             *
  *****************************************************************************/
