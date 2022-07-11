@@ -96,10 +96,6 @@ Thread_switch:
     push eax                    ; backup eax before using it as index
     mov eax, [esp + 0x8]
 
-    pushf                       ; store eflags
-    pop ebx
-    mov [eax + efl_offset], ebx
-
     add esp, 0x4                ; store the original esp
     mov [eax + esp_offset], esp
     sub esp, 0x4
@@ -110,6 +106,10 @@ Thread_switch:
     mov [eax + ebp_offset], ebp
     mov [eax + ecx_offset], ecx
     mov [eax + edx_offset], edx
+
+    pushf                       ; store eflags
+    pop ebx
+    mov [eax + efl_offset], ebx
 
     pop ebx                     ; store eax
     mov [eax + eax_offset], ebx
@@ -128,7 +128,6 @@ Thread_switch:
     mov esp, [eax + esp_offset]
     mov ecx, [eax + ecx_offset]
     mov edx, [eax + edx_offset]
-
     mov eax, [eax + eax_offset] ; restore eax
 
     ;; Enable interrupts again
