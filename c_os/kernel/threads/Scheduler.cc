@@ -6,6 +6,18 @@
  * Beschreibung:    Implementierung eines einfachen Zeitscheiben-Schedulers. *
  *                  Rechenbereite Threads werden in 'readQueue' verwaltet.   *
  *                                                                           *
+ *                  Der Scheduler wird mit 'schedule' gestartet. Neue Threads*
+ *                  können mit 'ready' hinzugefügt werden. Ein Thread muss   *
+ *                  die CPU freiwillig mit 'yield' abgeben, damit andere auch*
+ *                  rechnen koennen. Ein Thread kann sich selbst mit 'exit'  *
+ *                  terminieren. Ein Thread kann einen anderen Thread mit    *
+ *                  'kill' beenden. Ein erzwungener Threadwechsel erfolgt    *
+ *                  mit der Funktion 'preempt', welche von der Timer-ISR     *
+ *                  aufgerufen wird.                                         *
+ *                                                                           *
+ *                  Zusaetzlich gibt es nun fuer die Semaphore zwei neue     *
+ *                  Funktionen 'block' und 'deblock'.                        *
+ *                                                                           *
  * Autor:           Michael, Schoettner, HHU, 23.11.2018                     *
  *****************************************************************************/
 
@@ -147,4 +159,35 @@ void Scheduler::preempt() {
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->readyQueue.enqueue(this->get_active());
     this->dispatch(next);
+}
+
+/*****************************************************************************
+ * Methode:         Scheduler::block                                         *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Aufrufer ist blockiert. Es soll auf den naechsten Thread *
+ *                  umgeschaltet werden. Der Aufrufer soll nicht in die      *
+ *                  readyQueue eingefuegt werden und wird extern verwaltet.  *
+ *                  Wird bei uns nur fuer Semaphore verwendet. Jede Semaphore*
+ *                  hat eine Warteschlange wo der Thread dann verwaltet wird.*
+ *                  Die Methode kehrt nicht zurueck, sondern schaltet um.    *
+ *****************************************************************************/
+void Scheduler::block() {
+
+    /* hier muss Code eingefuegt werden */
+}
+
+/*****************************************************************************
+ * Methode:         Scheduler::deblock                                       *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Thread 'that' deblockieren. 'that' wird nur in die       *
+ *                  readyQueue eingefuegt und dann zurueckgekehrt. In der    *
+ *                  einfachsten Form entspricht diese Funktion exakt 'ready' *
+ *                  Man koennte alternativ aber den deblockierten Thread auch*
+ *                  am Anfang der readyQueue einfuegen, um ihn zu beorzugen. *
+ *                                                                           *
+ * Parameter:       that:  Thread der deblockiert werden soll.               *
+ *****************************************************************************/
+void Scheduler::deblock(Thread& that) {
+
+    /* hier muss Code eingefuegt werden */
 }

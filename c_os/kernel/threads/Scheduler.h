@@ -32,7 +32,7 @@ public:
     // Scheduler initialisiert?
     // Zeitgeber-Unterbrechung kommt evt. bevor der Scheduler fertig
     // intiialisiert wurde!
-    bool isInitialized() { return initialized; }
+    bool isInitialized() const { return initialized; }
 
     // ruft nur der Idle-Thread (erster Thread der vom Scheduler gestartet wird)
     void setInitialized() { initialized = true; }
@@ -54,6 +54,9 @@ public:
 
     // Thread umschalten; wird aus der ISR des PITs gerufen
     void preempt();
+
+    void block();
+    void deblock(Thread& that);
 };
 
 #endif
