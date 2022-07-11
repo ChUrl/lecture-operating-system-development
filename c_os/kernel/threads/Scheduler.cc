@@ -182,6 +182,7 @@ void Scheduler::block() {
 
     cpu.disable_int();
     Thread& next = *(Thread*)this->readyQueue.dequeue();
+    // Current thread is not added to readyQueue, gets managed by semaphore
     this->dispatch(next);
 }
 
