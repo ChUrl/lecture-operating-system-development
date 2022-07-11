@@ -15,25 +15,39 @@
 #ifndef __CGA_Stream_include__
 #define __CGA_Stream_include__
 
-// #include "devices/BufferedCGA.h"
 #include "devices/BufferedCGA.h"
 #include "lib/OutStream.h"
 
-// NOTE: I added this
+// NOTE: I added these classes to allow for easier stream-like color changing
 class fgc {
 public:
-    fgc() : fg(CGA::LIGHT_GREY) {}
-    fgc(CGA::color fg) : fg(fg) {}
-    CGA::color fg;
-};
-class bgc {
-public:
-    bgc() : bg(CGA::BLACK) {}
-    bgc(CGA::color bg) : bg(bg) {}
-    CGA::color bg;
+    constexpr fgc(const CGA::color fg) : fg(fg) {}
+    const CGA::color fg;
 };
 
-// NOTE: I added this (changed this) to use BufferedCGA
+// NOTE: I could have used a struct to remove the public, but I like to use
+//       structs exclusively for C like memory "descriptions", although they're
+//       techinally the same to classes
+class bgc {
+public:
+    constexpr bgc(const CGA::color bg) : bg(bg) {} // Make this into a literal type to allow macro-like usage
+    const CGA::color bg;
+};
+
+// NOTE: I didn't want to use macro definitions since I don't like them,
+//       makes it easier to change colors
+constexpr bgc white_b = bgc(CGA::WHITE);
+constexpr bgc black_b = bgc(CGA::BLACK);
+constexpr bgc green_b = bgc(CGA::GREEN);
+constexpr bgc red_b = bgc(CGA::RED);
+constexpr bgc lgrey_b = bgc(CGA::LIGHT_GREY);
+constexpr fgc white_f = fgc(CGA::WHITE);
+constexpr fgc black_f = fgc(CGA::BLACK);
+constexpr fgc green_f = fgc(CGA::GREEN);
+constexpr fgc red_f = fgc(CGA::RED);
+constexpr fgc lgrey_f = fgc(CGA::LIGHT_GREY);
+
+// NOTE: I changed this to use BufferedCGA so I can view offscreen text
 class CGA_Stream : public OutStream, public BufferedCGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
@@ -50,7 +64,7 @@ public:
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
 
-    // NOTE: I added this
+    // Change stream color
     template<typename T>
     // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const fgc& fg) {
@@ -58,7 +72,6 @@ public:
         os.color_fg = fg.fg;
         return os;
     }
-
     template<typename T>
     // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const bgc& bg) {

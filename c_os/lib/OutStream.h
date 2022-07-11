@@ -28,22 +28,20 @@
 // NOTE: I added this
 class fillw {
 public:
-    fillw() : w(0) {}
-    fillw(unsigned char w) : w(w) {}
-    unsigned char w;
+    constexpr fillw(const unsigned char w) : w(w) {}
+    const unsigned char w;
 };
 class fillc {
 public:
-    fillc() : c(' ') {}
-    fillc(char c) : c(c) {}
-    char c;
+    constexpr fillc(const char c) : c(c) {}
+    const char c;
 };
 
 class OutStream : public StringBuffer {
 private:
     OutStream(const OutStream& copy) = delete;  // Verhindere Kopieren
 
-    // NOTE: I added this
+    // Some stream formatting
     unsigned char fill_used;  // indicates how many characters are already used by the text internally
     void fill_use_char();     // recognizes that one char from the print width has been used up
     void fill_finalize();     // does the filling after text has been written to buffer
@@ -51,7 +49,7 @@ private:
 public:
     int base;  // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
 
-    // NOTE: I added this
+    // // Some stream formatting
     unsigned char fill_width;
     char fill_char;  // fill character for fixed width
 
@@ -60,7 +58,6 @@ public:
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
 
-    // NOTE: I added this, override put for fixed width
     void put(char c) override;
 
     // OPERATOR << : Umwandlung des angegebenen Datentypes in eine
@@ -194,7 +191,7 @@ public:
         return f(os);
     }
 
-    // NOTE: I added this
+    // For stream formatting
     template<typename T>
     // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillw& w) {
@@ -202,7 +199,6 @@ public:
         os.fill_width = w.w;
         return os;
     }
-
     template<typename T>
     // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillc& c) {
