@@ -11,13 +11,18 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
+
+// TODO: paging/bluescreen demo, don't include here
 #include "kernel/Paging.h"
-#include "kernel/threads/IdleThread.h"
-#include "user/CoopThreadDemo.h"
-#include "user/HelloWorldThread.h"
-#include "user/PCSPKdemo.h"
-#include "user/PreemptiveThreadDemo.h"
-#include "user/VBEdemo.h"
+
+// Demos
+// TODO: Make demo header or include through demo menu
+#include "user/demo/HeapDemo.h"
+#include "user/demo/KeyboardDemo.h"
+#include "user/demo/PCSPKdemo.h"
+#include "user/demo/PreemptiveThreadDemo.h"
+#include "user/demo/TextDemo.h"
+#include "user/demo/VBEdemo.h"
 
 int main() {
     kout.clear();
@@ -30,7 +35,7 @@ int main() {
 
     // Startmeldung
     kout << "HHUos 0.10\n"
-         << "=========\n"
+         << "==========\n"
          << "Unterstuetzte Funktionen:\n"
          << "   - Bildschirmausgaben\n"
          << "   - Sound ueber den PC-Lautsprecher\n"
@@ -73,22 +78,37 @@ int main() {
     // *page = 42; // We map logical to physical 1:1 so no need to do any lookup
     //             // If tlb is invalidated this access produces a pagefault
 
-    // TODO: Make menu for demos
-    // Demo threads anlegen
-    // scheduler.ready(new HelloWorldThread());
-    // scheduler.ready(new CoopThreadDemo());
-    // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
-    // scheduler.ready(new PCSPKdemo());
-    scheduler.ready(new PreemptiveThreadDemo());
+    // New demos
+    // scheduler.ready(new TextDemo());
+    // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
+    // scheduler.ready(new KeyboardDemo());
+    // scheduler.ready(new HeapDemo());
+    // scheduler.ready(new VBEdemo());
+    // scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
 
+    // NOTE: Enforced ToDo's (needed)
+    // DONE: Rewrite demos for threads
+    // TODO: Make menu for demos
+    //
+    // NOTE: Main ToDo's (extra)
+    // TODO: Basic event management for keyboard events so threads can utilize interrupt based inputs
+    // TODO: Textual UI with some sort of modeline
+    // TODO: Serial output, output graphviz dot data for memory etc.
+    // TODO: Some sort of extremely basic shell (basically can't do anything except start demos
+    //                                           because there is no filesystem at all)
+    // TODO: Fix the damn TreeAllocator: Allow root deletion without bluescreen
+    //
+    // NOTE: Cleanup + Refactor
     // TODO: Use templates for queue so threads don't have to be casted down from chain
     // TODO: Change scheduler to only use references instead of pointers
-    // TODO: Rewrite all demos to threads
     // TODO: Unify debug output format
-    // TODO: Serial output, output graphviz dot data for memory etc.
+    // TODO: Drawing Circles
+    // TODO: Cleanup: Remove I added this... Notes, just leave explanations
+    // TODO: Remove Math "lib" or do something with it
+    // TODO: Cleanup imports: Only import stuff in implementation when only needed there
 
     // Scheduler doesn't return
     return 0;
