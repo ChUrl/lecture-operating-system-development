@@ -50,6 +50,8 @@ static inline unsigned long CAS(unsigned long* ptr, unsigned long old, unsigned 
  * Beschreibung:    Lock belegen.                                            *
  *****************************************************************************/
 void SpinLock::acquire() {
+    // If lock == 0 the SpinLock can be aquired without waiting
+    // If lock == 1 the  while loop blocks until aquired
     while (CAS(ptr, 0, 1) != 0) {}
 }
 

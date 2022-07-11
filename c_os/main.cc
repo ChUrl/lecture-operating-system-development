@@ -84,6 +84,11 @@ int main() {
     scheduler.schedule();
 
     // TODO: Use templates for queue so threads don't have to be casted down from chain
+    // TODO: Change scheduler to only use references instead of pointers
+    // TODO: Rewrite all demos to threads
+    // TODO: Make menu for demos
+    // TODO: Unify debug output format
+    // TODO: Serial output
 
     // Scheduler doesn't return
     return 0;

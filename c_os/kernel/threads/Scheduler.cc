@@ -181,7 +181,6 @@ void Scheduler::block() {
     }
 
     cpu.disable_int();
-
     Thread& next = *(Thread*)this->readyQueue.dequeue();
     this->dispatch(next);
 }
