@@ -60,6 +60,7 @@ void* TreeAllocator::alloc(unsigned int req_size) {
     unsigned int size = this->get_size(best_fit);
     if constexpr (DEBUG) { kout << " - Found best-fit: " << hex << (unsigned int)best_fit << endl; }
 
+    this->rbt_remove(best_fit); // BUG: On first allocation this crashes as the tree root is being removed
     if (size > HEAP_MIN_FREE_BLOCK_SIZE + rreq_size + sizeof(list_block_t)) {
         // Block can be cut
         if constexpr (DEBUG) { kout << " - Allocating " << dec << rreq_size << " Bytes with cutting" << endl; }
@@ -75,11 +76,18 @@ void* TreeAllocator::alloc(unsigned int req_size) {
         // need to remove it from the freelist, which is done for both cases
         if constexpr (DEBUG) { kout << " - Allocating " << dec << rreq_size << " Bytes without cutting" << endl; }
     }
+
     // Remove the old block from the freelist
+    // NOTE: Originally this was placed before the leading if/else, but the red black tree code crashes
+    //       when removing the tree root (NullPointerException bluescreen) so I moved the removal down.
+    //       This could influence how the above rbt_insertion places the new_block, resulting in a broken
+    //       freelist (unbalanced red black tree, not completely broken), but I didn't have time to fix this
+    //       correctly
     // BUG: If the first allocation allocates the whole heap, this removal will crash the paging
-    //      as the freelist will no longer contain any notes, gives NullPointerException as it's not handled
+    //      as the freelist will no longer contain any nodes, gives NullPointerException as it's not handled
+    //      in the red black tree code (I think)
     // kout << " - Removing block from freelist" << endl;
-    this->rbt_remove(best_fit);
+    // this->rbt_remove(best_fit); // HACK
 
     if constexpr (DEBUG) { kout << " - Returned address " << hex << (unsigned int)((char*)best_fit + sizeof(list_block_t)) << endl; }
     return (void*)((char*)best_fit + sizeof(list_block_t));
@@ -93,7 +101,7 @@ void TreeAllocator::free(void* ptr) {
         // Block already free
         return;
     }
-    block->allocated = false;
+    block->allocated = false; // If the block is merged backwards afterwards this is unnecessary
 
     list_block_t* previous = block->previous;
     list_block_t* next = block->next;
@@ -109,11 +117,15 @@ void TreeAllocator::free(void* ptr) {
 
         // Remove the next block from all lists as it is now part of our freed block
         this->dll_remove(next);
-        this->rbt_remove((tree_block_t*)next);
+        this->rbt_remove((tree_block_t*)next); // BUG: Bluescreen if next is the only block in the freelist
         if (previous->allocated) {
-            // Don't insert if removed later
+            // Don't insert if removed later because of backward merge
             this->rbt_insert((tree_block_t*)block);
         }
+        // NOTE: Originally this was placed before the leading if (after this->dll_remove(next)),
+        //       but the red black tree code crashes when removing the tree node (like on insertion).
+        //       Placing this here could lead to an unbalanced freelist.
+        // this->rbt_remove((tree_block_t*)next); // HACK
     }
 
     if (!previous->allocated) {
