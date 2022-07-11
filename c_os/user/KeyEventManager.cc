@@ -8,7 +8,7 @@ void KeyEventManager::subscribe(KeyEventListener& listener) {
 
 void KeyEventManager::broadcast(char c) {
     for (unsigned int i = 0; i < this->num_subscribed; ++i) {
-        this->listeners[i]->trigger(c);  // Sets lastChar
+        this->listeners[i]->trigger(c);  // Sets lastChar, do this before wakeup
         scheduler.deblock(&this->listeners[i]->thread);
     }
 }
