@@ -19,7 +19,9 @@ private:
     IdleThread(const Thread& copy) = delete;  // Verhindere Kopieren
 
 public:
-    IdleThread() {}
+    IdleThread() {
+        kout << "Initialized Idle Thread" << endl;
+    }
 
     void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
