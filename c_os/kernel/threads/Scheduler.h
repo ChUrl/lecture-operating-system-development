@@ -21,6 +21,7 @@ private:
     Scheduler(const Scheduler& copy) = delete;  // Verhindere Kopieren
 
     Queue readyQueue;  // auf die CPU wartende Threads
+    Queue blockQueue;
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
@@ -55,8 +56,12 @@ public:
     // Thread umschalten; wird aus der ISR des PITs gerufen
     void preempt();
 
+    // TODO: Merge this with usual block/deblock
     void block();
     void deblock(Thread* that);
+
+    // void block();
+    // void deblock(Thread* that);
 };
 
 #endif

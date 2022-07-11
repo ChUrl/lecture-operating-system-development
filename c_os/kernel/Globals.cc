@@ -18,8 +18,10 @@ VESA vesa;        // VESA-Treiber
 PIC pic;               // Interrupt-Controller
 IntDispatcher intdis;  // Unterbrechungsverteilung
 PIT pit(10000);
-Keyboard kb;  // Tastatur
 PCSPK pcspk;  // PC-Lautsprecher
+
+Keyboard kb;  // Tastatur
+KeyEventManager kevman;
 
 // BumpAllocator         allocator;
 LinkedListAllocator allocator;

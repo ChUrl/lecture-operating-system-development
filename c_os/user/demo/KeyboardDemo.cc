@@ -8,8 +8,8 @@
  * Autor:           Michael Schoettner, HHU, 26.10.2018                      *
  *****************************************************************************/
 
-#include "lib/Input.h"
 #include "user/demo/KeyboardDemo.h"
+#include "lib/Input.h"
 
 void KeyboardDemo::run() {
 
@@ -18,7 +18,9 @@ void KeyboardDemo::run() {
     kout << "Keyboard Demo: " << endl;
 
     while (true) {
-        kout << getch();
+        kout << listener.waitForKeyEvent();
+
+        // kout << getch();
         kout.flush();
     }
 }

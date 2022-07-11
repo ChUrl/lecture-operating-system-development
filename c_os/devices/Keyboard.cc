@@ -340,10 +340,11 @@ void Keyboard::trigger() {
     // NOTE: My keyboard has no delete key...
     if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
         this->reboot();
-    }
-    else if ((char)key == 'k' || (char)key == 'j') {
+    } else if ((char)key == 'k' || (char)key == 'j') {
         scroll_mode(key);
     }
+
+    kevman.broadcast(key);
 }
 
 // TODO: Where to place this?

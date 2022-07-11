@@ -23,6 +23,7 @@
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/threads/Scheduler.h"
+#include "user/KeyEventManager.h"
 
 extern CPU cpu;          // CPU-spezifische Funktionen
 extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
@@ -32,8 +33,11 @@ extern VESA vesa;        // VESA-Treiber
 extern PIC pic;               // Interrupt-Controller
 extern IntDispatcher intdis;  // Unterbrechungsverteilung
 extern PIT pit;               // Zeitgeber
-extern Keyboard kb;           // Tastatur
-extern PCSPK pcspk;           // PC-Lautsprecher
+
+extern PCSPK pcspk;  // PC-Lautsprecher
+
+extern Keyboard kb;  // Tastatur
+extern KeyEventManager kevman;
 
 // extern BumpAllocator         allocator;
 extern LinkedListAllocator allocator;

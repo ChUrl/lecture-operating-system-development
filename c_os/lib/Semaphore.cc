@@ -13,7 +13,7 @@ void Semaphore::p() {
         // Block and manage thread in semaphore queue until it's woken up by v() again
         this->waitQueue.enqueue(scheduler.get_active());
         this->lock.release();
-        scheduler.block(); // Moves to next thread
+        scheduler.block();  // Moves to next thread
     }
 }
 
@@ -30,5 +30,4 @@ void Semaphore::v() {
         this->counter = this->counter + 1;
         this->lock.release();
     }
-
 }

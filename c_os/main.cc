@@ -65,14 +65,14 @@ int main() {
     // Demos
     // scheduler.ready(new TextDemo());
     // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
-    // scheduler.ready(new KeyboardDemo());
+    scheduler.ready(new KeyboardDemo());
     // scheduler.ready(new HeapDemo());
     // scheduler.ready(new VBEdemo());
     // scheduler.ready(new BlueScreenDemo());
     // scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
-    scheduler.ready(new MainMenu());
+    // scheduler.ready(new MainMenu());
     scheduler.schedule();
 
     // NOTE: Enforced ToDo's (needed)
@@ -98,6 +98,7 @@ int main() {
     // TODO: Cleanup: Remove I added this... Notes, just leave explanations
     // TODO: Remove Math "lib" or do something with it
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
+    // TODO: Switch cpu_disableint() to semaphore etc (I can't do this in the scheduler right?)
 
     // Scheduler doesn't return
     return 0;

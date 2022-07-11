@@ -202,6 +202,32 @@ void Scheduler::deblock(Thread* that) {
     /* hier muss Code eingefuegt werden */
 
     cpu.disable_int();
-    this->readyQueue.enqueue(that);
-    cpu.enable_int();
+    this->readyQueue.enqueue(this->get_active());
+    this->dispatch(*that);  // Prefer deblocked
 }
+
+// NOTE: Don't need these, input blocked threads are managed inside event manager
+// These blocking functions are mainly for KeyEvents
+// void Scheduler::block() {
+//     if (this->readyQueue.isEmpty()) {
+//         // Something went seriously wrong
+//         return;
+//     }
+
+//     cpu.disable_int();
+//     this->blockQueue.enqueue(this->get_active());
+//     Thread& next = *(Thread*)this->readyQueue.dequeue();
+//     this->dispatch(next);
+// }
+
+// void Scheduler::deblock(Thread* that) {
+//     if (this->blockQueue.isEmpty()) {
+//         // Something went seriously wrong
+//         return;
+//     }
+
+//     cpu.disable_int();
+//     this->readyQueue.enqueue(this->get_active());
+//     this->blockQueue.remove(that);
+//     this->dispatch(*that);  // Prefer deblocked
+// }
