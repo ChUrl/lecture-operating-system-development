@@ -8,21 +8,18 @@
  * Autor:           Michael Schoettner, HHU, 27.12.2016                      *
  *****************************************************************************/
 
-#include "user/HeapDemo.h"
-#include "kernel/Allocator.h"
-#include "kernel/Globals.h"
-#include "lib/Input.h"
-#include "user/MyObj.h"
+#include "user/demo/HeapDemo.h"
 
-void heap_demo() {
+void HeapDemo::run() {
     kout << "HEAP_DEMO ===================================================================" << endl;
 
     /* hier muss Code eingefuegt werden */
+
     allocator.dump_free_memory();
 
     // Rounding to word border
     kout << "ROUNDING ====================================================================" << endl;
-    void* alloc = allocator.alloc(1);
+    void* alloc = allocator.alloc(1); // 1 Byte
     allocator.dump_free_memory();
     allocator.free(alloc);
     allocator.dump_free_memory();
@@ -35,9 +32,9 @@ void heap_demo() {
     allocator.dump_free_memory();
     MyObj* c = new MyObj(15);
     allocator.dump_free_memory();
-    delete b;
+    delete b; // No merge
     allocator.dump_free_memory();
-    delete a;
+    delete a; // Merge forward
     allocator.dump_free_memory();
     delete c;
     allocator.dump_free_memory();
@@ -73,4 +70,6 @@ void heap_demo() {
     allocator.dump_free_memory();
 
     kout << "HEAP_DEMO END ===============================================================" << endl;
+
+    scheduler.exit();
 }

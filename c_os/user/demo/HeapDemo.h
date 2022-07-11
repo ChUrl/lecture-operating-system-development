@@ -10,7 +10,27 @@
 #ifndef __HeapDemo_include__
 #define __HeapDemo_include__
 
+#include "kernel/Globals.h"
+#include "kernel/threads/Thread.h"
 
-void heap_demo();
+class MyObj {
+public:
+    constexpr MyObj() : value(5) {};
+    constexpr MyObj(const unsigned int val) : value(val) {};
+    const unsigned int value;
+};
+
+class HeapDemo : public Thread {
+private:
+    HeapDemo(const HeapDemo& copy) = delete;
+
+public:
+    HeapDemo() {
+        kout << "Initialized HeapDemo" << endl;
+    }
+
+    void run() override;
+};
+
 
 #endif
