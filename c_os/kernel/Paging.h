@@ -52,6 +52,12 @@
 #ifndef __Paging_include__
 #define __Paging_include__
 
+// Externe Funktionen in startup.asm
+extern "C" {
+    void paging_on(unsigned int* p_pdir);          // Paging einschalten
+    void invalidate_tlb_entry(unsigned int* ptr);  // Page in TLB invalid.
+}
+
 // ativiert paging
 extern void pg_init();
 

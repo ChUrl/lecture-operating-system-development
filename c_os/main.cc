@@ -11,12 +11,11 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-
-// TODO: paging/bluescreen demo, don't include here
 #include "kernel/Paging.h"
 
 // Demos
 // TODO: Make demo header or include through demo menu
+#include "user/demo/BlueScreenDemo.h"
 #include "user/demo/HeapDemo.h"
 #include "user/demo/KeyboardDemo.h"
 #include "user/demo/PCSPKdemo.h"
@@ -63,28 +62,13 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
-    // TODO: Move this to demo
-    // Trigger Bluescreen
-    // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
-
-    // BlueScreen 1
-    // asm("int $3");
-
-    // BlueScreen 2
-    // unsigned int* page = pg_alloc_page();
-    // *page = 42;
-    // pg_write_protect_page(page);
-    // invalidate_tlb_entry(page); // If we don't invalidate after first access the write protection
-    //                             // won't work as no lookup is performed (address in tlb)
-    // *page = 42; // We map logical to physical 1:1 so no need to do any lookup
-    //             // If tlb is invalidated this access produces a pagefault
-
     // Demos
     // scheduler.ready(new TextDemo());
     // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
     // scheduler.ready(new KeyboardDemo());
     // scheduler.ready(new HeapDemo());
     // scheduler.ready(new VBEdemo());
+    // scheduler.ready(new BlueScreenDemo());
     // scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
