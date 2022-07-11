@@ -11,6 +11,19 @@
 #ifndef __KeyboardDemo_include__
 #define __KeyboardDemo_include__
 
-void keyboard_demo();
+#include "kernel/Globals.h"
+#include "kernel/threads/Thread.h"
+
+class KeyboardDemo : public Thread {
+private:
+    KeyboardDemo(const KeyboardDemo& copy) = delete;
+
+public:
+    KeyboardDemo() {
+        kout << "Initialized KeyboardDemo" << endl;
+    }
+
+    void run() override;
+};
 
 #endif

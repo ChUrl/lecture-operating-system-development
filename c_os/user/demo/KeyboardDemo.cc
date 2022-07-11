@@ -8,10 +8,10 @@
  * Autor:           Michael Schoettner, HHU, 26.10.2018                      *
  *****************************************************************************/
 
-#include "kernel/Globals.h"
 #include "lib/Input.h"
+#include "user/demo/KeyboardDemo.h"
 
-void keyboard_demo() {
+void KeyboardDemo::run() {
 
     /* Hier muess Code eingefuegt werden */
 
