@@ -26,31 +26,30 @@ int main() {
     allocator.init();
 
     // Initialize scrollback buffer after allocator.init()
-    // kout.init(5);
+    kout.init(5);
 
     // Startmeldung
-    if constexpr (!DEBUG) {
-        kout << "HHUos 0.9\n"
-             << "=========\n"
-             << "Unterstuetzte Funktionen:\n"
-             << "   - Bildschirmausgaben\n"
-             << "   - Sound ueber den PC-Lautsprecher\n"
-             << "   - Tastatureingaben per Abfrage\n"
-             << "   - Einfache Heap verwaltung\n"
-             << "   - Tastatureingaben per Interrupt\n"
-             << "   - Kooperative Threads\n"
-             << "   - VESA Graphics Mode\n"
-             << "   - Einfaches Paging\n"
-             << "   - Preemptive Threads\n"
-             << endl;
-    }
+    kout << "HHUos 0.10\n"
+         << "=========\n"
+         << "Unterstuetzte Funktionen:\n"
+         << "   - Bildschirmausgaben\n"
+         << "   - Sound ueber den PC-Lautsprecher\n"
+         << "   - Tastatureingaben per Abfrage\n"
+         << "   - Einfache Heap verwaltung\n"
+         << "   - Tastatureingaben per Interrupt\n"
+         << "   - Kooperative Threads\n"
+         << "   - VESA Graphics Mode\n"
+         << "   - Einfaches Paging\n"
+         << "   - Preemptive Threads\n"
+         << "   - Einfache Synchronisierung\n"
+         << endl;
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     /* hier muss Code eingefuegt werden */
     kb.plugin();
     pit.plugin();
 
-    // Interrupts erlauben (Tastatur)
+    // Interrupts erlauben (Tastatur, PIT)
     /* hier muss Code eingefuegt werden */
     cpu.enable_int();
 
@@ -58,6 +57,7 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
+    // TODO: Move this to demo
     // Trigger Bluescreen
     // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
 
@@ -73,6 +73,7 @@ int main() {
     // *page = 42; // We map logical to physical 1:1 so no need to do any lookup
     //             // If tlb is invalidated this access produces a pagefault
 
+    // TODO: Make menu for demos
     // Demo threads anlegen
     // scheduler.ready(new HelloWorldThread());
     // scheduler.ready(new CoopThreadDemo());
@@ -86,9 +87,8 @@ int main() {
     // TODO: Use templates for queue so threads don't have to be casted down from chain
     // TODO: Change scheduler to only use references instead of pointers
     // TODO: Rewrite all demos to threads
-    // TODO: Make menu for demos
     // TODO: Unify debug output format
-    // TODO: Serial output
+    // TODO: Serial output, output graphviz dot data for memory etc.
 
     // Scheduler doesn't return
     return 0;

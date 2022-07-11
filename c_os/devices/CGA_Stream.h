@@ -16,7 +16,7 @@
 #define __CGA_Stream_include__
 
 // #include "devices/BufferedCGA.h"
-#include "devices/CGA.h"
+#include "devices/BufferedCGA.h"
 #include "lib/OutStream.h"
 
 // NOTE: I added this
@@ -34,7 +34,7 @@ public:
 };
 
 // NOTE: I added this (changed this) to use BufferedCGA
-class CGA_Stream : public OutStream, public CGA {
+class CGA_Stream : public OutStream, public BufferedCGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
