@@ -6,12 +6,12 @@ void PreemptiveLoopThread::run() {
 
     int cnt = 0;
     while (true) {
-        // Basic synchronization by disabling PIT interrupts
-        cpu.disable_int();
+        // Basic synchronization by semaphore
+        sem->p();
 
         kout.setpos(55, this->id);
         kout << this->id << ": " << dec << cnt++ << endl;
 
-        cpu.enable_int();
+        sem->v();
     }
 }
