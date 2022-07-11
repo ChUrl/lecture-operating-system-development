@@ -8,15 +8,19 @@
  * Autor:           Michael Schoettner, HHU, 26.10.2018                       *
  *****************************************************************************/
 
-#include "kernel/Globals.h"
+#include "user/demo/TextDemo.h"
 
-void text_demo() {
+void TextDemo::run() {
 
     /* Hier muess Code eingefuegt werden */
+
+    kout << "TextDemo\n" << endl;
+
     kout << "Attribut (GREEN on WHITE): "
-         << bgc(CGA::WHITE) << fgc(CGA::GREEN) << "GREEN on WHITE" << endl
+         << white_b << green_f << "GREEN on WHITE" << endl
          << "Attribut (WHITE on BLACK): "
-         << bgc(CGA::BLACK) << fgc(CGA::WHITE) << "WHITE on BLACK" << endl;
+         << black_b << white_f << "WHITE on BLACK" << endl;
+    kout << endl;
 
     kout << "Test der Zahlenausgabefunktion:" << endl
          << "|  dec  |  hex  |  bin  |" << endl
@@ -30,4 +34,6 @@ void text_demo() {
     }
 
     kout << endl;
+
+    scheduler.exit();
 }

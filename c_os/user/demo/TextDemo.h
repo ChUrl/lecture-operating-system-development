@@ -11,6 +11,19 @@
 #ifndef __TextDemo_include__
 #define __TextDemo_include__
 
-void text_demo();
+#include "kernel/threads/Thread.h"
+#include "kernel/Globals.h"
+
+class TextDemo : public Thread {
+private:
+    TextDemo(const TextDemo& copy) = delete;
+
+public:
+    TextDemo() {
+        kout << "Initialized TextDemo" << endl;
+    }
+
+    void run() override;
+};
 
 #endif
