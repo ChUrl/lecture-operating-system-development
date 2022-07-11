@@ -15,7 +15,7 @@
 #define __CGA_include__
 
 #include "kernel/IOport.h"
-#include "lib/MyStdLib.h"
+#include "user/MyLib.h"
 
 class CGA {
 private:

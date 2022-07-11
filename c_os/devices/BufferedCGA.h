@@ -3,7 +3,7 @@
 
 #include "devices/CGA.h"
 #include "devices/Keyboard.h"
-#include "lib/ScrollbackBuffer.h"
+#include "user/ScrollbackBuffer.h"
 #include <memory>
 
 // NOTE: I added this file, I will probably replace this in the end by an application
