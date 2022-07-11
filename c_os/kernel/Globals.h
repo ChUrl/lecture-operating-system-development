@@ -36,8 +36,8 @@ extern Keyboard kb;           // Tastatur
 extern PCSPK pcspk;           // PC-Lautsprecher
 
 // extern BumpAllocator         allocator;
-// extern LinkedListAllocator allocator;
-extern TreeAllocator allocator;
+extern LinkedListAllocator allocator;
+// extern TreeAllocator allocator;
 extern Scheduler scheduler;
 
 constexpr bool DEBUG = true;
