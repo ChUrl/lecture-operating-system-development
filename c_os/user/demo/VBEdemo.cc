@@ -8,12 +8,11 @@
  * Autor:           Michael Schoettner, HHU, 26.12.2016                      *
  *****************************************************************************/
 
-#include "user/VBEdemo.h"
+#include "user/demo/VBEdemo.h"
 #include "devices/fonts/Fonts.h"
-#include "kernel/Globals.h"
 
 // Bitmap
-#include "bmp_hhu.cc"
+#include "user/bmp/bmp_hhu.cc"
 
 /*****************************************************************************
  * Methode:         VBEdemo::linInterPol1D                                   *

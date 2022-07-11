@@ -11,6 +11,7 @@
 #define __VBEdemo_include__
 
 #include "kernel/threads/Thread.h"
+#include "kernel/Globals.h"
 
 class VBEdemo : public Thread {
 
@@ -23,7 +24,9 @@ private:
 
 public:
     // Gib dem Anwendungsthread einen Stack.
-    VBEdemo() {}
+    VBEdemo() {
+        kout << "Initialized VBEdemo" << endl;
+    }
 
     // Thread-Startmethode
     void run() override;
