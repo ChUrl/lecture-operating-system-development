@@ -174,6 +174,16 @@ void Scheduler::preempt() {
 void Scheduler::block() {
 
     /* hier muss Code eingefuegt werden */
+
+    if (this->readyQueue.isEmpty()) {
+        // Something went seriously wrong
+        return;
+    }
+
+    cpu.disable_int();
+
+    Thread& next = *(Thread*)this->readyQueue.dequeue();
+    this->dispatch(next);
 }
 
 /*****************************************************************************
@@ -187,7 +197,11 @@ void Scheduler::block() {
  *                                                                           *
  * Parameter:       that:  Thread der deblockiert werden soll.               *
  *****************************************************************************/
-void Scheduler::deblock(Thread& that) {
+void Scheduler::deblock(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
+
+    cpu.disable_int();
+    this->readyQueue.enqueue(that);
+    cpu.enable_int();
 }

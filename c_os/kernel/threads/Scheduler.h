@@ -56,7 +56,7 @@ public:
     void preempt();
 
     void block();
-    void deblock(Thread& that);
+    void deblock(Thread* that);
 };
 
 #endif
