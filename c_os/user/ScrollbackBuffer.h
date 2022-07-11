@@ -2,11 +2,9 @@
 #define __SCROLLBACKBUFFER_INCLUDE_H_
 
 #include "devices/CGA.h"
-#include "lib/MyStdLib.h"
+#include "user/MyLib.h"
 #include <memory>
 #include <stddef.h>
-
-// NOTE: I added this file
 
 class ScrollbackBuffer {
 private:
