@@ -77,7 +77,7 @@ int main() {
     // scheduler.ready(new HelloWorldThread());
     // scheduler.ready(new CoopThreadDemo());
     // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
-    scheduler.ready(new PCSPKdemo());
+    // scheduler.ready(new PCSPKdemo());
     scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
