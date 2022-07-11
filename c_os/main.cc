@@ -23,6 +23,7 @@
 #include "user/demo/PreemptiveThreadDemo.h"
 #include "user/demo/TextDemo.h"
 #include "user/demo/VBEdemo.h"
+#include "user/MainMenu.h"
 
 int main() {
     kout.clear();
@@ -78,7 +79,7 @@ int main() {
     // *page = 42; // We map logical to physical 1:1 so no need to do any lookup
     //             // If tlb is invalidated this access produces a pagefault
 
-    // New demos
+    // Demos
     // scheduler.ready(new TextDemo());
     // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
     // scheduler.ready(new KeyboardDemo());
@@ -87,6 +88,7 @@ int main() {
     // scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
+    scheduler.ready(new MainMenu());
     scheduler.schedule();
 
     // NOTE: Enforced ToDo's (needed)
@@ -95,11 +97,14 @@ int main() {
     //
     // NOTE: Main ToDo's (extra)
     // TODO: Basic event management for keyboard events so threads can utilize interrupt based inputs
+    //       This also works well with a blocked-queue in the scheduler for threads waiting for input
     // TODO: Textual UI with some sort of modeline
     // TODO: Serial output, output graphviz dot data for memory etc.
     // TODO: Some sort of extremely basic shell (basically can't do anything except start demos
     //                                           because there is no filesystem at all)
     // TODO: Fix the damn TreeAllocator: Allow root deletion without bluescreen
+    //       Maybe just remove the red black tree stuff and replace with usual binary search tree?
+    //       I can just balance this tree unefficiantly by reinserting all nodes
     //
     // NOTE: Cleanup + Refactor
     // TODO: Use templates for queue so threads don't have to be casted down from chain
