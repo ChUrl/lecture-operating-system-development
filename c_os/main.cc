@@ -50,26 +50,28 @@ int main() {
          << endl;
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
-    /* hier muss Code eingefuegt werden */
     kb.plugin();
     pit.plugin();
 
     // Interrupts erlauben (Tastatur, PIT)
-    /* hier muss Code eingefuegt werden */
     cpu.enable_int();
 
     // Activate paging
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
+    // NOTE: Because I introduced dynamic memory inside the scheduler (probably bad idea?) I have to add
+    //       these init methods (allocator has to be initialized before but scheduler is constructed in the globals)
+    scheduler.init();
+
     // Demos
     // scheduler.ready(new TextDemo());
     // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
-    scheduler.ready(new KeyboardDemo());
+    // scheduler.ready(new KeyboardDemo());
     // scheduler.ready(new HeapDemo());
     // scheduler.ready(new VBEdemo());
     // scheduler.ready(new BlueScreenDemo());
-    // scheduler.ready(new PreemptiveThreadDemo());
+    scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     // scheduler.ready(new MainMenu());
@@ -78,17 +80,20 @@ int main() {
     // NOTE: Enforced ToDo's (needed)
     // DONE: Rewrite demos for threads
     // TODO: Make menu for demos
+    // TODO: Thread switching stops after a while
+    // TODO: Prefer deblocked thread and find out why it doesn't work
+    // TODO: Threads are not cleanup after exit, use managed pointer?
     //
     // NOTE: Main ToDo's (extra)
-    // TODO: Basic event management for keyboard events so threads can utilize interrupt based inputs
+    // DONE: Basic event management for keyboard events so threads can utilize interrupt based inputs
     //       This also works well with a blocked-queue in the scheduler for threads waiting for input
-    // TODO: Textual UI with some sort of modeline
+    //
     // TODO: Serial output, output graphviz dot data for memory etc.
-    // TODO: Some sort of extremely basic shell (basically can't do anything except start demos
-    //                                           because there is no filesystem at all)
     // TODO: Fix the damn TreeAllocator: Allow root deletion without bluescreen
     //       Maybe just remove the red black tree stuff and replace with usual binary search tree?
     //       I can just balance this tree unefficiantly by reinserting all nodes
+    // TODO: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
+    // TODO: Array wrapper
     //
     // NOTE: Cleanup + Refactor
     // TODO: Use templates for queue so threads don't have to be casted down from chain
@@ -98,7 +103,9 @@ int main() {
     // TODO: Cleanup: Remove I added this... Notes, just leave explanations
     // TODO: Remove Math "lib" or do something with it
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
-    // TODO: Switch cpu_disableint() to semaphore etc (I can't do this in the scheduler right?)
+    // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
+    // TODO: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>
+    // TODO: Make more stuff const
 
     // Scheduler doesn't return
     return 0;
