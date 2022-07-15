@@ -13,7 +13,7 @@
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
-#include "user/KeyEventListener.h"
+#include "user/event/KeyEventListener.h"
 
 class KeyboardDemo : public Thread {
 private:
@@ -24,7 +24,7 @@ private:
 public:
     KeyboardDemo() : listener(*this) {
         kout << "Initialized KeyboardDemo" << endl;
-        kevman.subscribe(listener);
+        kevman.subscribe(this->listener);
     }
 
     void run() override;

@@ -12,6 +12,7 @@ private:
     std::unique_ptr<ScrollbackBuffer> scrollback_buffer;  // Contains previous pages
     std::unique_ptr<CGA::cga_page_t> screen_buffer;       // Contains the current page separately from the scrollback.
     bool initialized;                                     // Don't do ScrollbackBuffer actions if not initialized
+                                                          // TODO: Just check if pointers have value
 
     BufferedCGA(const BufferedCGA&) = delete;
 

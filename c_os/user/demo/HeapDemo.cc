@@ -19,7 +19,7 @@ void HeapDemo::run() {
 
     // Rounding to word border
     kout << "ROUNDING ====================================================================" << endl;
-    void* alloc = allocator.alloc(1); // 1 Byte
+    void* alloc = allocator.alloc(1);  // 1 Byte
     allocator.dump_free_memory();
     allocator.free(alloc);
     allocator.dump_free_memory();
@@ -32,9 +32,9 @@ void HeapDemo::run() {
     allocator.dump_free_memory();
     MyObj* c = new MyObj(15);
     allocator.dump_free_memory();
-    delete b; // No merge
+    delete b;  // No merge
     allocator.dump_free_memory();
-    delete a; // Merge forward
+    delete a;  // Merge forward BUG: Bluescreen
     allocator.dump_free_memory();
     delete c;
     allocator.dump_free_memory();

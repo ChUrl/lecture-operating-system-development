@@ -341,26 +341,6 @@ void Keyboard::trigger() {
     if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
         this->reboot();
     }
-    // TODO: Make a scrollback demo
-    // else if ((char)key == 'k' || (char)key == 'j') {
-    //     scroll_mode(key);
-    // }
 
     kevman.broadcast(key);
 }
-
-// TODO: Where to place this?
-//       To use keyboard interrupts from different applications more work is needed:
-//        - Ereignisverwaltung, wo man Threads registrieren kann
-//        - Blockierte Threads verwalten und aufwecken bei ereignissen
-// Waits for keys to control the scrollback buffer display
-// void scroll_mode(Key key) {
-//     switch ((char)key) {
-//     case 'k':
-//         kout.scroll_page_backward();
-//         break;
-//     case 'j':
-//         kout.scroll_page_forward();
-//         break;
-//     }
-// }
