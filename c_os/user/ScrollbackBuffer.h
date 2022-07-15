@@ -2,7 +2,7 @@
 #define __SCROLLBACKBUFFER_INCLUDE_H_
 
 #include "devices/CGA.h"
-#include "user/MyLib.h"
+#include "user/lib/MyLib.h"
 #include <memory>
 #include <stddef.h>
 
