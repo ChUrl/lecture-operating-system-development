@@ -24,8 +24,10 @@ class PreemptiveThreadDemo : public Thread {
 private:
     PreemptiveThreadDemo(const PreemptiveThreadDemo& copy) = delete;  // Verhindere Kopieren
 
+    unsigned int number_of_threads;
+
 public:
-    PreemptiveThreadDemo() {
+    PreemptiveThreadDemo(unsigned int n) : number_of_threads(n) {
         kout << "Initialized PreemptiveThreadDemo" << endl;
     }
 
