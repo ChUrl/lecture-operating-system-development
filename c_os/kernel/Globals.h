@@ -23,7 +23,8 @@
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
 #include "kernel/threads/Scheduler.h"
-#include "user/KeyEventManager.h"
+#include "user/devices/SerialOut.h"
+#include "user/event/KeyEventManager.h"
 
 extern CPU cpu;          // CPU-spezifische Funktionen
 extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
@@ -42,9 +43,12 @@ extern KeyEventManager kevman;
 // extern BumpAllocator         allocator;
 extern LinkedListAllocator allocator;
 // extern TreeAllocator allocator;
+
 extern Scheduler scheduler;
 
-constexpr bool DEBUG = true;
+extern SerialOut serial;
+
+constexpr bool DEBUG = false;
 
 extern unsigned int total_mem;  // RAM total
 extern unsigned long systime;   // wird all 10ms hochgezaehlt

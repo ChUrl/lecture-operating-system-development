@@ -17,8 +17,8 @@ VESA vesa;        // VESA-Treiber
 
 PIC pic;               // Interrupt-Controller
 IntDispatcher intdis;  // Unterbrechungsverteilung
-PIT pit(10000);
-PCSPK pcspk;  // PC-Lautsprecher
+PIT pit(10000);        // 10000
+PCSPK pcspk;           // PC-Lautsprecher
 
 Keyboard kb;  // Tastatur
 KeyEventManager kevman;
@@ -26,7 +26,10 @@ KeyEventManager kevman;
 // BumpAllocator         allocator;
 LinkedListAllocator allocator;
 // TreeAllocator allocator;
+
 Scheduler scheduler;
+
+SerialOut serial;
 
 unsigned int total_mem;  // RAM total
 unsigned long systime = 0;
