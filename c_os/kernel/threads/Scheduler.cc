@@ -54,10 +54,9 @@ void Scheduler::ready(Thread* that) {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-
-    this->readyQueue.enqueue(that);
-
-    // Thread-Wechsel durch PIT jetzt wieder erlauben
+    this->ready_queue.insert(that);
+    kout << "Scheduler :: Adding to ready_queue" << endl;
+    this->ready_queue.print();
     cpu.enable_int();
 }
 
@@ -75,8 +74,9 @@ void Scheduler::exit() {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-
-    Thread& next = *(Thread*)this->readyQueue.dequeue();
+    Thread& next = *(Thread*)this->ready_queue.remove_first();
+    kout << "Scheduler :: Exiting thread" << endl;
+    this->ready_queue.print();
     this->dispatch(next);
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
@@ -100,10 +100,9 @@ void Scheduler::kill(Thread* that) {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-
-    this->readyQueue.remove(that);
-
-    // Thread-Wechsel durch PIT jetzt wieder erlauben
+    this->ready_queue.remove(that);
+    kout << "Scheduler :: Killing thread" << endl;
+    this->ready_queue.print();
     cpu.enable_int();
 }
 
@@ -122,18 +121,12 @@ void Scheduler::yield() {
 
     /* hier muss Code eingefuegt werden */
 
-    // When only one thread exists (IdleThread) it can't yield as the readyqueue becomes empty
-    // and this is not handled anywhere else
-    if (this->readyQueue.isEmpty()) {
-        // Idle thread running
-        return;
-    }
-
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-
-    Thread& next = *(Thread*)this->readyQueue.dequeue();
-    this->readyQueue.enqueue(this->get_active());
+    this->ready_queue.insert(this->get_active());
+    Thread& next = *(Thread*)this->ready_queue.remove_first();
+    kout << "Scheduler :: Yield" << endl;
+    this->ready_queue.print();
     this->dispatch(next);
 }
 
@@ -148,17 +141,7 @@ void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
-    if (this->readyQueue.isEmpty()) {
-        // Idle thread running
-        return;
-    }
-
-    // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
-
-    Thread& next = *(Thread*)this->readyQueue.dequeue();
-    this->readyQueue.enqueue(this->get_active());
-    this->dispatch(next);
+    this->yield();  // We already have that
 }
 
 /*****************************************************************************
@@ -175,15 +158,7 @@ void Scheduler::block() {
 
     /* hier muss Code eingefuegt werden */
 
-    if (this->readyQueue.isEmpty()) {
-        // Something went seriously wrong
-        return;
-    }
-
-    cpu.disable_int();
-    Thread& next = *(Thread*)this->readyQueue.dequeue();
-    // Current thread is not added to readyQueue, gets managed by semaphore
-    this->dispatch(next);
+    this->exit();  // If I'm not mistaken block/deblock is the same functionality we already have
 }
 
 /*****************************************************************************
@@ -201,8 +176,5 @@ void Scheduler::deblock(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
 
-    // NOTE: I wanted to prefer the deblocked thread but did something wrong
-    //       which fucked the queue and didn't continue blocked threads so I
-    //       left it at ready(that).
     this->ready(that);
 }
