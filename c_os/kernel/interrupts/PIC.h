@@ -27,8 +27,9 @@ public:
 
     // IRQ-Nummern von Geraeten
     enum {
-        timer = 0,    // Programmable Interrupt Timer (PIT)
-        keyboard = 1  // Tastatur
+        timer = 0,     // Programmable Interrupt Timer (PIT)
+        keyboard = 1,  // Tastatur
+        com1 = 4
     };
 
     // Freischalten der Weiterleitung eines IRQs durch den PIC an die CPU

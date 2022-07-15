@@ -27,7 +27,8 @@ public:
     // Vektor-Nummern
     enum {
         timer = 32,
-        keyboard = 33
+        keyboard = 33,
+        com1 = 36
     };
 
     // Initialisierung der ISR map mit einer Default-ISR.
