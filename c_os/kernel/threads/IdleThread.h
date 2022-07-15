@@ -25,11 +25,12 @@ public:
 
     void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
-        scheduler.setInitialized();
+        scheduler.enable_preemption();
+        kout << "IdleThread enabled preemption" << endl;
 
         while (true) {
-            scheduler.yield();
             // kout << "Idle!" << endl;
+            scheduler.yield();
         }
     }
 };
