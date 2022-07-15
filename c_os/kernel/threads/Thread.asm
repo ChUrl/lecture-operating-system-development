@@ -19,6 +19,8 @@
 [GLOBAL Thread_switch]
 [GLOBAL Thread_start]
 
+; TODO: Add function to unlock the scheduler again so I can use the spinlock
+
 ; IMPLEMENTIERUNG DER FUNKTIONEN
 
 [SECTION .text]
@@ -94,7 +96,7 @@ Thread_switch:
     ;; SP --> EAX
     ;; == Low address ==
     push eax                    ; backup eax before using it as index
-    mov eax, [esp + 0x8]
+    mov eax, [esp + 0x8]        ; + 0x8 because we pushed eax
 
     add esp, 0x4                ; store the original esp
     mov [eax + esp_offset], esp
@@ -108,16 +110,16 @@ Thread_switch:
     mov [eax + edx_offset], edx
 
     pushf                       ; store eflags
-    pop ebx
+    pop ebx                     ; ebx has to be saved before
     mov [eax + efl_offset], ebx
 
     pop ebx                     ; store eax
     mov [eax + eax_offset], ebx
 
     ;; Load next coroutine registers ============================================================
-    mov eax, [esp + 0x8]
+    mov eax, [esp + 0x8]        ; + 0x8 again since we popped eax value again
 
-    mov ebx, [eax + efl_offset]     ; restore eflags
+    mov ebx, [eax + efl_offset]     ; restore eflags before restoring ebx
     push ebx                        ; could be pushed directly from address but i didn't want to specify wordsize
     popf
 
