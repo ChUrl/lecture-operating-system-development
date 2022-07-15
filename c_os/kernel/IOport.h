@@ -33,6 +33,13 @@ public:
                      : "a"(val), "Nd"(address));
     }
 
+    // NOTE: I added this for easier init of COM1 port
+    void outb(unsigned char offset, unsigned char val) const {
+        asm volatile("outb %0, %1"
+                     :
+                     : "a"(val), "Nd"(address + offset));
+    }
+
     // Wortweise Ausgabe eines Wertes ueber einen I/O-Port.
     void outw(unsigned short val) const {
         asm volatile("outw %0, %1"
@@ -54,6 +61,16 @@ public:
         asm volatile("inb %1, %0"
                      : "=a"(ret)
                      : "Nd"(address));
+        return ret;
+    }
+
+    // NOTE: I added this for COM1 port
+    unsigned char inb(unsigned char offset) const {
+        unsigned char ret;
+
+        asm volatile("inb %1, %0"
+                     : "=a"(ret)
+                     : "Nd"(address + offset));
         return ret;
     }
 
