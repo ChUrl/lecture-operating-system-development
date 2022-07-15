@@ -20,9 +20,6 @@ int main() {
     // Speicherverwaltung initialisieren
     allocator.init();
 
-    // Initialize scrollback buffer after allocator.init()
-    // kout.init(5);
-
     // Initialize SerialPort
     serial.init();
 
@@ -56,10 +53,6 @@ int main() {
     // NOTE: Because I introduced dynamic memory inside the scheduler (probably bad idea?) I have to add
     //       these init methods (allocator has to be initialized before but scheduler is constructed in the globals)
     scheduler.init();
-
-    // Test
-    serial.write("Hello, this is a test message\r\n");
-    serial.write("Hello, this is a test message\r\n");
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.ready(new MainMenu());  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
