@@ -15,7 +15,7 @@
 #ifndef __CGA_Stream_include__
 #define __CGA_Stream_include__
 
-#include "devices/BufferedCGA.h"
+#include "devices/CGA.h"
 #include "lib/OutStream.h"
 
 // NOTE: I added these classes to allow for easier stream-like color changing
@@ -30,7 +30,7 @@ public:
 //       techinally the same to classes
 class bgc {
 public:
-    constexpr bgc(const CGA::color bg) : bg(bg) {} // Make this into a literal type to allow macro-like usage
+    constexpr bgc(const CGA::color bg) : bg(bg) {}  // Make this into a literal type to allow macro-like usage
     const CGA::color bg;
 };
 
@@ -47,8 +47,7 @@ constexpr fgc green_f = fgc(CGA::GREEN);
 constexpr fgc red_f = fgc(CGA::RED);
 constexpr fgc lgrey_f = fgc(CGA::LIGHT_GREY);
 
-// NOTE: I changed this to use BufferedCGA so I can view offscreen text
-class CGA_Stream : public OutStream, public BufferedCGA {
+class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
