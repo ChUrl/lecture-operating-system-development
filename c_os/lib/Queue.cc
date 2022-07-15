@@ -1,9 +1,9 @@
 #include "Queue.h"
+#include "kernel/Globals.h"
 #include <cstddef>
-// #include <iostream>
 
 void Queue::enqueue(Chain* item) {
-    // std::cout << "Enqueue " << item->val << std::endl;
+    // kout << "Enqueue " << (unsigned int)item << endl;
 
     *this->tail = item;        // If queue is empty tail points to head pointer,
     this->tail = &item->next;  // otherwise to last next pointer
@@ -12,7 +12,7 @@ void Queue::enqueue(Chain* item) {
 Chain* Queue::dequeue() {
     if (this->isEmpty()) {
         // This should not ever happen as the idle thread exists always
-        // std::cout << "Dequeue called on empty queue." << std::endl;
+        // kout << "Dequeue called on empty queue." << endl;
         return NULL;
     }
 
@@ -26,14 +26,14 @@ Chain* Queue::dequeue() {
         this->tail = &this->head;
     }
 
-    // std::cout << "Dequeue " << item->val << std::endl;
+    // kout << "Dequeue " << (unsigned int)item << endl;
 
     return item;
 }
 
 void Queue::remove(Chain* item) {
     if (this->isEmpty()) {
-        // std::cout << "Remove called on empty queue" << std::endl;
+        // kout << "Remove called on empty queue" << endl;
         return;
     }
 
@@ -41,7 +41,7 @@ void Queue::remove(Chain* item) {
     Chain* lastnext = NULL;
     while (current != item) {
         if (current->next == *this->tail) {
-            // std::cout << "Element not in queue." << std::endl;
+            // kout << "Element not in queue." << endl;
             return;
         }
 
@@ -72,22 +72,22 @@ void Queue::remove(Chain* item) {
 void Queue::print() const {
     if (this->isEmpty()) {
         // Queue is empty
-        // std::cout << "List is empty!" << std::endl;
+        kout << "List is empty!" << endl;
         return;
     }
 
-    // std::cout << "List: ";
+    kout << "List: ";
 
     Chain* current = this->head;
-    // std::cout << current->val << " "; // At least one element in queue
+    kout << (unsigned int)current << " ";  // At least one element in queue
 
     while (current->next != *this->tail) {
         // More than one element in queue
         current = current->next;
-        // std::cout << current->val << " ";
+        kout << (unsigned int)current << " ";
     }
 
-    // std::cout << std::endl;
+    kout << endl;
 }
 
 bool Queue::isEmpty() const {
