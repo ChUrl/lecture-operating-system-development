@@ -12,16 +12,6 @@
 
 #include "kernel/Globals.h"
 #include "kernel/Paging.h"
-
-// Demos
-// TODO: Make demo header or include through demo menu
-#include "user/demo/BlueScreenDemo.h"
-#include "user/demo/HeapDemo.h"
-#include "user/demo/KeyboardDemo.h"
-#include "user/demo/PCSPKdemo.h"
-#include "user/demo/PreemptiveThreadDemo.h"
-#include "user/demo/TextDemo.h"
-#include "user/demo/VBEdemo.h"
 #include "user/MainMenu.h"
 
 int main() {
@@ -31,7 +21,10 @@ int main() {
     allocator.init();
 
     // Initialize scrollback buffer after allocator.init()
-    kout.init(5);
+    // kout.init(5);
+
+    // Initialize SerialPort
+    serial.init();
 
     // Startmeldung
     kout << "HHUos 0.10\n"
@@ -64,18 +57,17 @@ int main() {
     //       these init methods (allocator has to be initialized before but scheduler is constructed in the globals)
     scheduler.init();
 
-    // Demos
-    // scheduler.ready(new TextDemo());
-    // scheduler.ready(new PCSPKdemo(&PCSPK::aerodynamic));
-    // scheduler.ready(new KeyboardDemo());
-    // scheduler.ready(new HeapDemo());
-    // scheduler.ready(new VBEdemo());
-    // scheduler.ready(new BlueScreenDemo());
-    scheduler.ready(new PreemptiveThreadDemo());
+    // Test
+    serial.write("Hello, this is a test message\r\n");
+    serial.write("Hello, this is a test message\r\n");
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
-    // scheduler.ready(new MainMenu());
+    scheduler.ready(new MainMenu());  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
+                                      //       because scheduler.schedule() doesn't return, only threads get cpu time
     scheduler.schedule();
+
+    // BUG: Timer interrupt preemption works normal at first, but after a time there is a heap of output
+    //      from the scheduler that is not triggered by PIT, I don't know why this occurs
 
     // NOTE: Enforced ToDo's (needed)
     // DONE: Rewrite demos for threads
@@ -94,6 +86,8 @@ int main() {
     //       I can just balance this tree unefficiantly by reinserting all nodes
     // TODO: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
     // TODO: Array wrapper
+    // TODO: Rewrite Logging with a basic (synchronized) logger
+    // TODO: String wrapper
     //
     // NOTE: Cleanup + Refactor
     // TODO: Use templates for queue so threads don't have to be casted down from chain
@@ -106,6 +100,11 @@ int main() {
     // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
     // TODO: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>
     // TODO: Make more stuff const
+    // TODO: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
+    // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
+    //       just get esp as argument
+    // TODO: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
+    //       Or check if thread is still running
 
     // Scheduler doesn't return
     return 0;
