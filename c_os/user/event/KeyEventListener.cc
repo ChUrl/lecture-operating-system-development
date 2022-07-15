@@ -1,4 +1,4 @@
-#include "user/KeyEventListener.h"
+#include "user/event/KeyEventListener.h"
 #include "kernel/Globals.h"
 
 void KeyEventListener::trigger(char c) {
@@ -7,5 +7,5 @@ void KeyEventListener::trigger(char c) {
 
 char KeyEventListener::waitForKeyEvent() const {
     scheduler.block();
-    return this->lastChar;
+    return this->lastChar;  // This is only executed after thread is woken up by manager
 }

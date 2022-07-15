@@ -1,7 +1,7 @@
 #ifndef __KeyEventManager_Include_H_
 #define __KeyEventManager_Include_H_
 
-#include "user/KeyEventListener.h"
+#include "user/event/KeyEventListener.h"
 
 // NOTE: Could do this more generally but we only have key events
 
@@ -17,7 +17,7 @@ public:
     KeyEventManager() {}
 
     void subscribe(KeyEventListener& listener);
-    void broadcast(char c); // Unblocks all input waiting threads, I don't have a method to direct input
+    void broadcast(char c);  // Unblocks all input waiting threads, I don't have a method to direct input
 };
 
 #endif
