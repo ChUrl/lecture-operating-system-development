@@ -13,6 +13,7 @@
 #define __LinkedListAllocator_include__
 
 #include "kernel/Allocator.h"
+#include "lib/SpinLock.h"
 #include "user/lib/Logger.h"
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
@@ -41,6 +42,7 @@ private:
     static struct free_block* find_previous_block(struct free_block*);
 
     Logger log;
+    SpinLock lock;
 
 public:
     LinkedListAllocator() : log("LL-Alloc") {}
