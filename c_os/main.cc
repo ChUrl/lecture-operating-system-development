@@ -32,7 +32,7 @@ void print_startup_message() {
 
          << "   - Einfache (Tastatur-)Eventverwaltung\n"
          << "   - Serial Output Logging\n"
-         << "\nPress Enter to continue to menu\n"
+         << "\nPress Enter to continue\n"
          << endl;
 }
 
@@ -105,6 +105,7 @@ int main() {
     // TODO: Delete copy constructors that weren't already deleted
     // DONE: Switch out semaphore Queue with ArrayList? Or switch back Scheduler to Queue?
     // TODO: Add virtual destructors and make sure to call them with delete when objects are removed
+    // TODO: Replace empty constructors/destructors with default keyword
 
     // Scheduler doesn't return
     return 0;
