@@ -331,8 +331,6 @@ void Keyboard::plugin() {
     pic.allow(PIC::keyboard);
 }
 
-void scroll_mode(Key key);
-
 void Keyboard::trigger() {
     Key key = this->key_hit();
     this->lastkey = key.ascii();
