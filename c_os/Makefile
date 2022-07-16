@@ -73,7 +73,7 @@ CXX ?= g++
 
 # NOTE: In some cases I needed O1/O0 to allow paging/bluescreen to work (We need the ebp on the stack)
 #       I don't know why but right now it works with O2
-CFLAGS := $(CFLAGS) -O2 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr -mpreferred-stack-boundary=2
+CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr -mpreferred-stack-boundary=2
 
 # I added -std=c++17 for if constexpr, but it isn't necessary for anything critical
 # Needed for template concepts, but we don't have it available: -std=c++20
