@@ -9,7 +9,6 @@
  *****************************************************************************/
 
 #include "user/demo/KeyboardDemo.h"
-#include "lib/Input.h"
 
 void KeyboardDemo::run() {
 
@@ -19,8 +18,6 @@ void KeyboardDemo::run() {
 
     while (true) {
         kout << listener.waitForKeyEvent();
-
-        // kout << getch();
         kout.flush();
     }
 }
