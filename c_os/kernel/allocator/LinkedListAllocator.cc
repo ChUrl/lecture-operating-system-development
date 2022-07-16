@@ -147,14 +147,14 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
             // We leave the current->next pointer intact although the block is allocated
             // to allow easier merging of adjacent free blocks
 
-            // NOTE: Checking list integrity
-            free_block_t* c = current;
-            log << DEBUG << "Checking list Integrity" << endl;
-            while (c->allocated) {
-                log << DEBUG << hex << (unsigned int)c << endl;
-                c = c->next;
-            }
-            log << DEBUG << "Finished check" << endl;
+            // HACK: Checking list integrity
+            // free_block_t* c = current;
+            // log << DEBUG << "Checking list Integrity" << endl;
+            // while (c->allocated) {
+            //     log << DEBUG << hex << (unsigned int)c << endl;
+            //     c = c->next;
+            // }
+            // log << DEBUG << "Finished check" << endl;
 
             log << DEBUG << "Returning memory address " << hex << ((unsigned int)current + sizeof(free_block_t)) << endl;
             this->lock.release();
@@ -226,12 +226,12 @@ void LinkedListAllocator::free(void* ptr) {
     //  - If previous_free_next and block_start are the same block we can merge backward
     //    Should result in: [block_start]
 
-    log << TRACE << "Before doing any merging:" << endl;
-    log << TRACE << "previous_free:" << hex << (unsigned int)previous_free << "Size:" << previous_free->size << "Next:" << (unsigned int)previous_free->next << endl;
-    log << TRACE << "previous_free_next:" << hex << (unsigned int)previous_free_next << "Size:" << previous_free_next->size << "Next:" << (unsigned int)previous_free_next->next << endl;
-    log << TRACE << "block_start:" << hex << (unsigned int)block_start << "Size:" << block_start->size << "Next:" << (unsigned int)block_start->next << endl;
-    log << TRACE << "next_block:" << hex << (unsigned int)next_block << "Size:" << next_block->size << "Next:" << (unsigned int)next_block->next << endl;
-    log << TRACE << "next_free:" << hex << (unsigned int)next_free << "Size:" << next_free->size << "Next:" << (unsigned int)next_free->next << endl;
+    // log << TRACE << "Before doing any merging:" << endl;
+    // log << TRACE << "previous_free:" << hex << (unsigned int)previous_free << "Size:" << previous_free->size << "Next:" << (unsigned int)previous_free->next << endl;
+    // log << TRACE << "previous_free_next:" << hex << (unsigned int)previous_free_next << "Size:" << previous_free_next->size << "Next:" << (unsigned int)previous_free_next->next << endl;
+    // log << TRACE << "block_start:" << hex << (unsigned int)block_start << "Size:" << block_start->size << "Next:" << (unsigned int)block_start->next << endl;
+    // log << TRACE << "next_block:" << hex << (unsigned int)next_block << "Size:" << next_block->size << "Next:" << (unsigned int)next_block->next << endl;
+    // log << TRACE << "next_free:" << hex << (unsigned int)next_free << "Size:" << next_free->size << "Next:" << (unsigned int)next_free->next << endl;
 
     // Try to merge forward ========================================================================
     if (next_block == next_free) {
