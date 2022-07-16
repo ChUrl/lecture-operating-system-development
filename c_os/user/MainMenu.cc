@@ -11,7 +11,7 @@
 void print_demo_menu() {
     kout.lock();
     kout.clear();
-    kout << "Demo Menu, press number to start, k to kill:\n"
+    kout << "Demo Menu, press number to start, K to kill:\n"
          << "1 - Text Demo\n"
          << "2 - PCSPK Demo\n"
          << "3 - Keyboard Demo\n"
@@ -60,7 +60,7 @@ void MainMenu::run() {
                 // We actually chose something
                 scheduler.ready(choosen_demo);
             }
-        } else if (input == 'k') {
+        } else if (input == 'K') {
             scheduler.kill(choosen_demo);  // NOTE: If thread exits itself this will throw error
             choosen_demo = NULL;
             print_demo_menu();
