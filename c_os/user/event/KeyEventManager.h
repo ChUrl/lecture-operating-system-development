@@ -16,6 +16,7 @@ public:
     KeyEventManager() {}
 
     void subscribe(KeyEventListener& listener);
+    void unsubscribe(KeyEventListener& listener);
     void broadcast(char c);  // Unblocks all input waiting threads, I don't have a method to direct input
 };
 
