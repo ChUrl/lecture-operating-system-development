@@ -14,7 +14,12 @@ private:
 public:
     MainMenu() : listener(*this) {
         log << INFO << "MainMenu initialized with ID: " << dec << this->tid << endl;
-        // kevman.subscribe(this->listener);
+        kevman.subscribe(this->listener);
+    }
+
+    ~MainMenu() override {
+        log << INFO << "Unitialized MainMenu" << endl;
+        kevman.unsubscribe(this->listener);
     }
 
     void run() override;

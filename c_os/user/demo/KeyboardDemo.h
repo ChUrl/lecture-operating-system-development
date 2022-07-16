@@ -27,6 +27,12 @@ public:
         kevman.subscribe(this->listener);
     }
 
+    // Base class destructor will be called automatically
+    ~KeyboardDemo() override {
+        log << INFO << "Uninitialized KeyboardDemo" << endl;
+        kevman.unsubscribe(this->listener);
+    }
+
     void run() override;
 };
 
