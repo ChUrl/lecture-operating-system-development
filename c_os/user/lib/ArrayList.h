@@ -155,13 +155,15 @@ public:
         return this->remove_at(this->buffer_pos - 1);
     }
 
-    void remove(T e) {
+    int remove(T e) {
         for (unsigned int i = 0; i < this->buffer_pos; ++i) {
             if (this->buffer[i] == e) {
                 this->copy_left(i);
-                return;
+                return 0;
             }
         }
+
+        return -1;
     }
 
     T get(unsigned int i) const {
