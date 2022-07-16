@@ -11,8 +11,9 @@
 #ifndef __Semaphore_include__
 #define __Semaphore_include__
 
-#include "lib/Queue.h"
+#include "kernel/threads/Thread.h"
 #include "lib/SpinLock.h"
+#include "user/lib/ArrayList.h"
 
 class Semaphore {
 
@@ -20,14 +21,16 @@ private:
     Semaphore(const Semaphore& copy) = delete;  // Verhindere Kopieren
 
     // Queue fuer wartende Threads.
-    Queue waitQueue;
+    ArrayList<Thread*> waitQueue;
     SpinLock lock;
 
     int counter;
 
 public:
     // Konstruktor: Initialisieren des Semaphorzaehlers
-    Semaphore(int c) : counter(c) {}
+    Semaphore(int c) : counter(c) {
+        waitQueue.init();
+    }
 
     // 'Passieren': Warten auf das Freiwerden eines kritischen Abschnitts.
     void p();
