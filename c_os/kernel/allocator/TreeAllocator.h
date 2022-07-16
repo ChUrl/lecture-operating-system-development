@@ -2,6 +2,7 @@
 #define __TreeAllocator_include__
 
 #include "kernel/Allocator.h"
+#include "user/lib/Logger.h"
 
 // NOTE: I added this file
 // NOTE: I can't imagine that this is very fast with all the tree logic?
@@ -32,10 +33,11 @@ typedef struct tree_block {
 } tree_block_t;
 
 class TreeAllocator : Allocator {
-
 private:
     // Root of the rbt
     tree_block_t* free_start;
+
+    Logger log;
 
     TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
@@ -66,7 +68,7 @@ private:
     void dll_remove(list_block_t* node);
 
 public:
-    TreeAllocator() {};
+    TreeAllocator() : log("RBT-Alloc") {};
 
     void init() override;
     void dump_free_memory() override;
