@@ -20,6 +20,7 @@ private:
 
 public:
     Logger(char* name) : name(name) {}
+    virtual ~Logger() = default;
 
     enum LogLevel {
         TRACE,
