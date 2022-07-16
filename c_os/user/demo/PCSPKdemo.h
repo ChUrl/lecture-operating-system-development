@@ -14,6 +14,10 @@ public:
         kout << "Initialized PCSPKdemo" << endl;
     }
 
+    ~PCSPKdemo() override {
+        pcspk.off();
+    }
+
     void run() override;
 };
 
