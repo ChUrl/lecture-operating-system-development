@@ -108,7 +108,7 @@ void Scheduler::kill(Thread* that) {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-    if (this->ready_queue.remove(that) == -1) {
+    if (!this->ready_queue.remove(that)) {
         log << ERROR << "Can't kill thread that is not in ready_queue, ID: " << dec << that->tid << endl;
         cpu.enable_int();
         return;

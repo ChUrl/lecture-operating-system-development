@@ -58,10 +58,6 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
-    // NOTE: Because I introduced dynamic memory inside the scheduler (probably bad idea?) I have to add
-    //       these init methods (allocator has to be initialized before but scheduler is constructed in the globals)
-    scheduler.init();
-
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.ready(new MainMenu());  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
                                       //       because scheduler.schedule() doesn't return, only threads get cpu time

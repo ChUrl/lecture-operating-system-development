@@ -44,10 +44,6 @@ private:
 public:
     Scheduler() : has_idle_thread(false), log("SCHED") {}
 
-    void init() {
-        this->ready_queue.init();
-    }
-
     // Scheduler initialisiert?
     // Zeitgeber-Unterbrechung kommt evt. bevor der Scheduler fertig
     // intiialisiert wurde!

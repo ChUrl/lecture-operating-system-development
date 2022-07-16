@@ -13,7 +13,6 @@ private:
 
 public:
     ArrayListDemo() {
-        this->list.init();
         kout << "Initialized ArrayListDemo" << endl;
     }
 
