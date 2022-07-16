@@ -33,9 +33,6 @@ void int_disp(unsigned int vector) {
 
     /* hier muss Code eingefuegt werden */
 
-    // 32 = Timer Interrupt
-    // kout << "Interrupt: " << dec << vector << endl;
-
     if (vector < 32) {
         bs_dump(vector);
         cpu.halt();
@@ -97,6 +94,13 @@ int IntDispatcher::report(unsigned int vector) {
     if (isr == 0) {
         log << ERROR << "No ISR registered for vector " << vector << endl;
         return -1;
+    }
+
+    // 32 = Timer
+    // 33 = Keyboard
+    log << TRACE << "Interrupt: " << dec << vector << endl;
+    if (vector == 33) {
+        log << DEBUG << "Keyboard Interrupt" << endl;
     }
 
     isr->trigger();
