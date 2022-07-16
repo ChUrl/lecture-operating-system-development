@@ -13,7 +13,7 @@ private:
 
 public:
     MainMenu() : listener(*this) {
-        kout << "MainMenu initialized" << endl;
+        log << INFO << "MainMenu initialized with ID: " << dec << this->tid << endl;
         // kevman.subscribe(this->listener);
     }
 

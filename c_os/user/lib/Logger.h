@@ -3,7 +3,7 @@
 
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
-#include "lib/Semaphore.h"
+// #include "lib/Semaphore.h"
 
 class Logger : public OutStream {
 private:
@@ -14,7 +14,7 @@ private:
     static bool serial_enabled;
 
     // TODO: Don't mix logs
-    static const Semaphore sem;
+    // static const Semaphore sem;
 
     void log(char* message, CGA::color col) const;
 
@@ -22,10 +22,10 @@ public:
     Logger(char* name) : name(name) {}
 
     enum LogLevel {
-        TRACE = 0,
-        DEBUG = 1,
-        ERROR = 2,
-        INFO = 3
+        TRACE,
+        DEBUG,
+        ERROR,
+        INFO
     };
     static LogLevel level;
     LogLevel current_message_level = Logger::INFO;  // Use this to log with manipulators

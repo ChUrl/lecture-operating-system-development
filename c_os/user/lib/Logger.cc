@@ -1,11 +1,11 @@
 #include "user/lib/Logger.h"
 #include "kernel/Globals.h"
 
-bool Logger::kout_enabled = false;
+bool Logger::kout_enabled = true;
 bool Logger::serial_enabled = true;
-const Semaphore Logger::sem = Semaphore(1);
+// const Semaphore Logger::sem = Semaphore(1);
 
-Logger::LogLevel Logger::level = Logger::TRACE;
+Logger::LogLevel Logger::level = Logger::ERROR;
 
 void Logger::log(char* message, CGA::color col) const {
     if (Logger::kout_enabled) {
@@ -68,7 +68,7 @@ void Logger::error(char* message) const {
 }
 
 void Logger::info(char* message) const {
-    if (Logger::level <= Logger::TRACE) {
+    if (Logger::level <= Logger::INFO) {
         this->log(message, CGA::CYAN);
     }
 }

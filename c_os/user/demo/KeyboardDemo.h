@@ -23,7 +23,7 @@ private:
 
 public:
     KeyboardDemo() : listener(*this) {
-        kout << "Initialized KeyboardDemo" << endl;
+        log << INFO << "Initialized KeyboardDemo with ID: " << dec << this->tid << endl;
         kevman.subscribe(this->listener);
     }
 
