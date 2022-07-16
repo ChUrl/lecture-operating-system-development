@@ -17,6 +17,7 @@
 
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
+#include "lib/Semaphore.h"
 
 // NOTE: I added these classes to allow for easier stream-like color changing
 class fgc {
@@ -51,17 +52,22 @@ class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
+    Semaphore sem;
+
 public:
     CGA::color color_fg;
     CGA::color color_bg;
     bool blink;
 
-    CGA_Stream() : color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
+    CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
         flush();
     }
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
+
+    void lock() { sem.p(); }
+    void unlock() { sem.v(); }
 
     // Change stream color
     template<typename T>
