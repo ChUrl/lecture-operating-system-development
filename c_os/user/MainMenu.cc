@@ -27,45 +27,46 @@ void MainMenu::run() {
     char input = '\0';
     Thread* choosen_demo = NULL;
     while (true) {
-
         input = this->listener.waitForKeyEvent();
 
-        switch (input) {
-        case '1':
-            choosen_demo = new TextDemo();
-            break;
-        case '2':
-            choosen_demo = new PCSPKdemo(&PCSPK::aerodynamic);
-            break;
-        case '3':
-            choosen_demo = new KeyboardDemo();
-            break;
-        case '4':
-            choosen_demo = new HeapDemo();
-            break;
-        case '5':
-            choosen_demo = new VBEdemo();
-            break;
-        case '6':
-            choosen_demo = new BlueScreenDemo();
-            break;
-        case '7':
-            choosen_demo = new PreemptiveThreadDemo(3);
-            break;
-        case 'k':
-            if (choosen_demo != NULL) {
-                scheduler.kill(choosen_demo);
-                delete choosen_demo;
-                choosen_demo = NULL;
+        if (choosen_demo == NULL) {
+            switch (input) {
+            case '1':
+                choosen_demo = new TextDemo();
+                break;
+            case '2':
+                choosen_demo = new PCSPKdemo(&PCSPK::aerodynamic);
+                break;
+            case '3':
+                choosen_demo = new KeyboardDemo();
+                break;
+            case '4':
+                choosen_demo = new HeapDemo();
+                break;
+            case '5':
+                choosen_demo = new VBEdemo();
+                break;
+            case '6':
+                choosen_demo = new BlueScreenDemo();
+                break;
+            case '7':
+                choosen_demo = new PreemptiveThreadDemo(3);
+                break;
             }
+
+            if (choosen_demo != NULL) {
+                // We actually chose something
+                scheduler.ready(choosen_demo);
+            }
+        } else if (input == 'k') {
+            scheduler.kill(choosen_demo);  // NOTE: If thread exits itself this will throw error
+            choosen_demo = NULL;
+
             kout.clear();
             print_demo_menu();
-            break;
         }
 
-        if (choosen_demo != NULL) {
-            scheduler.ready(choosen_demo);
-        }
+        input = '\0';
     }
 
     // Extra demos
