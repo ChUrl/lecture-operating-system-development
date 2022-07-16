@@ -9,6 +9,8 @@
 #include "user/demo/VBEdemo.h"
 
 void print_demo_menu() {
+    kout.lock();
+    kout.clear();
     kout << "Demo Menu, press number to start, k to kill:\n"
          << "1 - Text Demo\n"
          << "2 - PCSPK Demo\n"
@@ -18,10 +20,10 @@ void print_demo_menu() {
          << "6 - Bluescreen Demo\n"
          << "7 - Preemption Demo\n"
          << endl;
+    kout.unlock();
 }
 
 void MainMenu::run() {
-    kout.clear();
     print_demo_menu();
 
     char input = '\0';
@@ -61,8 +63,6 @@ void MainMenu::run() {
         } else if (input == 'k') {
             scheduler.kill(choosen_demo);  // NOTE: If thread exits itself this will throw error
             choosen_demo = NULL;
-
-            kout.clear();
             print_demo_menu();
         }
 

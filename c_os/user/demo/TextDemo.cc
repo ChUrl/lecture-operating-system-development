@@ -14,7 +14,10 @@ void TextDemo::run() {
 
     /* Hier muess Code eingefuegt werden */
 
-    kout << "TextDemo\n" << endl;
+    kout.lock();
+    kout.clear();
+    kout << "TextDemo\n"
+         << endl;
 
     kout << "Attribut (GREEN on WHITE): "
          << white_b << green_f << "GREEN on WHITE" << endl
@@ -34,6 +37,7 @@ void TextDemo::run() {
     }
 
     kout << endl;
+    kout.unlock();
 
     scheduler.exit();
 }

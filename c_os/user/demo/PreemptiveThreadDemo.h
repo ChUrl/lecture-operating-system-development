@@ -8,13 +8,13 @@
 class PreemptiveLoopThread : public Thread {
 private:
     int id;
-    Semaphore* sem;
+    // Semaphore* sem;
 
     PreemptiveLoopThread(const PreemptiveLoopThread& copy) = delete;  // Verhindere Kopieren
 
 public:
     // Gibt der Loop einen Stack und eine Id.
-    PreemptiveLoopThread(int i, Semaphore* sem) : id(i), sem(sem) {}
+    PreemptiveLoopThread(int i) : id(i) {}
 
     // Zaehlt einen Zaehler hoch und gibt ihn auf dem Bildschirm aus.
     void run() override;

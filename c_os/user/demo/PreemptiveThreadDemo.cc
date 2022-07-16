@@ -5,29 +5,24 @@ void PreemptiveLoopThread::run() {
 
     while (true) {
         // Basic synchronization by semaphore
-        sem->p();
+        // NOTE: I placed the semaphore inside the CGA_Stream so multiple demos can synchronize, not
+        //       only this one. This is optional so disruptions can still occur because of preemption
+        kout.lock();
 
-        // Saving + restoring kout position doesn't help much as preemption still occurs,
-        // only LoopThreads are synchronized, so other output will be disturbed sometimes
+        // Saving + restoring kout position doesn't help much as preemption still occurs
         kout.setpos(55, this->id);
         kout << fillw(3) << this->id << fillw(0) << ": " << dec << cnt++ << endl;
 
-        sem->v();
+        kout.unlock();
     }
 }
 
 void PreemptiveThreadDemo::run() {
     kout << "Preemptive Thread Demo" << endl;
-    kout << "Initializing Semaphore" << endl;
-    Semaphore* sem = new Semaphore(1);  // Create this semaphore on the heap as this thread exits itself,
-                                        // so stack allocated objects will be lost
-
-    // TODO: Threads disappear, the fewer loop the faster they vanish
-    //       It seems like this happens with exactly 3 or 4 loopthreads
     Thread* threads[this->number_of_threads];
     kout << "Allocating LoopThreads" << endl;
     for (unsigned int i = 0; i < this->number_of_threads; ++i) {
-        threads[i] = new PreemptiveLoopThread(i, sem);
+        threads[i] = new PreemptiveLoopThread(i);
     }
 
     kout << "Adding threads to ready queue" << endl;
