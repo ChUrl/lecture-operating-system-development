@@ -29,20 +29,26 @@
 #define __Thread_include__
 
 #include "kernel/threads/ThreadState.h"
-#include "lib/Chain.h"
+#include "user/lib/Logger.h"
 
-class Thread : public Chain {
+class Thread {
 private:
     Thread(const Thread& copy) = delete;  // Verhindere Kopieren
 
     unsigned int* stack;
     struct ThreadState regs;
 
+protected:
+    static Logger log;
+
 public:
     unsigned int tid;  // Thread-ID (wird im Konstruktor vergeben)
 
     Thread();
-    ~Thread();
+
+    virtual ~Thread() {
+        delete[] this->stack;
+    }
 
     // Thread aktivieren
     void start();

@@ -30,6 +30,7 @@ extern "C" {
     void Thread_switch(struct ThreadState* regs_now, struct ThreadState* reg_then);
 }
 
+Logger Thread::log = Logger("Thread");
 unsigned int ThreadCnt = 0;
 
 /*****************************************************************************
@@ -107,6 +108,7 @@ void kickoff(Thread* object) {
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
 Thread::Thread() : stack(new unsigned int[1024]), tid(ThreadCnt++) {
+    Thread::log << INFO << "Initialized thread with ID: " << this->tid << endl;
     Thread_init(&regs, stack + 1024, kickoff, this);  // Stack grows from top to bottom
 }
 

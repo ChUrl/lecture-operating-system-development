@@ -20,13 +20,13 @@ private:
 
 public:
     IdleThread() {
-        kout << "Initialized Idle Thread" << endl;
+        log << INFO << "Initialized Idle Thread with ID: " << dec << this->tid << endl;
     }
 
     void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
         scheduler.enable_preemption();
-        kout << "IdleThread enabled preemption" << endl;
+        log << INFO << "IdleThread enabled preemption" << endl;
 
         while (true) {
             // kout << "Idle!" << endl;
