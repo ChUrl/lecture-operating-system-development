@@ -40,6 +40,7 @@ private:
     // NOTE: Using this instead of the Queue is a side effect, I added the ArrayList for different reasons
     //       but my Queue was shit so I replaced it (and didn't fix the Queue)
     ArrayList<Thread*> ready_queue;
+    ArrayList<Thread*> block_queue;
 
 public:
     Scheduler() : has_idle_thread(false), log("SCHED") {}
@@ -63,6 +64,7 @@ public:
 
     // Thread mit 'Gewalt' terminieren
     void kill(Thread* that);
+    void kill(unsigned int id);
 
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield();

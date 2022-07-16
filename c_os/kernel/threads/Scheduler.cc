@@ -56,8 +56,7 @@ void Scheduler::ready(Thread* that) {
     cpu.disable_int();
     this->ready_queue.insert(that);
 
-    log << TRACE << "Adding to ready_queue, ID: " << dec << that->tid << endl;
-    this->ready_queue.print(log << TRACE);
+    log << DEBUG << "Adding to ready_queue, ID: " << dec << that->tid << endl;
     cpu.enable_int();
 }
 
@@ -82,8 +81,8 @@ void Scheduler::exit() {
     }
     Thread& next = *(Thread*)this->ready_queue.remove_first();
 
-    log << TRACE << "Exiting thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
-    this->ready_queue.print(log << TRACE);
+    log << DEBUG << "Exiting thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
+    delete this->get_active();
 
     this->dispatch(next);
 
@@ -109,13 +108,46 @@ void Scheduler::kill(Thread* that) {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     if (!this->ready_queue.remove(that)) {
-        log << ERROR << "Can't kill thread that is not in ready_queue, ID: " << dec << that->tid << endl;
-        cpu.enable_int();
-        return;
+        // Not in ready queue
+        if (!this->block_queue.remove(that)) {
+            // Not in block queue
+            log << ERROR << "Can't kill thread that is not in any queue, ID: " << dec << that->tid << endl;
+            cpu.enable_int();
+            return;
+        }
     }
 
-    log << TRACE << "Killing thread, ID: " << dec << that->tid << endl;
-    this->ready_queue.print(log << TRACE);
+    log << DEBUG << "Killing thread, ID: " << dec << that->tid << endl;
+    delete that;
+    cpu.enable_int();
+}
+
+void Scheduler::kill(unsigned int id) {
+    cpu.disable_int();
+    Thread* to_remove = NULL;
+    for (Thread* thread : this->ready_queue) {
+        if (thread->tid == id) {
+            this->ready_queue.remove(to_remove);
+            log << DEBUG << "Killing thread, ID: " << dec << id << endl;
+            delete to_remove;
+
+            cpu.enable_int();
+            return;
+        }
+    }
+
+    for (Thread* thread : this->block_queue) {
+        if (thread->tid == id) {
+            this->block_queue.remove(to_remove);
+            log << DEBUG << "Killing thread, ID: " << dec << id << endl;
+            delete to_remove;
+
+            cpu.enable_int();
+            return;
+        }
+    }
+
+    log << ERROR << "Can't kill thread that is not in any queue, ID: " << dec << id << endl;
     cpu.enable_int();
 }
 
@@ -137,7 +169,7 @@ void Scheduler::yield() {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     if (this->ready_queue.empty()) {
-        log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->get_active()->tid << endl;
+        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->get_active()->tid << endl;
         cpu.enable_int();
         return;
     }
@@ -145,8 +177,7 @@ void Scheduler::yield() {
     Thread& next = *(Thread*)this->ready_queue.remove_first();
     this->ready_queue.insert(this->get_active());
 
-    log << TRACE << "Yielding, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
-    this->ready_queue.print(log << TRACE);
+    // log << TRACE << "Yielding, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
 
     this->dispatch(next);
 }
@@ -162,7 +193,8 @@ void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
-    this->yield();  // We already have that
+    cpu.disable_int();
+    this->yield();
 }
 
 /*****************************************************************************
@@ -179,7 +211,21 @@ void Scheduler::block() {
 
     /* hier muss Code eingefuegt werden */
 
-    this->exit();  // If I'm not mistaken block/deblock is the same functionality we already have
+    // Basically the same as exit()
+
+    cpu.disable_int();
+    if (this->ready_queue.empty()) {
+        log << ERROR << "Can't block last thread, active ID: " << dec << this->get_active()->tid << endl;
+        cpu.enable_int();
+        return;
+    }
+
+    this->block_queue.insert(this->get_active());  // Thread that will be blocked waits in block_queue, so the scheduler can also
+                                                   // kill blocked threads (for example keyboard demo needs this)
+    Thread& next = *(Thread*)this->ready_queue.remove_first();
+    log << TRACE << "Blocking thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
+
+    this->dispatch(next);
 }
 
 /*****************************************************************************
@@ -197,5 +243,14 @@ void Scheduler::deblock(Thread* that) {
 
     /* hier muss Code eingefuegt werden */
 
-    this->ready(that);
+    // Basically the same as ready()
+
+    cpu.disable_int();
+    if (!this->block_queue.remove(that)) {
+        log << ERROR << "Unblocked thread wasn't in block_queue" << endl;
+    }
+    this->ready_queue.insert_at(that, 0);  // Prefer deblocked
+
+    log << TRACE << "Adding to start of ready_queue, ID: " << dec << that->tid << endl;
+    cpu.enable_int();
 }
