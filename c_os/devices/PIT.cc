@@ -62,7 +62,7 @@ void PIT::trigger() {
 
     /* hier muss Code eingefuegt werden */
 
-    log << TRACE << "Incrementing systime" << endl;
+    // log << TRACE << "Incrementing systime" << endl;
 
     // alle 10ms, Systemzeit weitersetzen
     systime++;
@@ -82,7 +82,7 @@ void PIT::trigger() {
 
     // Preemption
     if (scheduler.preemption_enabled()) {
-        log << TRACE << "Preemption" << endl;
+        // log << TRACE << "Preemption" << endl;
         scheduler.preempt();
     }
 }
