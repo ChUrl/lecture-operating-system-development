@@ -6,12 +6,12 @@
 //       ArrayList instead, without additional effort.
 //       It's also cool to use the allocator a bit more and introduce realloc because I coded that thing
 
-#include "lib/OutStream.h"
+#include "user/lib/List.h"
 #include <cstddef>
 
-// I put the whole implementation in the header because the templating makes it cumbersome to split
+// I put most of the implementation in the header because the templating makes it cumbersome to split
 template<typename T>
-class ArrayList {
+class ArrayList : public List<T> {
 private:
     const unsigned int default_size = 10;  // Arbitrary but very small because this isn't a real OS :(
     const unsigned int expand_size = 5;    // Slots to allocate extra when array full
@@ -21,7 +21,11 @@ private:
 
     // TODO: Use user/lib/Array
     // I manage the size so I can use pointer arithmetic
-    T* buffer;
+    T* buffer = NULL;
+
+    void init() {
+        this->buffer = new T[this->default_size];
+    }
 
     unsigned int get_free_space() const {
         return this->buffer_size - this->buffer_pos;
@@ -29,6 +33,11 @@ private:
 
     // Enlarges the buffer if we run out of space
     unsigned int expand() {
+        // Init if necessary
+        if (this->buffer == NULL) {
+            this->init();
+        }
+
         // Since we only ever add single elements this should never get below zero
         // TODO: realloc
         if (this->get_free_space() < this->expand_size) {
@@ -103,12 +112,16 @@ private:
     }
 
 public:
-    void init() {
-        this->buffer = new T[this->default_size];
+    typename List<T>::Iterator begin() override {
+        return typename List<T>::Iterator(&this->buffer[0]);
+    }
+
+    typename List<T>::Iterator end() override {
+        return typename List<T>::Iterator(&this->buffer[this->buffer_pos]);
     }
 
     // Returns new pos
-    unsigned int insert(T e) {
+    unsigned int insert(T e) override {
         this->expand();
         this->buffer[this->buffer_pos] = e;
         this->buffer_pos = this->buffer_pos + 1;
@@ -116,7 +129,7 @@ public:
         return this->buffer_pos;
     }
 
-    unsigned int insert_at(T e, unsigned int i) {
+    unsigned int insert_at(T e, unsigned int i) override {
         if (i > this->buffer_pos) {
             // Error: Space between elements
             return -1;
@@ -135,7 +148,7 @@ public:
     }
 
     // Returns removed element
-    T remove_at(unsigned int i) {
+    T remove_at(unsigned int i) override {
         if (i >= this->buffer_pos) {
             // ERROR: No element here
             return NULL;
@@ -146,27 +159,27 @@ public:
         return e;
     }
 
-    T remove_first() {
+    T remove_first() override {
         return this->remove_at(0);
     }
 
-    T remove_last() {
+    T remove_last() override {
         // If index -1 unsigned int will overflow and remove_at will catch that
         return this->remove_at(this->buffer_pos - 1);
     }
 
-    int remove(T e) {
+    bool remove(T e) override {
         for (unsigned int i = 0; i < this->buffer_pos; ++i) {
             if (this->buffer[i] == e) {
                 this->copy_left(i);
-                return 0;
+                return true;
             }
         }
 
-        return -1;
+        return false;
     }
 
-    T get(unsigned int i) const {
+    T get(unsigned int i) const override {
         if (i >= this->buffer_pos) {
             // ERROR: No element there
             return NULL;
@@ -175,19 +188,34 @@ public:
         return this->buffer[i];
     }
 
-    T first() const {
+    T first() const override {
         return this->get(0);
     }
 
-    bool empty() const {
+    T last() const override {
+        return this->get(this->buffer_pos - 1);  // Underflow gets catched by get(unsigned int i)
+    }
+
+    bool empty() const override {
         return this->buffer_pos == 0;
     }
 
-    unsigned int size() const {
+    unsigned int size() const override {
         return this->buffer_pos;
     }
 
-    void print(OutStream& out) const;
+    void print(OutStream& out) const override {
+        if (this->buffer_pos == 0) {
+            out << "Print List (0 elements)" << endl;
+            return;
+        }
+
+        out << "Print List (" << dec << this->buffer_pos << " elements): ";
+        for (unsigned int i = 0; i < this->buffer_pos; ++i) {
+            out << dec << this->get(i) << " ";
+        }
+        out << endl;
+    }
 };
 
 #endif
