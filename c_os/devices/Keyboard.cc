@@ -338,7 +338,7 @@ void Keyboard::trigger() {
     // NOTE: My keyboard has no delete key...
     if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
         this->reboot();
+    } else if (key != 0) {
+        kevman.broadcast(key);
     }
-
-    kevman.broadcast(key);
 }
