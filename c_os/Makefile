@@ -214,6 +214,9 @@ bootdisk-hd: $(OBJDIR)/bootdisk.img
 qemu: $(OBJDIR)/bootdisk.vmi
 	qemu-system-i386 -fda $(OBJDIR)/bootdisk.vmi -boot a -k en-us -soundhw pcspk -vga std -cpu 486
 
+qemu-stdio: $(OBJDIR)/bootdisk.vmi
+	qemu-system-i386 -fda $(OBJDIR)/bootdisk.vmi -boot a -k en-us -soundhw pcspk -vga std -cpu 486 -serial stdio
+
 # --------------------------------------------------------------------------
 # 'qemu-gdb' ruft den qemu-Emulator mit aktiviertem GDB-Stub mit dem System
 # auf, sodass es per GDB oder DDD inspiziert werden kann.
