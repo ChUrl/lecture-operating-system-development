@@ -20,4 +20,6 @@ void KeyboardDemo::run() {
         kout << listener.waitForKeyEvent();
         kout.flush();
     }
+
+    scheduler.exit();
 }

@@ -11,8 +11,8 @@
 #ifndef __TextDemo_include__
 #define __TextDemo_include__
 
-#include "kernel/threads/Thread.h"
 #include "kernel/Globals.h"
+#include "kernel/threads/Thread.h"
 
 class TextDemo : public Thread {
 private:
@@ -20,7 +20,11 @@ private:
 
 public:
     TextDemo() {
-        kout << "Initialized TextDemo" << endl;
+        log << INFO << "Initialized TextDemo" << endl;
+    }
+
+    ~TextDemo() override {
+        log << INFO << "Uninitialized TextDemo" << endl;
     }
 
     void run() override;
