@@ -47,6 +47,7 @@ public:
     Thread();
 
     virtual ~Thread() {
+        log << INFO << "Uninitialized thread, ID: " << dec << this->tid << endl;
         delete[] this->stack;
     }
 
