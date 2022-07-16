@@ -2,6 +2,7 @@
 #define __KeyEventManager_Include_H_
 
 #include "user/event/KeyEventListener.h"
+#include "user/lib/ArrayList.h"
 
 // NOTE: Could do this more generally but we only have key events
 
@@ -9,9 +10,7 @@ class KeyEventManager {
 private:
     KeyEventManager(const KeyEventManager& copy) = delete;
 
-    // TODO: Implement some sort of set structure
-    KeyEventListener* listeners[16];  // This is pretty limited but should be enough
-    unsigned int num_subscribed = 0;
+    ArrayList<KeyEventListener*> listeners;
 
 public:
     KeyEventManager() {}
