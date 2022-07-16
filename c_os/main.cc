@@ -35,6 +35,10 @@ void print_startup_message() {
 }
 
 int main() {
+    Logger::set_level(Logger::DEBUG);
+    Logger::disable_kout();
+    Logger::enable_serial();
+
     kout.clear();
 
     // Startmeldung
@@ -42,9 +46,6 @@ int main() {
 
     // Speicherverwaltung initialisieren
     allocator.init();
-
-    // Initialize SerialPort
-    serial.init();
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     kb.plugin();
@@ -71,6 +72,7 @@ int main() {
     // TODO: Make menu for demos
     // DONE: Thread switching stops after a while
     // TODO: Threads are not cleanup after exit, use managed pointer?
+    // TODO: Fix PCSKP/Keyboard Demos: Keyboard Thread gets missing after blocking waiting for input, kevman doesn't wake up...
     //
     // NOTE: Main ToDo's (extra)
     // DONE: Basic event management for keyboard events so threads can utilize interrupt based inputs
@@ -103,6 +105,7 @@ int main() {
     //       Or check if thread is still running
     // TODO: Delete copy constructors that weren't already deleted
     // DONE: Switch out semaphore Queue with ArrayList? Or switch back Scheduler to Queue?
+    // TODO: Add virtual destructors and make sure to call them with delete when objects are removed
 
     // Scheduler doesn't return
     return 0;
