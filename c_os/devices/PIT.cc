@@ -62,6 +62,8 @@ void PIT::trigger() {
 
     /* hier muss Code eingefuegt werden */
 
+    log << TRACE << "Incrementing systime" << endl;
+
     // alle 10ms, Systemzeit weitersetzen
     systime++;
 
@@ -72,15 +74,15 @@ void PIT::trigger() {
     /* hier muss Code eingefuegt werden */
 
     // Indicator
-    if (systime - this->last_indicator_refresh >= 100) {
+    if (systime - this->last_indicator_refresh >= 10) {
         this->indicator_pos = (this->indicator_pos + 1) % 4;
         kout.show(79, 0, this->indicator[this->indicator_pos]);
         this->last_indicator_refresh = systime;
+    }
 
-        // TODO: Move this out again
-        // Preemption
-        if (scheduler.preemption_enabled()) {
-            scheduler.preempt();
-        }
+    // Preemption
+    if (scheduler.preemption_enabled()) {
+        log << TRACE << "Preemption" << endl;
+        scheduler.preempt();
     }
 }
