@@ -98,7 +98,7 @@ int IntDispatcher::report(unsigned int vector) {
 
     // 32 = Timer
     // 33 = Keyboard
-    log << TRACE << "Interrupt: " << dec << vector << endl;
+    // log << TRACE << "Interrupt: " << dec << vector << endl;
     if (vector == 33) {
         log << DEBUG << "Keyboard Interrupt" << endl;
     }
