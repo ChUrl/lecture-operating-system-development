@@ -14,11 +14,10 @@
 #include "kernel/interrupts/ISR.h"
 
 class PIT : public ISR {
-    
 private:
-    PIT(const PIT &copy) = delete; // Verhindere Kopieren
-         
-    enum { time_base = 838 };  /* ns */
+    PIT(const PIT& copy) = delete;  // Verhindere Kopieren
+
+    enum { time_base = 838 }; /* ns */
     int timer_interval;
 
     char indicator[4] = {'|', '/', '-', '\\'};
@@ -27,24 +26,24 @@ private:
 
 public:
     // Zeitgeber initialisieren.
-    PIT (int us) {
-        interval (us);
+    PIT(int us) {
+        this->interval(us);
     }
-    
+
     // Konfiguriertes Zeitintervall auslesen.
-    int interval () {
+    int interval() {
         return timer_interval;
     }
-    
+
     // Zeitintervall in Mikrosekunden, nachdem periodisch ein Interrupt
     //erzeugt werden soll.
-    void interval (int us);
+    void interval(int us);
 
     // Aktivierung der Unterbrechungen fuer den Zeitgeber
-    void plugin ();
-    
+    void plugin();
+
     // Unterbrechnungsroutine des Zeitgebers.
-    void trigger ();
+    void trigger();
 };
 
 #endif

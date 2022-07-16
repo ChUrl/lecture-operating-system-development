@@ -29,7 +29,6 @@ void PIT::interval(int us) {
     control.outb(0x36);  // Zähler 0 Mode 3
 
     unsigned int cntStart = (1193180.0 / 1000000.0) * us;  // 1.19Mhz PIT
-    // kout << "PIT cntStart: " << dec << cntStart << endl;
 
     IOport data0(0x40);
     data0.outb(cntStart & 0xFF);  // Zaehler-0 laden (Lobyte)

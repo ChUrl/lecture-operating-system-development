@@ -7,13 +7,13 @@ void ArrayListDemo::run() {
     for (unsigned int i = 0; i < 5; ++i) {
         this->list.insert(i);
     }
-    this->list.print();
+    this->list.print(kout);
 
     kout << "Removing all elements from the front" << endl;
     for (unsigned int i = 0; i < 5; ++i) {
         this->list.remove_first();
     }
-    this->list.print();
+    this->list.print(kout);
 
     // ============================================================
 
@@ -22,37 +22,37 @@ void ArrayListDemo::run() {
         kout << "Add " << dec << i << endl;
         this->list.insert(i);
     }
-    this->list.print();
+    this->list.print(kout);
 
     kout << "Removing all elements from the back" << endl;
     for (unsigned int i = 0; i < 10; ++i) {
         this->list.remove_last();
     }
-    this->list.print();
+    this->list.print(kout);
 
     // ============================================================
 
     for (unsigned int i = 0; i < 5; ++i) {
         this->list.insert(i);
     }
-    this->list.print();
+    this->list.print(kout);
 
     kout << "Adding inside the list (at idx 0, 2, 5)" << endl;
     this->list.insert_at(10, 0);
     this->list.insert_at(10, 2);
     this->list.insert_at(10, 5);
-    this->list.print();
+    this->list.print(kout);
 
     kout << "Removing inside the list (at idx 0, 2, 5)" << endl;
     this->list.remove_at(0);
     this->list.remove_at(2);
     this->list.remove_at(5);
-    this->list.print();
+    this->list.print(kout);
 
     for (unsigned int i = 0; i < 5; ++i) {
         this->list.remove_first();
     }
-    this->list.print();
+    this->list.print(kout);
 
     // ============================================================
 
@@ -63,7 +63,7 @@ void ArrayListDemo::run() {
     this->list.insert(1);
     this->list.insert(2);
     this->list.insert(3);
-    this->list.print();
+    this->list.print(kout);
 
     kout << "Starting..." << endl;
     for (unsigned int n = 0; n < 10000000; ++n) {
@@ -76,12 +76,12 @@ void ArrayListDemo::run() {
         }
 
         if (n < 5) {
-            this->list.print();
+            this->list.print(kout);
         }
     }
     kout << "Finished." << endl;
 
-    this->list.print();
+    this->list.print(kout);
 
     scheduler.exit();
 }

@@ -48,8 +48,6 @@ extern Scheduler scheduler;
 
 extern SerialOut serial;
 
-constexpr bool DEBUG = false;
-
 extern unsigned int total_mem;  // RAM total
 extern unsigned long systime;   // wird all 10ms hochgezaehlt
 

@@ -55,8 +55,8 @@ void Scheduler::ready(Thread* that) {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     this->ready_queue.insert(that);
-    kout << "Scheduler :: Adding to ready_queue" << endl;
-    this->ready_queue.print();
+    log << TRACE << "Scheduler :: Adding to ready_queue" << endl;
+    this->ready_queue.print(log << TRACE);
     cpu.enable_int();
 }
 
@@ -75,8 +75,8 @@ void Scheduler::exit() {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    kout << "Scheduler :: Exiting thread" << endl;
-    this->ready_queue.print();
+    log << TRACE << "Scheduler :: Exiting thread" << endl;
+    this->ready_queue.print(log << TRACE);
     this->dispatch(next);
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
@@ -101,8 +101,8 @@ void Scheduler::kill(Thread* that) {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     this->ready_queue.remove(that);
-    kout << "Scheduler :: Killing thread" << endl;
-    this->ready_queue.print();
+    log << TRACE << "Scheduler :: Killing thread" << endl;
+    this->ready_queue.print(log << TRACE);
     cpu.enable_int();
 }
 
@@ -125,8 +125,8 @@ void Scheduler::yield() {
     cpu.disable_int();
     this->ready_queue.insert(this->get_active());
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    kout << "Scheduler :: Yield" << endl;
-    this->ready_queue.print();
+    log << TRACE << "Scheduler :: Yield" << endl;
+    this->ready_queue.print(log << TRACE);
     this->dispatch(next);
 }
 

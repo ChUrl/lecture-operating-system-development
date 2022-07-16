@@ -13,6 +13,7 @@
 #define __BumpAllocator_include__
 
 #include "kernel/Allocator.h"
+#include "user/lib/Logger.h"
 
 class BumpAllocator : Allocator {
 
@@ -20,10 +21,12 @@ private:
     unsigned char* next;
     unsigned int allocations;
 
+    Logger log;
+
     BumpAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
 public:
-    BumpAllocator() {};  // Allocator() called implicitely in C++
+    BumpAllocator() : log("BMP-Alloc") {};  // Allocator() called implicitely in C++
 
     void init() override;
     void dump_free_memory() override;

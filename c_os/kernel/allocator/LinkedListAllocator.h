@@ -13,6 +13,7 @@
 #define __LinkedListAllocator_include__
 
 #include "kernel/Allocator.h"
+#include "user/lib/Logger.h"
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 typedef struct free_block {
@@ -28,21 +29,21 @@ typedef struct free_block {
 } free_block_t;
 
 class LinkedListAllocator : Allocator {
-
 private:
     // freie Bloecke werden verkettet
     struct free_block* free_start;
 
     LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
-    // NOTE: I added this
     // Traverses the whole list forward till previous block is reached.
     // This can only be called on free blocks as allocated blocks
     // aren't reachable from the freelist.
     static struct free_block* find_previous_block(struct free_block*);
 
+    Logger log;
+
 public:
-    LinkedListAllocator() {}
+    LinkedListAllocator() : log("LL-Alloc") {}
 
     void init() override;
     void dump_free_memory() override;

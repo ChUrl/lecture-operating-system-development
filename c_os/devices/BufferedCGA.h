@@ -3,6 +3,7 @@
 
 #include "devices/CGA.h"
 #include "devices/Keyboard.h"
+#include "user/lib/Logger.h"
 #include "user/ScrollbackBuffer.h"
 #include <memory>
 
@@ -16,8 +17,10 @@ private:
 
     BufferedCGA(const BufferedCGA&) = delete;
 
+    Logger log;
+
 public:
-    BufferedCGA() : initialized(false), scrollback(0) {}
+    BufferedCGA() : initialized(false), scrollback(0), log("BufferedCGA") {}
 
     unsigned char scrollback;  // The page that is displayed, public to enable page display
 

@@ -9,14 +9,15 @@ void PreemptiveLoopThread::run() {
 
         // Saving + restoring kout position doesn't help much as preemption still occurs,
         // only LoopThreads are synchronized, so other output will be disturbed sometimes
-        // kout.setpos(55, this->id);
-        // kout << fillw(3) << this->id << fillw(0) << ": " << dec << cnt++ << endl;
+        kout.setpos(55, this->id);
+        kout << fillw(3) << this->id << fillw(0) << ": " << dec << cnt++ << endl;
 
         sem->v();
     }
 }
 
 void PreemptiveThreadDemo::run() {
+    kout << "Preemptive Thread Demo" << endl;
     kout << "Initializing Semaphore" << endl;
     Semaphore* sem = new Semaphore(1);  // Create this semaphore on the heap as this thread exits itself,
                                         // so stack allocated objects will be lost

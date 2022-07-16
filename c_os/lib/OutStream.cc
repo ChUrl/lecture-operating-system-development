@@ -68,7 +68,7 @@ void OutStream::flush() {
 //
 // Zeichen und Zeichenketten in Stream ausgeben
 //
-// NOTE: The implementations now resides in the OutStream.h as I switched them to templated functions
+// NOTE: The implementations now reside in the OutStream.h as I switched them to templated functions
 
 //
 // Manipulatorfunktionen

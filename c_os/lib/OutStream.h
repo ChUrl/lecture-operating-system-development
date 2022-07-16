@@ -221,6 +221,7 @@ public:
 // Zeilenumbruch in Ausgabe einfuegen.
 template<typename T>
 T& endl(T& os) {
+    // os << '\r';
     os << '\n';
     os.flush();
     return os;

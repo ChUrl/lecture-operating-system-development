@@ -148,7 +148,7 @@ void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned in
             this->drawPixel(i, y1, col);
         }
     } else {
-        kout << "Error (LFBgraphics::drawStraightLine): Line is not straight" << endl;
+        log << ERROR << "Line is not straight" << endl;
     }
 }
 

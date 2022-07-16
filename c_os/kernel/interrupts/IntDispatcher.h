@@ -14,11 +14,14 @@
 #define __IntDispatcher_include__
 
 #include "kernel/interrupts/ISR.h"
+#include "user/lib/Logger.h"
 
 class IntDispatcher {
 
 private:
     IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren
+
+    Logger log;
 
     enum { size = 256 };
     ISR* map[size];
@@ -32,7 +35,11 @@ public:
     };
 
     // Initialisierung der ISR map mit einer Default-ISR.
-    IntDispatcher();
+    IntDispatcher() : log("IntDis") {
+        for (unsigned int slot = 0; slot < size; slot++) {
+            map[slot] = 0;
+        }
+    }
 
     // Registrierung einer ISR. (Rueckgabewert: 0 = Erfolg, -1 = Fehler)
     int assign(unsigned int vector, ISR& isr);

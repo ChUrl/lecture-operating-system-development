@@ -6,6 +6,7 @@
 //       ArrayList instead, without additional effort.
 //       It's also cool to use the allocator a bit more and introduce realloc because I coded that thing
 
+#include "lib/OutStream.h"
 #include <cstddef>
 
 // I put the whole implementation in the header because the templating makes it cumbersome to split
@@ -184,7 +185,7 @@ public:
         return this->buffer_pos;
     }
 
-    void print() const;
+    void print(OutStream& out) const;
 };
 
 #endif

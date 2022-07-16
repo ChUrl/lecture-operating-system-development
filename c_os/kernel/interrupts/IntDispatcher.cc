@@ -33,6 +33,9 @@ void int_disp(unsigned int vector) {
 
     /* hier muss Code eingefuegt werden */
 
+    // 32 = Timer Interrupt
+    // kout << "Interrupt: " << dec << vector << endl;
+
     if (vector < 32) {
         bs_dump(vector);
         cpu.halt();
@@ -42,17 +45,6 @@ void int_disp(unsigned int vector) {
         kout << "Panic: unexpected interrupt " << vector;
         kout << " - processor halted." << endl;
         cpu.halt();
-    }
-}
-
-/*****************************************************************************
- * Konstruktor:     IntDispatcher::IntDispatcher                             *
- *---------------------------------------------------------------------------*
- * Beschreibung:    Initialisierung der ISR map mit einer Default-ISR.       *
- *****************************************************************************/
-IntDispatcher::IntDispatcher() {
-    for (unsigned int slot = 0; slot < size; slot++) {
-        map[slot] = 0;
     }
 }
 
@@ -72,12 +64,12 @@ int IntDispatcher::assign(unsigned int vector, ISR& isr) {
     /* hier muss Code eingefuegt werden */
 
     if (vector >= this->size) {
-        if constexpr (DEBUG) { kout << "Invalid vector number when assigning" << endl; }
+        log << ERROR << "Invalid vector number when assigning" << endl;
         return -1;
     }
 
     this->map[vector] = &isr;
-    if constexpr (DEBUG) { kout << "Registered ISR for vector " << dec << vector << endl; }
+    log << INFO << "Registered ISR for vector " << dec << vector << endl;
 
     return 0;
 }
@@ -103,7 +95,7 @@ int IntDispatcher::report(unsigned int vector) {
     ISR* isr = this->map[vector];
 
     if (isr == 0) {
-        if constexpr (DEBUG) { kout << "No ISR registered for vector " << vector << endl; }
+        log << ERROR << "No ISR registered for vector " << vector << endl;
         return -1;
     }
 

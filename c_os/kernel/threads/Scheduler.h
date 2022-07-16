@@ -18,6 +18,7 @@
 #include "lib/Queue.h"
 #include "lib/SpinLock.h"
 #include "user/lib/ArrayList.h"
+#include "user/lib/Logger.h"
 
 class Scheduler : public Dispatcher {
 private:
@@ -29,6 +30,8 @@ private:
     // bevor er initialisiert wurde
     bool has_idle_thread;
 
+    Logger log;
+
     // NOTE: I would have to release the lock when switching threads but I don't know exactly how to do this
     //       in the assembly function
     // SpinLock lock;  // Use spinlock instead of cpu.disable_int() because it still allows preemption
@@ -39,7 +42,7 @@ private:
     ArrayList<Thread*> ready_queue;
 
 public:
-    Scheduler() : has_idle_thread(false) {}
+    Scheduler() : has_idle_thread(false), log("SCHED") {}
 
     void init() {
         this->ready_queue.init();

@@ -16,6 +16,7 @@
 #define __LFBgraphics_include__
 
 #include "devices/fonts/Fonts.h"
+#include "user/lib/Logger.h"
 
 // Hilfsfunktionen um Farbwerte fuer einen Pixel zu erzeugen
 #define RGB_24(r, g, b) (unsigned int)((r << 16) + (g << 8) + b)
@@ -24,9 +25,10 @@
 #define BUFFER_VISIBLE 1
 
 class LFBgraphics {
-
 private:
     LFBgraphics(const LFBgraphics& copy) = delete;  // Verhindere Kopieren
+
+    Logger log;
 
     // Hilfsfunktion fuer drawString
     void drawMonoBitmap(unsigned int x, unsigned int y,
@@ -40,7 +42,7 @@ public:
     unsigned int hfb;         // Adresse des versteckten Buffers (optional, fuer Animationen)
     unsigned int mode;        // Zeichnen im sichtbaren = 1 oder unsichtbaren = 0 Puffer
 
-    LFBgraphics() : mode(BUFFER_VISIBLE) {};
+    LFBgraphics() : log("LFBgraphics"), mode(BUFFER_VISIBLE) {};
 
     void clear();
     void drawPixel(unsigned int x, unsigned int y, unsigned int col);
