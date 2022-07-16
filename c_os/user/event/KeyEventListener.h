@@ -7,7 +7,7 @@ class KeyEventListener {
 private:
     KeyEventListener(const KeyEventListener& copy) = delete;
 
-    char lastChar;
+    char lastChar = '\0';
 
 public:
     Thread& thread;  // Thread which contains this listener, so the listener can block the thread
