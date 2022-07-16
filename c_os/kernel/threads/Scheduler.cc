@@ -55,7 +55,8 @@ void Scheduler::ready(Thread* that) {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     this->ready_queue.insert(that);
-    log << TRACE << "Scheduler :: Adding to ready_queue" << endl;
+
+    log << TRACE << "Adding to ready_queue, ID: " << dec << that->tid << endl;
     this->ready_queue.print(log << TRACE);
     cpu.enable_int();
 }
@@ -74,9 +75,16 @@ void Scheduler::exit() {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
+    if (this->ready_queue.empty()) {
+        log << ERROR << "Can't exit last thread, active ID: " << dec << this->get_active()->tid << endl;
+        cpu.enable_int();
+        return;
+    }
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    log << TRACE << "Scheduler :: Exiting thread" << endl;
+
+    log << TRACE << "Exiting thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
     this->ready_queue.print(log << TRACE);
+
     this->dispatch(next);
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
@@ -100,8 +108,13 @@ void Scheduler::kill(Thread* that) {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-    this->ready_queue.remove(that);
-    log << TRACE << "Scheduler :: Killing thread" << endl;
+    if (this->ready_queue.remove(that) == -1) {
+        log << ERROR << "Can't kill thread that is not in ready_queue, ID: " << dec << that->tid << endl;
+        cpu.enable_int();
+        return;
+    }
+
+    log << TRACE << "Killing thread, ID: " << dec << that->tid << endl;
     this->ready_queue.print(log << TRACE);
     cpu.enable_int();
 }
@@ -123,10 +136,18 @@ void Scheduler::yield() {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-    this->ready_queue.insert(this->get_active());
+    if (this->ready_queue.empty()) {
+        log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->get_active()->tid << endl;
+        cpu.enable_int();
+        return;
+    }
+
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    log << TRACE << "Scheduler :: Yield" << endl;
+    this->ready_queue.insert(this->get_active());
+
+    log << TRACE << "Yielding, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
     this->ready_queue.print(log << TRACE);
+
     this->dispatch(next);
 }
 
