@@ -16,7 +16,7 @@ private:
     const unsigned int default_size = 10;  // Arbitrary but very small because this isn't a real OS :(
     const unsigned int expand_size = 5;    // Slots to allocate extra when array full
 
-    unsigned int buffer_size = 10;
+    unsigned int buffer_size = 0;
     unsigned int buffer_pos = 0;
 
     // TODO: Use user/lib/Array
@@ -25,6 +25,7 @@ private:
 
     void init() {
         this->buffer = new T[this->default_size];
+        this->buffer_size = this->default_size;
     }
 
     unsigned int get_free_space() const {
@@ -34,8 +35,9 @@ private:
     // Enlarges the buffer if we run out of space
     unsigned int expand() {
         // Init if necessary
-        if (this->buffer == NULL) {
+        if (this->buffer == NULL && this->buffer_size == 0) {
             this->init();
+            return this->buffer_size;  // Dont have to realloc after init
         }
 
         // Since we only ever add single elements this should never get below zero
@@ -168,6 +170,7 @@ public:
         return this->remove_at(this->buffer_pos - 1);
     }
 
+    // Returns true on success
     bool remove(T e) override {
         for (unsigned int i = 0; i < this->buffer_pos; ++i) {
             if (this->buffer[i] == e) {
