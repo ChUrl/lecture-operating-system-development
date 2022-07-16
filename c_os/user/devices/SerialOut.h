@@ -16,7 +16,9 @@ private:
     int is_transmit_empty();
 
 public:
-    SerialOut() : com1(0x3f8) {}
+    SerialOut() : com1(0x3f8) {
+        this->init();
+    }
 
     int init() const;
 
