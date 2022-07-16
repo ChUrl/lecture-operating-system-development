@@ -50,6 +50,7 @@
  *****************************************************************************/
 #include "kernel/Paging.h"
 #include "kernel/Globals.h"
+#include "user/lib/Logger.h"
 
 // Bits fuer Eintraege in der Page-Table
 #define PAGE_PRESENT 0x001

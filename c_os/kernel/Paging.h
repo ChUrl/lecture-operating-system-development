@@ -52,8 +52,6 @@
 #ifndef __Paging_include__
 #define __Paging_include__
 
-#include "user/lib/Logger.h"
-
 // Externe Funktionen in startup.asm
 extern "C" {
     void paging_on(unsigned int* p_pdir);          // Paging einschalten
