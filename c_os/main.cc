@@ -37,7 +37,7 @@ void print_startup_message() {
 }
 
 int main() {
-    Logger::set_level(Logger::DEBUG);
+    Logger::set_level(Logger::TRACE);
     Logger::disable_kout();
     Logger::enable_serial();
 
@@ -68,10 +68,10 @@ int main() {
 
     // NOTE: Enforced ToDo's (needed)
     // DONE: Rewrite demos for threads
-    // TODO: Make menu for demos
+    // DONE: Make menu for demos
     // DONE: Thread switching stops after a while
     // TODO: Threads are not cleanup after exit, use managed pointer?
-    // TODO: Fix PCSKP/Keyboard Demos: Keyboard Thread gets missing after blocking waiting for input, kevman doesn't wake up...
+    // DONE: Fix PCSKP/Keyboard Demos: Keyboard Thread gets missing after blocking waiting for input, kevman doesn't wake up...
     //
     // NOTE: Main ToDo's (extra)
     // DONE: Basic event management for keyboard events so threads can utilize interrupt based inputs
@@ -82,9 +82,12 @@ int main() {
     // TODO: Fix the damn TreeAllocator: Allow root deletion without bluescreen
     //       Maybe just remove the red black tree stuff and replace with usual binary search tree?
     //       I can just balance this tree unefficiantly by reinserting all nodes
+    // TODO: Implement BST data structure with Tree interface
+    // TODO: Implement RBT tree interface implementation
+    // TODO: Switch treealloc so the underlying tree can be swapped easily
     // TODO: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
     // TODO: Array wrapper
-    // DONE: Rewrite Logging with a basic (synchronized) logger
+    // DONE: Rewrite Logging with a basic logger
     // TODO: String wrapper
     //
     // NOTE: Cleanup + Refactor
@@ -97,15 +100,17 @@ int main() {
     // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
     // TODO: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>
     // TODO: Make more stuff const and static and static constexpr const
-    // TODO: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
+    // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
     // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
     //       just get esp as argument
-    // TODO: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
+    // DONE: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
     //       Or check if thread is still running
     // TODO: Delete copy constructors that weren't already deleted
     // DONE: Switch out semaphore Queue with ArrayList? Or switch back Scheduler to Queue?
     // TODO: Add virtual destructors and make sure to call them with delete when objects are removed
     // TODO: Replace empty constructors/destructors with default keyword
+    // DONE: Synchronize the outstream
+    // TODO: Use singleton pattern for some device classes/classes used only in globals
 
     // Scheduler doesn't return
     return 0;
