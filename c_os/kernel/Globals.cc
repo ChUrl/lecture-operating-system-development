@@ -23,7 +23,7 @@ PCSPK pcspk;           // PC-Lautsprecher
 Keyboard kb;  // Tastatur
 KeyEventManager kevman;
 
-// BumpAllocator         allocator;
+// BumpAllocator allocator;
 LinkedListAllocator allocator;
 // TreeAllocator allocator;
 

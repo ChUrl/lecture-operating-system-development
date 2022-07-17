@@ -40,7 +40,7 @@ extern PCSPK pcspk;  // PC-Lautsprecher
 extern Keyboard kb;  // Tastatur
 extern KeyEventManager kevman;
 
-// extern BumpAllocator         allocator;
+// extern BumpAllocator allocator;
 extern LinkedListAllocator allocator;
 // extern TreeAllocator allocator;
 
