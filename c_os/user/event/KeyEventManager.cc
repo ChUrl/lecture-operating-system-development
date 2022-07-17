@@ -3,7 +3,7 @@
 
 void KeyEventManager::subscribe(KeyEventListener& listener) {
     log << DEBUG << "Subscribe, Thread ID: " << dec << listener.thread.tid << endl;
-    this->listeners.insert(&listener);
+    this->listeners.insert_last(&listener);
 }
 
 void KeyEventManager::unsubscribe(KeyEventListener& listener) {

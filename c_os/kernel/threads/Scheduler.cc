@@ -54,7 +54,7 @@ void Scheduler::ready(Thread* that) {
 
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
-    this->ready_queue.insert(that);
+    this->ready_queue.insert_last(that);
 
     log << DEBUG << "Adding to ready_queue, ID: " << dec << that->tid << endl;
     cpu.enable_int();
@@ -175,7 +175,7 @@ void Scheduler::yield() {
     }
 
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    this->ready_queue.insert(this->get_active());
+    this->ready_queue.insert_last(this->get_active());
 
     // log << TRACE << "Yielding, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
 
@@ -220,8 +220,8 @@ void Scheduler::block() {
         return;
     }
 
-    this->block_queue.insert(this->get_active());  // Thread that will be blocked waits in block_queue, so the scheduler can also
-                                                   // kill blocked threads (for example keyboard demo needs this)
+    this->block_queue.insert_last(this->get_active());  // Thread that will be blocked waits in block_queue, so the scheduler can also
+                                                        // kill blocked threads (for example keyboard demo needs this)
     Thread& next = *(Thread*)this->ready_queue.remove_first();
     log << TRACE << "Blocking thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
 

@@ -7,9 +7,9 @@ void LinkedListDemo::run() {
 
     kout << "Adding elements in order" << endl;
     for (unsigned int i = 0; i < 5; ++i) {
-        this->list.insert(i);
+        this->list.insert_last(i);
     }
-    this->list.print(kout);
+    this->list.print(kout);  // BUG: Crash
 
     kout << "Removing all elements from the front" << endl;
     for (unsigned int i = 0; i < 5; ++i) {
@@ -19,23 +19,23 @@ void LinkedListDemo::run() {
 
     // ============================================================
 
-    kout << "Adding elements in order with realloc" << endl;
-    for (unsigned int i = 0; i < 10; ++i) {
-        kout << "Add " << dec << i << endl;
-        this->list.insert(i);
-    }
-    this->list.print(kout);
+    // kout << "Adding elements in order with realloc" << endl;
+    // for (unsigned int i = 0; i < 10; ++i) {
+    //     kout << "Add " << dec << i << endl;
+    //     this->list.insert_last(i);
+    // }
+    // this->list.print(kout);
 
-    kout << "Removing all elements from the back" << endl;
-    for (unsigned int i = 0; i < 10; ++i) {
-        this->list.remove_last();
-    }
-    this->list.print(kout);
+    // kout << "Removing all elements from the back" << endl;
+    // for (unsigned int i = 0; i < 10; ++i) {
+    //     this->list.remove_last();
+    // }
+    // this->list.print(kout);
 
     // ============================================================
 
     for (unsigned int i = 0; i < 5; ++i) {
-        this->list.insert(i);
+        this->list.insert_last(i);
     }
     this->list.print(kout);
 
@@ -62,14 +62,14 @@ void LinkedListDemo::run() {
 
     // These are the threads
     int active = 0;  // Idle thread
-    this->list.insert(1);
-    this->list.insert(2);
-    this->list.insert(3);
+    this->list.insert_last(1);
+    this->list.insert_last(2);
+    this->list.insert_last(3);
     this->list.print(kout);
 
     kout << "Starting..." << endl;
-    for (unsigned int n = 0; n < 10000000; ++n) {
-        this->list.insert(active);
+    for (unsigned int n = 0; n < 1000; ++n) {
+        this->list.insert_last(active);
         active = list.remove_first();
 
         if (this->list.size() != 3) {
