@@ -85,6 +85,13 @@ void ArrayListDemo::run() {
 
     this->list.print(kout);
 
+    // ============================================================
+
+    kout << "Range based for support" << endl;
+    for (int i : this->list) {
+        kout << "List contains element: " << dec << i << endl;
+    }
+
     kout.unlock();
     scheduler.exit();
 }
