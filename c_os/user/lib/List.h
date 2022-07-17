@@ -10,23 +10,26 @@
 // For things like LinkedList, the operator++ has to be overriden to implement the traversal.
 template<typename T>
 class ListIterator {
+public:
+    using Type = T;
+
 private:
-    T* ptr;
+    Type* ptr;
 
 public:
-    ListIterator(T* ptr) : ptr(ptr) {}
+    ListIterator(Type* ptr) : ptr(ptr) {}
 
     // I only implement the least necessary operators
-    ListIterator& operator++() {
+    virtual ListIterator& operator++() {
         this->ptr = this->ptr + 1;
         return *this;
     }
 
-    T* operator->() {
+    Type* operator->() {
         return this->ptr;
     }
 
-    T& operator*() {
+    Type& operator*() {
         return *this->ptr;
     }
 
@@ -46,15 +49,16 @@ public:
     using Iterator = I;  // Needed for range based for loop
 
 protected:
-    virtual Type* begin_ptr() = 0;
-    virtual Type* end_ptr() = 0;
+    virtual typename Iterator::Type* begin_ptr() = 0;
+    virtual typename Iterator::Type* end_ptr() = 0;
 
 public:
     Iterator begin() { return Iterator(this->begin_ptr()); }
     Iterator end() { return Iterator(this->end_ptr()); }
 
-    virtual unsigned int insert(Type e) = 0;
     virtual unsigned int insert_at(Type e, unsigned int i) = 0;
+    virtual unsigned int insert_first(Type e) = 0;
+    virtual unsigned int insert_last(Type e) = 0;
 
     virtual Type remove_at(unsigned int i) = 0;
     virtual Type remove_first() = 0;
