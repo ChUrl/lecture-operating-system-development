@@ -119,45 +119,48 @@ private:
     }
 
 protected:
-    Type* begin_ptr() override {
+    typename Iterator::Type* begin_ptr() override {
         return this->buffer;
     }
 
-    Type* end_ptr() override {
+    typename Iterator::Type* end_ptr() override {
         return this->buffer + this->buffer_pos;
     }
 
 public:
     // Returns new pos
-    unsigned int insert(Type e) override {
-        this->expand();
-        this->buffer[this->buffer_pos] = e;
-        this->buffer_pos = this->buffer_pos + 1;
-
-        return this->buffer_pos;
-    }
-
     unsigned int insert_at(Type e, unsigned int i) override {
-        if (i > this->buffer_pos) {
+        if (i > this->size()) {
             // Error: Space between elements
             return -1;
         }
 
-        if (i == this->buffer_pos) {
+        if (i == this->size()) {
             // Insert at end
-            this->insert(e);
-            return this->buffer_pos;
+            return this->insert_last(e);
         }
 
         this->copy_right(i);  // Changes pos
         this->buffer[i] = e;
 
-        return this->buffer_pos;
+        return this->size();
+    }
+
+    unsigned int insert_first(Type e) override {
+        return this->insert_at(e, 0);
+    }
+
+    unsigned int insert_last(Type e) override {
+        this->expand();
+        this->buffer[this->size()] = e;
+        this->buffer_pos = this->buffer_pos + 1;
+
+        return this->size();
     }
 
     // Returns removed element
     Type remove_at(unsigned int i) override {
-        if (i >= this->buffer_pos) {
+        if (i >= this->size()) {
             // ERROR: No element here
             return NULL;
         }
@@ -173,12 +176,12 @@ public:
 
     Type remove_last() override {
         // If index -1 unsigned int will overflow and remove_at will catch that
-        return this->remove_at(this->buffer_pos - 1);
+        return this->remove_at(this->size() - 1);
     }
 
     // Returns true on success
     bool remove(Type e) override {
-        for (unsigned int i = 0; i < this->buffer_pos; ++i) {
+        for (unsigned int i = 0; i < this->size(); ++i) {
             if (this->buffer[i] == e) {
                 this->copy_left(i);
                 return true;
@@ -189,7 +192,7 @@ public:
     }
 
     Type get(unsigned int i) const override {
-        if (i >= this->buffer_pos) {
+        if (i >= this->size()) {
             // ERROR: No element there
             return NULL;
         }
@@ -202,11 +205,11 @@ public:
     }
 
     Type last() const override {
-        return this->get(this->buffer_pos - 1);  // Underflow gets catched by get(unsigned int i)
+        return this->get(this->size() - 1);  // Underflow gets catched by get(unsigned int i)
     }
 
     bool empty() const override {
-        return this->buffer_pos == 0;
+        return this->size() == 0;
     }
 
     unsigned int size() const override {
@@ -214,13 +217,13 @@ public:
     }
 
     void print(OutStream& out) const override {
-        if (this->buffer_pos == 0) {
+        if (this->empty()) {
             out << "Print List (0 elements)" << endl;
             return;
         }
 
-        out << "Print List (" << dec << this->buffer_pos << " elements): ";
-        for (unsigned int i = 0; i < this->buffer_pos; ++i) {
+        out << "Print List (" << dec << this->size() << " elements): ";
+        for (unsigned int i = 0; i < this->size(); ++i) {
             out << dec << this->get(i) << " ";
         }
         out << endl;
