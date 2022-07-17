@@ -1,6 +1,8 @@
 #include "user/demo/ArrayListDemo.h"
 
 void ArrayListDemo::run() {
+    kout.lock();
+    kout.clear();
     kout << "Initial list size: " << dec << this->list.size() << endl;
 
     kout << "Adding elements in order" << endl;
@@ -83,5 +85,6 @@ void ArrayListDemo::run() {
 
     this->list.print(kout);
 
+    kout.unlock();
     scheduler.exit();
 }

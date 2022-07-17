@@ -12,6 +12,7 @@ void KeyEventManager::unsubscribe(KeyEventListener& listener) {
 }
 
 void KeyEventManager::broadcast(char c) {
+    log << TRACE << "Beginning Broadcast" << endl;
     for (KeyEventListener* listener : this->listeners) {
         log << TRACE << "Broadcasting " << c << " to Thread ID: " << dec << listener->thread.tid << endl;
         listener->trigger(c);
