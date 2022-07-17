@@ -3,6 +3,7 @@
 #include "user/demo/BlueScreenDemo.h"
 #include "user/demo/HeapDemo.h"
 #include "user/demo/KeyboardDemo.h"
+#include "user/demo/LinkedListDemo.h"
 #include "user/demo/PCSPKdemo.h"
 #include "user/demo/PreemptiveThreadDemo.h"
 #include "user/demo/TextDemo.h"
@@ -54,6 +55,12 @@ void MainMenu::run() {
             case '7':
                 choosen_demo = new PreemptiveThreadDemo(3);
                 break;
+            case '8':
+                choosen_demo = new ArrayListDemo();
+                break;
+            case '9':
+                choosen_demo = new LinkedListDemo();
+                break;
             }
 
             if (choosen_demo != NULL) {
@@ -68,9 +75,6 @@ void MainMenu::run() {
 
         input = '\0';
     }
-
-    // Extra demos
-    // scheduler.ready(new ArrayListDemo());
 
     scheduler.exit();
     // This thread won't be deleted...
