@@ -5,15 +5,16 @@
 
 // Define the list interface for ArrayList/LinkedList implementations with support for Iterators/ranged based for loops
 
-template<typename List>
+// TODO: Does it only work on lists?
+// This iterator works for structures where the elements are adjacent in memory.
+// For things like LinkedList, the operator++ has to be overriden to implement the traversal.
+template<typename T>
 class ListIterator {
 private:
-    using ValType = typename List::ValType;
-
-    ValType* ptr;
+    T* ptr;
 
 public:
-    ListIterator(ValType* ptr) : ptr(ptr) {}
+    ListIterator(T* ptr) : ptr(ptr) {}
 
     // I only implement the least necessary operators
     ListIterator& operator++() {
@@ -21,11 +22,11 @@ public:
         return *this;
     }
 
-    ValType* operator->() {
+    T* operator->() {
         return this->ptr;
     }
 
-    ValType& operator*() {
+    T& operator*() {
         return *this->ptr;
     }
 
@@ -38,26 +39,31 @@ public:
     }
 };
 
-template<typename T>
+template<typename T, typename I = ListIterator<T>>
 class List {
 public:
-    using ValType = T;
-    using Iterator = ListIterator<List<T>>;
+    using Type = T;      // We make the template argument accessible from the subclasses
+    using Iterator = I;  // Needed for range based for loop
 
-    virtual Iterator begin() = 0;
-    virtual Iterator end() = 0;
+protected:
+    virtual Type* begin_ptr() = 0;
+    virtual Type* end_ptr() = 0;
 
-    virtual unsigned int insert(T e) = 0;
-    virtual unsigned int insert_at(T e, unsigned int i) = 0;
+public:
+    Iterator begin() { return Iterator(this->begin_ptr()); }
+    Iterator end() { return Iterator(this->end_ptr()); }
 
-    virtual T remove_at(unsigned int i) = 0;
-    virtual T remove_first() = 0;
-    virtual T remove_last() = 0;
-    virtual bool remove(T e) = 0;
+    virtual unsigned int insert(Type e) = 0;
+    virtual unsigned int insert_at(Type e, unsigned int i) = 0;
 
-    virtual T get(unsigned int i) const = 0;
-    virtual T first() const = 0;
-    virtual T last() const = 0;
+    virtual Type remove_at(unsigned int i) = 0;
+    virtual Type remove_first() = 0;
+    virtual Type remove_last() = 0;
+    virtual bool remove(Type e) = 0;
+
+    virtual Type get(unsigned int i) const = 0;
+    virtual Type first() const = 0;
+    virtual Type last() const = 0;
 
     virtual bool empty() const = 0;
     virtual unsigned int size() const = 0;
