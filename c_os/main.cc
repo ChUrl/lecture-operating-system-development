@@ -37,7 +37,7 @@ void print_startup_message() {
 }
 
 int main() {
-    Logger::set_level(Logger::TRACE);
+    Logger::set_level(Logger::DEBUG);
     Logger::disable_kout();
     Logger::enable_serial();
 
@@ -89,6 +89,7 @@ int main() {
     // TODO: Array wrapper
     // DONE: Rewrite Logging with a basic logger
     // TODO: String wrapper
+    // DONE: Linked List
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -111,6 +112,7 @@ int main() {
     // TODO: Replace empty constructors/destructors with default keyword
     // DONE: Synchronize the outstream
     // TODO: Use singleton pattern for some device classes/classes used only in globals
+    // TODO: Introduce name to threads?
 
     // Scheduler doesn't return
     return 0;
