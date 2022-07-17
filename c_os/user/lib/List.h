@@ -13,7 +13,7 @@ class ListIterator {
 public:
     using Type = T;
 
-private:
+protected:
     Type* ptr;
 
 public:

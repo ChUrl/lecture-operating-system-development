@@ -16,7 +16,7 @@ public:
     Wrapper<T>* prev = NULL;
 
     // Allow conversion to make the ListIterator dereferencing work
-    explicit operator T() {
+    operator T() {
         return value;
     }
 };
@@ -26,6 +26,8 @@ template<typename T>
 class LinkedListIterator : public ListIterator<T> {
 public:
     using Type = typename ListIterator<T>::Type;
+
+    LinkedListIterator(Type* ptr) : ListIterator<T>(ptr) {}
 
     LinkedListIterator& operator++() override {
         // ptr is of type Wrapper<T>*
@@ -146,7 +148,7 @@ public:
         }
 
         typename Iterator::Type* e = this->get_wrapper(i);
-        Type ret = (Type)*e;
+        Type ret = *e;
 
         e->next->prev = e->prev;
         e->prev->next = e->next;
@@ -162,7 +164,7 @@ public:
             return NULL;
         }
 
-        Type e = (Type)(*this->head);
+        Type e = *this->head;
         typename Iterator::Type* old_head = this->head;
 
         this->head = this->head->next;
@@ -183,7 +185,7 @@ public:
             return NULL;
         }
 
-        Type e = (Type)(*this->tail);
+        Type e = *this->tail;
         typename Iterator::Type* old_tail = this->tail;
 
         this->tail = this->tail->prev;
@@ -201,7 +203,7 @@ public:
         unsigned int pos = 0;
         typename Iterator::Type* wrapper = this->head;
         while (wrapper != NULL) {
-            if ((Type)*wrapper == e) {
+            if (*wrapper == e) {
                 return remove_at(pos);
             }
 
@@ -216,17 +218,17 @@ public:
         }
 
         if (i == 0) {
-            return (Type)*head;
+            return *head;
         }
         if (i == this->size() - 1) {
-            return (Type)*tail;
+            return *tail;
         }
 
         typename Iterator::Type* wrapper = this->head;
         for (unsigned int pos = 0; pos < i; ++pos) {
             wrapper = wrapper->next;
         }
-        return (Type)*wrapper;
+        return *wrapper;
     }
 
     Type first() const override {
@@ -234,7 +236,7 @@ public:
             return NULL;
         }
 
-        return (Type)(*this->head);
+        return *this->head;
     }
 
     Type last() const override {
@@ -242,7 +244,7 @@ public:
             return NULL;
         }
 
-        return (Type)(*this->tail);
+        return *this->tail;
     }
 
     bool empty() const override {
@@ -261,7 +263,7 @@ public:
         out << "Print List (" << dec << this->size() << " elements): ";
         typename Iterator::Type* current = this->head;
         while (current != NULL) {
-            out << dec << (Type)(*current) << " ";
+            out << dec << *current << " ";
             current = current->next;
         }
         out << endl;
