@@ -63,16 +63,15 @@ private:
         return NULL;
     }
 
-protected:
-    typename Iterator::Type* begin_ptr() override {
-        return this->head;
-    }
-
-    typename Iterator::Type* end_ptr() override {
-        return this->tail->next;
-    }
-
 public:
+    Iterator begin() override {
+        return Iterator(this->head);
+    }
+
+    Iterator end() override {
+        return Iterator(this->tail->next);
+    }
+
     unsigned int insert_at(Type e, unsigned int i) override {
         if (i > this->size()) {
             return -1;
