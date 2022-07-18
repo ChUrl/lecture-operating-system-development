@@ -86,10 +86,11 @@ int main() {
     // TODO: Implement RBT tree interface implementation
     // TODO: Switch treealloc so the underlying tree can be swapped easily
     // TODO: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
-    // TODO: Array wrapper
+    // DONE: Array wrapper
     // DONE: Rewrite Logging with a basic logger
     // TODO: String wrapper
     // DONE: Linked List
+    // DONE: Iterator support for structures
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -113,6 +114,7 @@ int main() {
     // DONE: Synchronize the outstream
     // TODO: Use singleton pattern for some device classes/classes used only in globals
     // TODO: Introduce name to threads?
+    // DONE: Remove Iterator from List.h
 
     // Scheduler doesn't return
     return 0;

@@ -1,4 +1,5 @@
 #include "user/MainMenu.h"
+#include "user/demo/ArrayDemo.h"
 #include "user/demo/ArrayListDemo.h"
 #include "user/demo/BlueScreenDemo.h"
 #include "user/demo/HeapDemo.h"
@@ -55,11 +56,17 @@ void MainMenu::run() {
             case '7':
                 choosen_demo = new PreemptiveThreadDemo(3);
                 break;
-            case '8':
-                choosen_demo = new ArrayListDemo();
-                break;
-            case '9':
-                choosen_demo = new LinkedListDemo();
+
+                // Temporary extra demos for testing
+
+                // case '0':
+                //     choosen_demo = new ArrayListDemo();
+                //     break;
+                // case '0':
+                //     choosen_demo = new LinkedListDemo();
+                //     break;
+            case '0':
+                choosen_demo = new ArrayDemo();
                 break;
             }
 
