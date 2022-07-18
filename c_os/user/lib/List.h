@@ -2,47 +2,11 @@
 #define __LIST_INCLUDE_H_
 
 #include "lib/OutStream.h"
+#include "user/lib/Iterator.h"
 
 // Define the list interface for ArrayList/LinkedList implementations with support for Iterators/ranged based for loops
 
-// TODO: Does it only work on lists?
-// This iterator works for structures where the elements are adjacent in memory.
-// For things like LinkedList, the operator++ has to be overriden to implement the traversal.
-template<typename T>
-class ListIterator {
-public:
-    using Type = T;
-
-protected:
-    Type* ptr;
-
-public:
-    ListIterator(Type* ptr) : ptr(ptr) {}
-
-    // I only implement the least necessary operators
-    virtual ListIterator& operator++() {
-        this->ptr = this->ptr + 1;
-        return *this;
-    }
-
-    Type* operator->() {
-        return this->ptr;
-    }
-
-    Type& operator*() {
-        return *this->ptr;
-    }
-
-    bool operator==(const ListIterator& other) const {
-        return this->ptr == other.ptr;
-    }
-
-    bool operator!=(const ListIterator& other) const {
-        return !(*this == other);  // Use our == implementation
-    }
-};
-
-template<typename T, typename I = ListIterator<T>>
+template<typename T, typename I = Iterator<T>>
 class List {
 public:
     using Type = T;      // We make the template argument accessible from the subclasses
@@ -55,6 +19,8 @@ protected:
 public:
     Iterator begin() { return Iterator(this->begin_ptr()); }
     Iterator end() { return Iterator(this->end_ptr()); }
+    constexpr Iterator begin() const { return this->begin(); }
+    constexpr Iterator end() const { return this->end(); }
 
     virtual unsigned int insert_at(Type e, unsigned int i) = 0;
     virtual unsigned int insert_first(Type e) = 0;

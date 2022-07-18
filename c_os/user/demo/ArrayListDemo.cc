@@ -92,6 +92,11 @@ void ArrayListDemo::run() {
         kout << "List contains element: " << dec << i << endl;
     }
 
+    kout << "Const iterator" << endl;
+    for (const int i : this->list) {
+        kout << "List contains element: " << dec << i << endl;
+    }
+
     kout.unlock();
     scheduler.exit();
 }

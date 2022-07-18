@@ -23,11 +23,11 @@ public:
 
 // Implement linked traversal by extending the ListIterator
 template<typename T>
-class LinkedListIterator : public ListIterator<T> {
+class LinkedListIterator : public Iterator<T> {
 public:
-    using Type = typename ListIterator<T>::Type;
+    using Type = typename Iterator<T>::Type;
 
-    LinkedListIterator(Type* ptr) : ListIterator<T>(ptr) {}
+    LinkedListIterator(Type* ptr) : Iterator<T>(ptr) {}
 
     LinkedListIterator& operator++() override {
         // ptr is of type Wrapper<T>*
