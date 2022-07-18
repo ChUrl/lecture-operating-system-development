@@ -57,17 +57,17 @@ void MainMenu::run() {
                 choosen_demo = new PreemptiveThreadDemo(3);
                 break;
 
-                // Temporary extra demos for testing
-
-            case '0':
+            case 'q':
                 choosen_demo = new ArrayListDemo();
                 break;
-                // case '0':
-                //     choosen_demo = new LinkedListDemo();
-                //     break;
-                // case '0':
-                //     choosen_demo = new ArrayDemo();
-                //     break;
+            case 'w':
+                // NOTE: The LinkedListDemo will take considerably longer for the threadswitching part
+                //       because for every insertion/deletion memory will be allocated for the wrappers
+                choosen_demo = new LinkedListDemo();
+                break;
+            case 'e':
+                choosen_demo = new ArrayDemo();
+                break;
             }
 
             if (choosen_demo != NULL) {

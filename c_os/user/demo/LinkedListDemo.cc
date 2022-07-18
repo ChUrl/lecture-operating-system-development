@@ -68,7 +68,7 @@ void LinkedListDemo::run() {
     this->list.print(kout);
 
     kout << "Starting..." << endl;
-    for (unsigned int n = 0; n < 1000; ++n) {
+    for (unsigned int n = 0; n < 10000; ++n) {
         this->list.insert_last(active);
         active = list.remove_first();
 
