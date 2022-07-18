@@ -20,6 +20,7 @@
             gdb
             bear # To generate compilation database
             clang-tools_14
+            cling # To try out my bullshit implementations
           ];
 
           # Build inputs are for target platform, app will be linked against those
