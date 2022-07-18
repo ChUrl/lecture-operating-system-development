@@ -12,32 +12,31 @@ public:
     using Type = T;      // We make the template argument accessible from the subclasses
     using Iterator = I;  // Needed for range based for loop
 
-protected:
-    virtual typename Iterator::Type* begin_ptr() = 0;
-    virtual typename Iterator::Type* end_ptr() = 0;
-
-public:
-    Iterator begin() { return Iterator(this->begin_ptr()); }
-    Iterator end() { return Iterator(this->end_ptr()); }
+    // Iterator
+    virtual Iterator begin() = 0;
+    virtual Iterator end() = 0;
     constexpr Iterator begin() const { return this->begin(); }
     constexpr Iterator end() const { return this->end(); }
 
+    // Insert
     virtual unsigned int insert_at(Type e, unsigned int i) = 0;
     virtual unsigned int insert_first(Type e) = 0;
     virtual unsigned int insert_last(Type e) = 0;
 
+    // Remove
     virtual Type remove_at(unsigned int i) = 0;
     virtual Type remove_first() = 0;
     virtual Type remove_last() = 0;
     virtual bool remove(Type e) = 0;
 
+    // Get
     virtual Type get(unsigned int i) const = 0;
     virtual Type first() const = 0;
     virtual Type last() const = 0;
 
+    // Misc
     virtual bool empty() const = 0;
     virtual unsigned int size() const = 0;
-
     virtual void print(OutStream& out) const = 0;
 };
 
