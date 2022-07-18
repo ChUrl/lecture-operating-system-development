@@ -23,10 +23,12 @@ private:
     static constexpr const std::size_t min_cap = 5;       // Slots to allocate extra when array full
 
     std::unique_ptr<Type[]> buf;  // Heap allocated as size needs to change during runtime
-                                  // Can't use Array for same reason so we use a C Style array
-                                  // NOTE: Because unique_ptr to an array doesn't implement operator*
-                                  //       I used *buf.get() everywhere, I think it's probably not supposed
-                                  //       to be used for something like this?
+                                  // Can't use Array for the same reason so we use a C Style array
+                                  // NOTE: Normally I wouldn't use smart pointers for low level data structers
+                                  //       but in this case it's ok as buf doesn't change often
+                                  //       and the unique_ptr basically has no overhead.
+                                  //       At least I didn't have to write any of the 3 deletes that would
+                                  //       be necessary otherwise ¯\_(ツ)_/¯
     std::size_t buf_pos = 0;
     std::size_t buf_cap = 0;
 

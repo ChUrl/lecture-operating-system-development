@@ -29,6 +29,7 @@ public:
 
     LinkedListIterator(Type* ptr) : Iterator<T>(ptr) {}
 
+    // Allow the iterator to traverse the links
     LinkedListIterator& operator++() override {
         // ptr is of type Wrapper<T>*
         this->ptr = this->ptr->next;
