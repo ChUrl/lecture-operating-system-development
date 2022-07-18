@@ -13,14 +13,13 @@
 #define __Scheduler_include__
 
 #include "devices/CGA_Stream.h"
-#include "kernel/threads/Dispatch.h"
 #include "kernel/threads/Thread.h"
 #include "lib/Queue.h"
 #include "lib/SpinLock.h"
 #include "user/lib/ArrayList.h"
 #include "user/lib/Logger.h"
 
-class Scheduler : public Dispatcher {
+class Scheduler {
 private:
     Scheduler(const Scheduler& copy) = delete;  // Verhindere Kopieren
 
@@ -28,6 +27,7 @@ private:
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
+    Thread* active;
     bool has_idle_thread;
 
     Logger log;
@@ -42,8 +42,15 @@ private:
     ArrayList<Thread*> ready_queue;
     ArrayList<Thread*> block_queue;
 
+    void start(Thread& first);
+    void dispatch(Thread& next);
+
 public:
     Scheduler() : has_idle_thread(false), log("SCHED") {}
+
+    Thread* get_active() const {
+        return this->active;
+    }
 
     // Scheduler initialisiert?
     // Zeitgeber-Unterbrechung kommt evt. bevor der Scheduler fertig

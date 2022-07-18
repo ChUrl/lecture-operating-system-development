@@ -25,6 +25,35 @@
 #include "kernel/threads/IdleThread.h"
 
 /*****************************************************************************
+ * Methode:         Dispatcher::start                                        *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Thread starten.                                          *
+ *                                                                           *
+ * Parameter:                                                                *
+ *      first       Zu startender Thread.                                    *
+ *****************************************************************************/
+void Scheduler::start(Thread& first) {
+    if (active == nullptr) {
+        active = &first;
+        active->start();
+    }
+}
+
+/*****************************************************************************
+ * Methode:         Dispatcher::dispatch                                     *
+ *---------------------------------------------------------------------------*
+ * Beschreibung:    Auf einen gegebenen Thread wechseln.                     *
+ *                                                                           *
+ * Parameter:                                                                *
+ *      next        Thread der die CPU erhalten soll.                        *
+ *****************************************************************************/
+void Scheduler::dispatch(Thread& next) {
+    Thread* current = active;
+    active = &next;
+    current->switchTo(next);
+}
+
+/*****************************************************************************
  * Methode:         Scheduler::schedule                                      *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Scheduler starten. Wird nur einmalig aus main.cc gerufen.*
@@ -75,14 +104,14 @@ void Scheduler::exit() {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     if (this->ready_queue.empty()) {
-        log << ERROR << "Can't exit last thread, active ID: " << dec << this->get_active()->tid << endl;
+        log << ERROR << "Can't exit last thread, active ID: " << dec << this->active->tid << endl;
         cpu.enable_int();
         return;
     }
     Thread& next = *(Thread*)this->ready_queue.remove_first();
 
-    log << DEBUG << "Exiting thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
-    delete this->get_active();
+    log << DEBUG << "Exiting thread, ID: " << dec << this->active->tid << " => " << next.tid << endl;
+    delete this->active;
 
     this->dispatch(next);
 
@@ -169,15 +198,15 @@ void Scheduler::yield() {
     // Thread-Wechsel durch PIT verhindern
     cpu.disable_int();
     if (this->ready_queue.empty()) {
-        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->get_active()->tid << endl;
+        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->active->tid << endl;
         cpu.enable_int();
         return;
     }
 
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    this->ready_queue.insert_last(this->get_active());
+    this->ready_queue.insert_last(this->active);
 
-    // log << TRACE << "Yielding, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
+    // log << TRACE << "Yielding, ID: " << dec << this->active->tid << " => " << next.tid << endl;
 
     this->dispatch(next);
 }
@@ -215,15 +244,15 @@ void Scheduler::block() {
 
     cpu.disable_int();
     if (this->ready_queue.empty()) {
-        log << ERROR << "Can't block last thread, active ID: " << dec << this->get_active()->tid << endl;
+        log << ERROR << "Can't block last thread, active ID: " << dec << this->active->tid << endl;
         cpu.enable_int();
         return;
     }
 
-    this->block_queue.insert_last(this->get_active());  // Thread that will be blocked waits in block_queue, so the scheduler can also
-                                                        // kill blocked threads (for example keyboard demo needs this)
+    this->block_queue.insert_last(this->active);  // Thread that will be blocked waits in block_queue, so the scheduler can also
+                                                  // kill blocked threads (for example keyboard demo needs this)
     Thread& next = *(Thread*)this->ready_queue.remove_first();
-    log << TRACE << "Blocking thread, ID: " << dec << this->get_active()->tid << " => " << next.tid << endl;
+    log << TRACE << "Blocking thread, ID: " << dec << this->active->tid << " => " << next.tid << endl;
 
     this->dispatch(next);
 }
