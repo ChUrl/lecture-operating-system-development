@@ -59,15 +59,15 @@ void MainMenu::run() {
 
                 // Temporary extra demos for testing
 
-                // case '0':
-                //     choosen_demo = new ArrayListDemo();
-                //     break;
+            case '0':
+                choosen_demo = new ArrayListDemo();
+                break;
                 // case '0':
                 //     choosen_demo = new LinkedListDemo();
                 //     break;
-            case '0':
-                choosen_demo = new ArrayDemo();
-                break;
+                // case '0':
+                //     choosen_demo = new ArrayDemo();
+                //     break;
             }
 
             if (choosen_demo != NULL) {
