@@ -8,6 +8,7 @@
 
 #include "user/lib/List.h"
 #include <cstddef>
+#include <memory>
 
 // I put most of the implementation in the header because the templating makes it cumbersome to split
 
@@ -18,65 +19,68 @@ public:
     using Iterator = typename List<T>::Iterator;
 
 private:
-    const unsigned int default_size = 10;  // Arbitrary but very small because this isn't a real OS :(
-    const unsigned int expand_size = 5;    // Slots to allocate extra when array full
+    static constexpr const std::size_t default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
+    static constexpr const std::size_t min_cap = 5;       // Slots to allocate extra when array full
 
-    unsigned int buffer_size = 0;
-    unsigned int buffer_pos = 0;
-
-    // TODO: Use user/lib/Array
-    // I manage the size so I can use pointer arithmetic
-    Type* buffer = NULL;
+    std::unique_ptr<Type[]> buf;  // Heap allocated as size needs to change during runtime
+                                  // Can't use Array for same reason so we use a C Style array
+                                  // NOTE: Because unique_ptr to an array doesn't implement operator*
+                                  //       I used *buf.get() everywhere, I think it's probably not supposed
+                                  //       to be used for something like this?
+    std::size_t buf_pos = 0;
+    std::size_t buf_cap = 0;
 
     void init() {
-        this->buffer = new T[this->default_size];
-        this->buffer_size = this->default_size;
+        buf = std::make_unique<Type[]>(default_cap);
+        buf_cap = ArrayList::default_cap;
     }
 
-    unsigned int get_free_space() const {
-        return this->buffer_size - this->buffer_pos;
+    std::size_t get_rem_cap() const {
+        return buf_cap - size();
     }
 
     // Enlarges the buffer if we run out of space
-    unsigned int expand() {
+    std::size_t expand() {
         // Init if necessary
-        if (this->buffer == NULL && this->buffer_size == 0) {
-            this->init();
-            return this->buffer_size;  // Dont have to realloc after init
+        if (!buf) {
+            init();
+            return buf_cap;  // Dont have to realloc after init
         }
 
         // Since we only ever add single elements this should never get below zero
-        // TODO: realloc
-        if (this->get_free_space() < this->expand_size) {
-            // We need to realloc the buffer
-            const unsigned int new_size = this->buffer_size + this->expand_size;
-            Type* new_buffer = new Type[new_size];
-            // TODO: Use move semantics and managed pointers
-            for (unsigned int idx = 0; idx < this->buffer_pos; ++idx) {
-                new_buffer[idx] = this->buffer[idx];
+        if (get_rem_cap() < min_cap) {
+            std::size_t new_cap = buf_cap + min_cap;
+
+            // Alloc new array
+            std::unique_ptr<Type[]> new_buf = std::make_unique<Type[]>(new_cap);
+
+            // Swap current elements to new array
+            for (std::size_t i = 0; i < size(); ++i) {
+                new_buf.get()[i] = std::move(buf.get()[i]);  // Should I have just used a regular pointer?
             }
-            delete[] this->buffer;
-            this->buffer = new_buffer;
-            this->buffer_size = new_size;
+
+            // Move new array to buf, deleting the old array
+            buf = std::move(new_buf);
+            buf_cap = new_cap;
         }
 
-        return this->buffer_size;
+        return buf_cap;
     }
 
     // unsigned int shrink {}
 
     // Returns new pos, both do element copying if necessary, -1 if failed
     // Index is location where space should be made/removed
-    unsigned int copy_right(unsigned int i) {
-        if (i > this->buffer_pos) {
+    std::size_t copy_right(std::size_t i) {
+        if (i > size()) {
             // Error: No elements here
             return -1;
         }
 
-        this->expand();
+        expand();
 
-        // Otherwise i == this->pos and we don't need to copy anything
-        if (i < this->buffer_pos) {
+        // Otherwise i == pos and we don't need to copy anything
+        if (i < size()) {
             // Enough space to copy elements after pos i
             // Copy to the right to make space
             //
@@ -85,105 +89,104 @@ private:
             // [0 1 2 3 _], expand(1) => [0 _ 1 2 3 _]
             //    ^     |                           |
             //         pos = 4                     pos = 5
-            for (unsigned int idx = this->buffer_pos; idx > i; --idx) {  // idx > i so idx - 1 is never < 0
-                this->buffer[idx] = this->buffer[idx - 1];
+            for (std::size_t idx = size(); idx > i; --idx) {  // idx > i so idx - 1 is never < 0
+                buf.get()[idx] = std::move(buf.get()[idx - 1]);
             }
 
             // Only change pos if elements were copied
-            this->buffer_pos = this->buffer_pos + 1;
+            ++buf_pos;
         }
 
-        return this->buffer_pos;
+        return size();
     }
 
     // Don't realloc here, we don't need to shring the buffer every time
     // One could introduce a limit of free space but I don't care for now
     // Would be bad if the scheduler triggers realloc everytime a thread is removed (if used as readyqueue)...
-    unsigned int copy_left(unsigned int i) {
-        if (i >= this->buffer_pos) {
+    std::size_t copy_left(std::size_t i) {
+        if (i >= size()) {
             // Error: No elements here
             return -1;
         }
 
         // Decrement before loop because we overwrite 1 element (1 copy less than expand)
-        this->buffer_pos = this->buffer_pos - 1;
+        --buf_pos;
 
         // [0 1 2 3 _], shrink(1) => [0 2 3 _]
         //    ^   |                       |
         //       pos = 3                 pos = 2
-        for (unsigned int idx = i; idx < this->buffer_pos; ++idx) {  // idx < pos so idx + 1 is never outside of size limit
-            this->buffer[idx] = this->buffer[idx + 1];
+        for (std::size_t idx = i; idx < size(); ++idx) {  // idx < pos so idx + 1 is never outside of size limit
+            buf.get()[idx] = std::move(buf.get()[idx + 1]);
         }
 
-        return this->buffer_pos;
-    }
-
-protected:
-    typename Iterator::Type* begin_ptr() override {
-        return this->buffer;
-    }
-
-    typename Iterator::Type* end_ptr() override {
-        return this->buffer + this->buffer_pos;
+        return size();
     }
 
 public:
+    Iterator begin() override {
+        return Iterator(&buf.get()[0]);
+    }
+
+    Iterator end() override {
+        return Iterator(&buf.get()[size()]);
+    }
+
     // Returns new pos
-    unsigned int insert_at(Type e, unsigned int i) override {
-        if (i > this->size()) {
+    std::size_t insert_at(Type e, std::size_t i) override {
+        if (i > size()) {
             // Error: Space between elements
             return -1;
         }
 
-        if (i == this->size()) {
+        if (i == size()) {
             // Insert at end
-            return this->insert_last(e);
+            return insert_last(e);
         }
 
-        this->copy_right(i);  // Changes pos
-        this->buffer[i] = e;
+        copy_right(i);  // Changes pos
+        buf.get()[i] = e;
 
-        return this->size();
+        return size();
     }
 
-    unsigned int insert_first(Type e) override {
-        return this->insert_at(e, 0);
+    std::size_t insert_first(Type e) override {
+        return insert_at(e, 0);
     }
 
-    unsigned int insert_last(Type e) override {
-        this->expand();
-        this->buffer[this->size()] = e;
-        this->buffer_pos = this->buffer_pos + 1;
+    std::size_t insert_last(Type e) override {
+        expand();
+        buf.get()[size()] = e;
+        ++buf_pos;
 
-        return this->size();
+        return size();
     }
 
     // Returns removed element
-    Type remove_at(unsigned int i) override {
-        if (i >= this->size()) {
+    Type remove_at(std::size_t i) override {
+        if (i >= size()) {
             // ERROR: No element here
             return NULL;
         }
 
-        Type e = this->buffer[i];
-        this->copy_left(i);
+        Type e = buf.get()[i];
+        copy_left(i);
         return e;
     }
 
     Type remove_first() override {
-        return this->remove_at(0);
+        return remove_at(0);
     }
 
     Type remove_last() override {
         // If index -1 unsigned int will overflow and remove_at will catch that
-        return this->remove_at(this->size() - 1);
+        return remove_at(size() - 1);
     }
 
     // Returns true on success
     bool remove(Type e) override {
-        for (unsigned int i = 0; i < this->size(); ++i) {
-            if (this->buffer[i] == e) {
-                this->copy_left(i);
+        for (std::size_t i = 0; i < size(); ++i) {
+            if (buf.get()[i] == e) {
+                copy_left(i);
                 return true;
             }
         }
@@ -191,40 +194,40 @@ public:
         return false;
     }
 
-    Type get(unsigned int i) const override {
-        if (i >= this->size()) {
+    Type get(std::size_t i) const override {
+        if (i >= size()) {
             // ERROR: No element there
             return NULL;
         }
 
-        return this->buffer[i];
+        return buf.get()[i];
     }
 
     Type first() const override {
-        return this->get(0);
+        return get(0);
     }
 
     Type last() const override {
-        return this->get(this->size() - 1);  // Underflow gets catched by get(unsigned int i)
+        return get(size() - 1);  // Underflow gets catched by get(unsigned int i)
     }
 
     bool empty() const override {
-        return this->size() == 0;
+        return !size();
     }
 
-    unsigned int size() const override {
-        return this->buffer_pos;
+    std::size_t size() const override {
+        return buf_pos;
     }
 
     void print(OutStream& out) const override {
-        if (this->empty()) {
+        if (empty()) {
             out << "Print List (0 elements)" << endl;
             return;
         }
 
-        out << "Print List (" << dec << this->size() << " elements): ";
-        for (unsigned int i = 0; i < this->size(); ++i) {
-            out << dec << this->get(i) << " ";
+        out << "Print List (" << dec << size() << " elements): ";
+        for (std::size_t i = 0; i < size(); ++i) {
+            out << dec << get(i) << " ";
         }
         out << endl;
     }
