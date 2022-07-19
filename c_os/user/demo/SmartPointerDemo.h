@@ -2,7 +2,6 @@
 #define __SmartPointerDemo_include__
 
 #include "kernel/Globals.h"
-#include <memory>
 
 class SmartPointerDemo : public Thread {
 private:
