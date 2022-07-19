@@ -9,6 +9,8 @@
 template<typename T, typename I = Iterator<T>>
 class List {
 public:
+    virtual ~List() = 0;
+
     using Type = T;      // We make the template argument accessible from the subclasses
     using Iterator = I;  // Needed for range based for loop
 

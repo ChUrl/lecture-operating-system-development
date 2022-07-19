@@ -65,6 +65,17 @@ private:
     }
 
 public:
+    ~LinkedList() override {
+        typename Iterator::Type* current = head;
+        typename Iterator::Type* next;
+
+        while (current != NULL) {
+            next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+
     Iterator begin() override {
         return Iterator(this->head);
     }
@@ -255,18 +266,18 @@ public:
     }
 
     void print(OutStream& out) const override {
-        if (this->empty()) {
-            out << "Print List (0 elements)" << endl;
-            return;
-        }
+        // if (this->empty()) {
+        //     out << "Print List (0 elements)" << endl;
+        //     return;
+        // }
 
-        out << "Print List (" << dec << this->size() << " elements): ";
-        typename Iterator::Type* current = this->head;
-        while (current != NULL) {
-            out << dec << *current << " ";
-            current = current->next;
-        }
-        out << endl;
+        // out << "Print List (" << dec << this->size() << " elements): ";
+        // typename Iterator::Type* current = this->head;
+        // while (current != NULL) {
+        //     out << dec << *current << " ";
+        //     current = current->next;
+        // }
+        // out << endl;
     }
 };
 
