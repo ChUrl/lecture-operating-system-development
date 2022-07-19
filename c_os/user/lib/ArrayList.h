@@ -6,6 +6,7 @@
 //       ArrayList instead, without additional effort.
 
 #include "user/lib/List.h"
+#include "user/lib/mem/UniquePointer.h"
 #include <cstddef>
 #include <utility>
 
@@ -21,13 +22,16 @@ private:
     static constexpr const std::size_t default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
     static constexpr const std::size_t min_cap = 5;       // Slots to allocate extra when array full
 
-    Type* buf = nullptr;  // Heap allocated as size needs to change during runtime
-                          // Can't use Array for the same reason so we use a C Style array
+    bse::unique_ptr<Type[]> buf;  // Heap allocated as size needs to change during runtime
+                                  // Can't use Array for the same reason so we use a C Style array
+                                  // NOTE: I wouldn't normally use smart pointers for low level datastructures
+                                  //       but here it doesn't hurt as the unique_ptr basically has no overhead
+                                  //       (And it saved 2 deletes ¯\_(ツ)_/¯)
     std::size_t buf_pos = 0;
     std::size_t buf_cap = 0;
 
     void init() {
-        buf = new Type[ArrayList::default_cap];
+        buf = bse::make_unique<Type[]>(ArrayList::default_cap);
         buf_cap = ArrayList::default_cap;
     }
 
@@ -38,7 +42,7 @@ private:
     // Enlarges the buffer if we run out of space
     std::size_t expand() {
         // Init if necessary
-        if (buf == nullptr) {
+        if (!buf) {
             init();
             return buf_cap;  // Dont have to realloc after init
         }
@@ -48,7 +52,7 @@ private:
             std::size_t new_cap = buf_cap + min_cap;
 
             // Alloc new array
-            Type* new_buf = new Type[new_cap];
+            bse::unique_ptr<Type[]> new_buf = bse::make_unique<Type[]>(new_cap);
 
             // Swap current elements to new array
             for (std::size_t i = 0; i < size(); ++i) {
@@ -56,9 +60,8 @@ private:
             }
 
             // Move new array to buf, deleting the old array
-            buf = new_buf;
+            buf = std::move(new_buf);
             buf_cap = new_cap;
-            delete buf;
         }
 
         return buf_cap;
@@ -120,9 +123,7 @@ private:
     }
 
 public:
-    ~ArrayList() {
-        delete[] buf;  // Deleting nullptr has no effect
-    }
+    ~ArrayList() = default;  // Buffer deletes itself (I hope)
 
     Iterator begin() override {
         return Iterator(&buf[0]);

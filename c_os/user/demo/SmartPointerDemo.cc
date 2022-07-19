@@ -32,7 +32,6 @@ void SmartPointerDemo::run() {
 
         log << INFO << "*ptr1 == " << *ptr1 << ", (bool)ptr2 == " << (bool)ptr2 << endl;
         log << INFO << "Moving ptr1 => ptr2 (no allocations should happen)..." << endl;
-        // ptr2 = ptr1;  // Doesn't work, copy assignment is deleted
         ptr2 = std::move(ptr1);
         log << INFO << "(bool)ptr1 == " << (bool)ptr1 << ", *ptr2 == " << *ptr2 << endl;
 
