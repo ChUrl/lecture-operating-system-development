@@ -79,13 +79,13 @@ int main() {
     //
     // DONE: Serial output
     // TODO: Output graphviz stuff over serial
-    // TODO: Fix the damn TreeAllocator: Allow root deletion without bluescreen
-    //       Maybe just remove the red black tree stuff and replace with usual binary search tree?
-    //       I can just balance this tree unefficiantly by reinserting all nodes
-    // TODO: Implement BST data structure with Tree interface
-    // TODO: Implement RBT tree interface implementation
-    // TODO: Switch treealloc so the underlying tree can be swapped easily
-    // TODO: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
+    // CANCELED: Fix the damn TreeAllocator: Allow root deletion without bluescreen
+    //           Maybe just remove the red black tree stuff and replace with usual binary search tree?
+    //           I can just balance this tree unefficiantly by reinserting all nodes
+    // CANCELED: Implement BST data structure with Tree interface?
+    // CANCELED: Implement RBT tree interface implementation?
+    // CANCELED: Switch treealloc so the underlying tree can be swapped easily
+    // CANCELED: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
     // DONE: Array wrapper
     // DONE: Rewrite Logging with a basic logger
     // TODO: String wrapper
@@ -98,9 +98,10 @@ int main() {
     // DONE: Unify debug output format
     // TODO: Cleanup: Remove I added this... Notes, just leave explanations
     // DONE: Remove Math "lib" or do something with it
+    // TODO: Add some fixed point math like sine approximation or fractions?
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
     // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
-    // TODO: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>
+    // CANCELED: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>?
     // TODO: Make more stuff const and static and static constexpr const
     // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
     // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
@@ -115,6 +116,9 @@ int main() {
     // TODO: Use singleton pattern for some device classes/classes used only in globals
     // TODO: Introduce name to threads?
     // DONE: Remove Iterator from List.h
+    // TODO: Implement own basic managed pointers
+    // TODO: Move Array/ArrayList/LinkedList/List to bse namespace
+    // TODO: Remove the Input.h file and replace functionality with kevman
 
     // Scheduler doesn't return
     return 0;
