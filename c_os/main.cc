@@ -37,7 +37,7 @@ void print_startup_message() {
 }
 
 int main() {
-    Logger::set_level(Logger::DEBUG);
+    Logger::set_level(Logger::TRACE);
     Logger::disable_kout();
     Logger::enable_serial();
 
