@@ -19,9 +19,7 @@ PIC pic;               // Interrupt-Controller
 IntDispatcher intdis;  // Unterbrechungsverteilung
 PIT pit(10000);        // 10000
 PCSPK pcspk;           // PC-Lautsprecher
-
-Keyboard kb;  // Tastatur
-KeyEventManager kevman;
+Keyboard kb;           // Tastatur
 
 // BumpAllocator allocator;
 LinkedListAllocator allocator;
@@ -29,6 +27,7 @@ LinkedListAllocator allocator;
 
 Scheduler scheduler;
 
+KeyEventManager kevman;
 SerialOut serial;
 
 unsigned int total_mem;  // RAM total

@@ -34,11 +34,8 @@ extern VESA vesa;        // VESA-Treiber
 extern PIC pic;               // Interrupt-Controller
 extern IntDispatcher intdis;  // Unterbrechungsverteilung
 extern PIT pit;               // Zeitgeber
-
-extern PCSPK pcspk;  // PC-Lautsprecher
-
-extern Keyboard kb;  // Tastatur
-extern KeyEventManager kevman;
+extern PCSPK pcspk;           // PC-Lautsprecher
+extern Keyboard kb;           // Tastatur
 
 // extern BumpAllocator allocator;
 extern LinkedListAllocator allocator;
@@ -46,6 +43,7 @@ extern LinkedListAllocator allocator;
 
 extern Scheduler scheduler;
 
+extern KeyEventManager kevman;
 extern SerialOut serial;
 
 extern unsigned int total_mem;  // RAM total
