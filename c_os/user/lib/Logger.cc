@@ -16,6 +16,7 @@ constexpr char* ansi_cyan = "\033[1;36m";
 constexpr char* ansi_white = "\033[1;37m";
 constexpr char* ansi_default = "\033[0;39m ";
 
+// TODO: Lock this
 void Logger::log(char* message, CGA::color col) const {
     if (Logger::kout_enabled) {
         CGA::color old_col = kout.color_fg;
