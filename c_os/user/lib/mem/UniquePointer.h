@@ -51,7 +51,7 @@ namespace bse {
 
         // Nice to have operators
         T* operator->() { return ptr; }
-        T& operator*() const { return *ptr; }
+        const T& operator*() const { return *ptr; }
         explicit operator void*() const { return ptr; }
         explicit operator bool() const { return (ptr != nullptr); }
     };
@@ -62,8 +62,8 @@ namespace bse {
     private:
         T* ptr = nullptr;
 
-        // unique_ptr(const T& copy) = delete;
-        // unique_ptr& operator=(const unique_ptr<T>& copy) = delete;
+        unique_ptr(const T& copy) = delete;
+        unique_ptr& operator=(const unique_ptr<T>& copy) = delete;
 
     public:
         unique_ptr() = default;
@@ -102,6 +102,7 @@ namespace bse {
         explicit operator void*() const { return ptr; }
         explicit operator bool() const { return (ptr != nullptr); }
         T& operator[](std::size_t i) { return ptr[i]; }
+        const T& operator[](std::size_t i) const { return ptr[i]; }
     };
 
     // Allow initialization of unique_ptr<int> with optional constructor arguments
