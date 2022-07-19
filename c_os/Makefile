@@ -75,8 +75,8 @@ CXX ?= g++
 #       I don't know why but right now it works with O2
 CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr -mpreferred-stack-boundary=2
 
-# I added -std=c++17 for if constexpr, but it isn't necessary for anything critical
-# Needed for template concepts (and optional references?), but we don't have it available: -std=c++20
+# I added -std=c++17 for if constexpr, but it isn't necessary for anything critical (I think?)
+# -std=c++20 is needed for template concepts and optional references, but we don't have it available :(
 CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++17
 
 BOOT = ../boot
