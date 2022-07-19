@@ -18,15 +18,10 @@
             binutils
             gnumake
             bear # To generate compilation database
-<<<<<<< Updated upstream
-            clang-tools_14
-            cling # To try out my bullshit implementations
-=======
             gdb
             qemu # Start os in virtual machine
             clang-tools_14 # Editor LSP
             # cling # To try out my bullshit implementations
->>>>>>> Stashed changes
           ];
 
           # Build inputs are for target platform, app will be linked against those
