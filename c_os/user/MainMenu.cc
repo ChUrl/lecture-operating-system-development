@@ -7,7 +7,6 @@
 #include "user/demo/LinkedListDemo.h"
 #include "user/demo/PCSPKdemo.h"
 #include "user/demo/PreemptiveThreadDemo.h"
-#include "user/demo/SmartPointerDemo.h"
 #include "user/demo/TextDemo.h"
 #include "user/demo/VBEdemo.h"
 
@@ -69,9 +68,9 @@ void MainMenu::run() {
             case 'e':
                 choosen_demo = new ArrayDemo();
                 break;
-            case 'r':
-                choosen_demo = new SmartPointerDemo();
-                break;
+                // case 'r':
+                //     choosen_demo = new SmartPointerDemo();
+                //     break;
             }
 
             if (choosen_demo != NULL) {
