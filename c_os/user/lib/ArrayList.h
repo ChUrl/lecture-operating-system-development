@@ -8,6 +8,7 @@
 #include "user/lib/List.h"
 #include "user/lib/mem/UniquePointer.h"
 #include <cstddef>
+#include <type_traits>
 #include <utility>
 
 // I put most of the implementation in the header because the templating makes it cumbersome to split
@@ -164,22 +165,22 @@ public:
     }
 
     // Returns removed element
-    Type remove_at(std::size_t i) override {
+    std::optional<Type> remove_at(std::size_t i) override {
         if (i >= size()) {
             // ERROR: No element here
-            return NULL;
+            return std::nullopt;
         }
 
-        Type e = buf[i];
+        Type e = std::move(buf[i]);
         copy_left(i);
-        return e;
+        return std::make_optional(e);
     }
 
-    Type remove_first() override {
+    std::optional<Type> remove_first() override {
         return remove_at(0);
     }
 
-    Type remove_last() override {
+    std::optional<Type> remove_last() override {
         // If index -1 unsigned int will overflow and remove_at will catch that
         return remove_at(size() - 1);
     }
@@ -196,20 +197,21 @@ public:
         return false;
     }
 
-    Type get(std::size_t i) const override {
+    // TODO: All gets should be optional references (c++20)
+    std::optional<Type> get(std::size_t i) const override {
         if (i >= size()) {
             // ERROR: No element there
-            return NULL;
+            return std::nullopt;
         }
 
-        return buf[i];
+        return std::make_optional(buf[i]);
     }
 
-    Type first() const override {
+    std::optional<Type> first() const override {
         return get(0);
     }
 
-    Type last() const override {
+    std::optional<Type> last() const override {
         return get(size() - 1);  // Underflow gets catched by get(unsigned int i)
     }
 
@@ -222,16 +224,19 @@ public:
     }
 
     void print(OutStream& out) const override {
-        // if (empty()) {
-        //     out << "Print List (0 elements)" << endl;
-        //     return;
-        // }
+        // Our stream cannot print all types so enable this only for debugging purposes (only int)
+        if constexpr (std::is_same<Type, int>::value) {
+            if (empty()) {
+                out << "Print List (0 elements)" << endl;
+                return;
+            }
 
-        // out << "Print List (" << dec << size() << " elements): ";
-        // for (std::size_t i = 0; i < size(); ++i) {
-        //     out << dec << get(i) << " ";
-        // }
-        // out << endl;
+            out << "Print List (" << dec << size() << " elements): ";
+            for (std::size_t i = 0; i < size(); ++i) {
+                out << dec << get(i) << " ";
+            }
+            out << endl;
+        }
     }
 };
 

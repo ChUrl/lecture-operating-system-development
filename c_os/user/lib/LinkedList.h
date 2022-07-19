@@ -12,8 +12,8 @@ private:
 public:
     Wrapper(T value) : value(value) {}
 
-    Wrapper<T>* next = NULL;
-    Wrapper<T>* prev = NULL;
+    Wrapper<T>* next = nullptr;
+    Wrapper<T>* prev = nullptr;
 
     // Allow conversion to make the ListIterator dereferencing work
     operator T() {
@@ -43,33 +43,34 @@ public:
     // Type is T
     using Type = typename List<T, LinkedListIterator<Wrapper<T>>>::Type;  // T is different from the List type (Wrapper<T>)
     using Iterator = typename List<T, LinkedListIterator<Wrapper<T>>>::Iterator;
+    using Wrapper = typename Iterator::Type;
 
 private:
     unsigned int num_elements = 0;
-    typename Iterator::Type* head = NULL;
-    typename Iterator::Type* tail = NULL;
+    Wrapper* head = nullptr;
+    Wrapper* tail = nullptr;
 
-    typename Iterator::Type* get_wrapper(unsigned int i) {
-        typename Iterator::Type* current = this->head;
+    std::optional<Wrapper*> get_wrapper(unsigned int i) {
+        Wrapper* current = head;
         unsigned int pos = 0;
-        while (current != NULL) {
+        while (current != nullptr) {
             if (pos == i) {
-                return current;
+                return std::make_optional(current);
             }
 
             current = current->next;
             pos = pos + 1;
         }
 
-        return NULL;
+        return std::nullopt;
     }
 
 public:
     ~LinkedList() {
-        typename Iterator::Type* current = head;
-        typename Iterator::Type* next;
+        Wrapper* current = head;
+        Wrapper* next;
 
-        while (current != NULL) {
+        while (current != nullptr) {
             next = current->next;
             delete current;
             current = next;
@@ -77,143 +78,145 @@ public:
     }
 
     Iterator begin() override {
-        return Iterator(this->head);
+        return Iterator(head);
     }
 
     Iterator end() override {
-        return Iterator(this->tail->next);
+        return Iterator(tail->next);
     }
 
     unsigned int insert_at(Type e, unsigned int i) override {
-        if (i > this->size()) {
+        if (i > size()) {
             return -1;
         }
 
         if (i == 0) {
-            return this->insert_first(e);
+            return insert_first(e);
         }
 
-        if (i == this->size()) {
-            return this->insert_last(e);
+        if (i == size()) {
+            return insert_last(e);
         }
 
-        typename Iterator::Type* old_e = this->get_wrapper(i);
-        typename Iterator::Type* new_e = new typename Iterator::Type(e);
+        Wrapper* old_e = get_wrapper(i);
+        Wrapper* new_e = new Wrapper(e);
 
         new_e->prev = old_e->prev;
         new_e->next = old_e;
         new_e->prev->next = new_e;
         new_e->next->prev = new_e;
 
-        this->num_elements = this->num_elements + 1;
-        return this->size();
+        num_elements = num_elements + 1;
+        return size();
     }
 
     unsigned int insert_first(Type e) override {
-        typename Iterator::Type* old_head = this->head;
-        this->head = new typename Iterator::Type(e);
+        Wrapper* old_head = head;
+        head = new Wrapper(e);
 
-        this->head->prev = NULL;
-        this->head->next = old_head;
-        if (old_head != NULL) {
-            old_head->prev = this->head;
+        head->prev = nullptr;
+        head->next = old_head;
+        if (old_head != nullptr) {
+            old_head->prev = head;
         }
 
-        if (this->tail == NULL) {
-            this->tail = this->head;
+        if (tail == nullptr) {
+            tail = head;
         }
 
-        this->num_elements = this->num_elements + 1;
-        return this->size();
+        num_elements = num_elements + 1;
+        return size();
     }
 
     unsigned int insert_last(Type e) override {
-        typename Iterator::Type* old_tail = this->tail;
-        this->tail = new typename Iterator::Type(e);
+        Wrapper* old_tail = tail;
+        tail = new Wrapper(e);
 
-        this->tail->next = NULL;
-        this->tail->prev = old_tail;
-        if (old_tail != NULL) {
-            old_tail->next = this->tail;
+        tail->next = nullptr;
+        tail->prev = old_tail;
+        if (old_tail != nullptr) {
+            old_tail->next = tail;
         }
 
-        if (this->head == NULL) {
-            this->head = this->tail;
+        if (head == nullptr) {
+            head = tail;
         }
 
-        this->num_elements = this->num_elements + 1;
-        return this->size();
+        num_elements = num_elements + 1;
+        return size();
     }
 
-    Type remove_at(unsigned int i) override {
-        if (this->empty() || i >= this->size()) {
-            return NULL;
+    std::optional<Type> remove_at(unsigned int i) override {
+        if (empty() || i >= size()) {
+            return std::nullopt;
         }
 
         if (i == 0) {
-            return this->remove_first();
+            return remove_first();
         }
 
-        if (i == this->size() - 1) {
-            return this->remove_last();
+        if (i == size() - 1) {
+            return remove_last();
         }
 
-        typename Iterator::Type* e = this->get_wrapper(i);
+        Wrapper* e = get_wrapper(i);
         Type ret = *e;
 
         e->next->prev = e->prev;
         e->prev->next = e->next;
 
         delete e;
-        this->num_elements = this->num_elements - 1;
+        num_elements = num_elements - 1;
 
-        return ret;
+        return std::make_optional(ret);
     }
 
-    Type remove_first() override {
-        if (this->empty()) {
-            return NULL;
+    std::optional<Type> remove_first() override {
+        if (empty()) {
+            return std::nullopt;
         }
 
-        Type e = *this->head;
-        typename Iterator::Type* old_head = this->head;
+        Type e = *head;
+        Wrapper* old_head = head;
 
-        this->head = this->head->next;
-        if (this->head != NULL) {
-            this->head->prev = NULL;
+        head = head->next;
+        if (head != nullptr) {
+            head->prev = nullptr;
         } else {
-            this->tail = NULL;
+            tail = nullptr;
         }
 
         delete old_head;
-        this->num_elements = this->num_elements - 1;
+        num_elements = num_elements - 1;
 
-        return e;
+        return std::make_optional(e);
     }
 
-    Type remove_last() override {
-        if (this->empty()) {
-            return NULL;
+    std::optional<Type> remove_last() override {
+        if (empty()) {
+            return std::nullopt;
         }
 
-        Type e = *this->tail;
-        typename Iterator::Type* old_tail = this->tail;
+        Type e = *tail;
+        Wrapper* old_tail = tail;
 
-        this->tail = this->tail->prev;
-        if (this->tail != NULL) {
-            this->tail->next = NULL;
+        tail = tail->prev;
+        if (tail != nullptr) {
+            tail->next = nullptr;
         } else {
-            this->head == NULL;
+            head == nullptr;
         }
 
         delete old_tail;
-        this->num_elements = this->num_elements - 1;
+        num_elements = num_elements - 1;
+
+        return std::make_optional(e);
     }
 
     bool remove(Type e) override {
         unsigned int pos = 0;
-        typename Iterator::Type* wrapper = this->head;
-        while (wrapper != NULL) {
+        Wrapper* wrapper = head;
+        while (wrapper != nullptr) {
             if (*wrapper == e) {
                 return remove_at(pos);
             }
@@ -223,61 +226,64 @@ public:
         }
     }
 
-    Type get(unsigned int i) const override {
-        if (i >= this->size()) {
-            return NULL;
+    std::optional<Type> get(unsigned int i) const override {
+        if (i >= size()) {
+            return std::nullopt;
         }
 
         if (i == 0) {
-            return *head;
+            return first();
         }
-        if (i == this->size() - 1) {
-            return *tail;
+        if (i == size() - 1) {
+            return last();
         }
 
-        typename Iterator::Type* wrapper = this->head;
+        Wrapper* wrapper = head;
         for (unsigned int pos = 0; pos < i; ++pos) {
             wrapper = wrapper->next;
         }
-        return *wrapper;
+        return std::make_optional(*wrapper);
     }
 
-    Type first() const override {
-        if (this->empty()) {
-            return NULL;
+    std::optional<Type> first() const override {
+        if (empty()) {
+            return std::nullopt;
         }
 
-        return *this->head;
+        return std::make_optional(*head);
     }
 
-    Type last() const override {
-        if (this->empty()) {
-            return NULL;
+    std::optional<Type> last() const override {
+        if (empty()) {
+            return std::nullopt;
         }
 
-        return *this->tail;
+        return std::make_optional(*tail);
     }
 
     bool empty() const override {
-        return this->size() == 0;
+        return !size();
     }
     unsigned int size() const override {
-        return this->num_elements;
+        return num_elements;
     }
 
     void print(OutStream& out) const override {
-        // if (this->empty()) {
-        //     out << "Print List (0 elements)" << endl;
-        //     return;
-        // }
+        // Our stream cannot print all types so enable this only for debugging purposes (only int)
+        if constexpr (std::is_same<Type, int>::value) {
+            if (empty()) {
+                out << "Print List (0 elements)" << endl;
+                return;
+            }
 
-        // out << "Print List (" << dec << this->size() << " elements): ";
-        // typename Iterator::Type* current = this->head;
-        // while (current != NULL) {
-        //     out << dec << *current << " ";
-        //     current = current->next;
-        // }
-        // out << endl;
+            out << "Print List (" << dec << size() << " elements): ";
+            typename Iterator::Type* current = head;
+            while (current != nullptr) {
+                out << dec << *current << " ";
+                current = current->next;
+            }
+            out << endl;
+        }
     }
 };
 
