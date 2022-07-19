@@ -91,6 +91,7 @@ int main() {
     // TODO: String wrapper
     // DONE: Linked List
     // DONE: Iterator support for structures
+    // DONE: Implement own basic managed pointers
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -98,7 +99,7 @@ int main() {
     // DONE: Unify debug output format
     // TODO: Cleanup: Remove I added this... Notes, just leave explanations
     // DONE: Remove Math "lib" or do something with it
-    // TODO: Add some fixed point math like sine approximation or fractions?
+    // CANCELED: Add some fixed point math like sine approximation or fractions?
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
     // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
     // CANCELED: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>?
@@ -116,7 +117,6 @@ int main() {
     // TODO: Use singleton pattern for some device classes/classes used only in globals
     // TODO: Introduce name to threads?
     // DONE: Remove Iterator from List.h
-    // TODO: Implement own basic managed pointers
     // TODO: Move Array/ArrayList/LinkedList/List to bse namespace
     // TODO: Remove the Input.h file and replace functionality with kevman
 
