@@ -22,7 +22,13 @@ void Semaphore::v() {
 
     if (!this->waitQueue.empty()) {
         // Semaphore stays busy and unblocks next thread to work in critical section
-        Thread* next = (Thread*)this->waitQueue.remove_first();
+        Thread* next = this->waitQueue.remove_first().value_or(nullptr);
+        if (next == nullptr) {
+            // TODO: Log this once the logger is static
+            this->lock.release();
+            return;
+        }
+
         this->lock.release();
         scheduler.deblock(next);
     } else {

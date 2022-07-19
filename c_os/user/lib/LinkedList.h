@@ -43,19 +43,19 @@ public:
     // Type is T
     using Type = typename List<T, LinkedListIterator<Wrapper<T>>>::Type;  // T is different from the List type (Wrapper<T>)
     using Iterator = typename List<T, LinkedListIterator<Wrapper<T>>>::Iterator;
-    using Wrapper = typename Iterator::Type;
+    using WrapperType = typename Iterator::Type;
 
 private:
     unsigned int num_elements = 0;
-    Wrapper* head = nullptr;
-    Wrapper* tail = nullptr;
+    WrapperType* head = nullptr;
+    WrapperType* tail = nullptr;
 
-    std::optional<Wrapper*> get_wrapper(unsigned int i) {
-        Wrapper* current = head;
+    std::optional<WrapperType*> get_wrapper(unsigned int i) {
+        WrapperType* current = head;
         unsigned int pos = 0;
         while (current != nullptr) {
             if (pos == i) {
-                return std::make_optional(current);
+                return current;
             }
 
             current = current->next;
@@ -67,8 +67,8 @@ private:
 
 public:
     ~LinkedList() {
-        Wrapper* current = head;
-        Wrapper* next;
+        WrapperType* current = head;
+        WrapperType* next;
 
         while (current != nullptr) {
             next = current->next;
@@ -91,15 +91,19 @@ public:
         }
 
         if (i == 0) {
-            return insert_first(e);
+            return insert_first(std::forward<Type>(e));
         }
 
         if (i == size()) {
-            return insert_last(e);
+            return insert_last(std::forward<Type>(e));
         }
 
-        Wrapper* old_e = get_wrapper(i);
-        Wrapper* new_e = new Wrapper(e);
+        WrapperType* old_e = get_wrapper(i).value_or(nullptr);
+        if (old_e == nullptr) {
+            return -1;
+        }
+
+        WrapperType* new_e = new WrapperType(e);
 
         new_e->prev = old_e->prev;
         new_e->next = old_e;
@@ -111,8 +115,8 @@ public:
     }
 
     unsigned int insert_first(Type e) override {
-        Wrapper* old_head = head;
-        head = new Wrapper(e);
+        WrapperType* old_head = head;
+        head = new WrapperType(e);
 
         head->prev = nullptr;
         head->next = old_head;
@@ -129,8 +133,8 @@ public:
     }
 
     unsigned int insert_last(Type e) override {
-        Wrapper* old_tail = tail;
-        tail = new Wrapper(e);
+        WrapperType* old_tail = tail;
+        tail = new WrapperType(e);
 
         tail->next = nullptr;
         tail->prev = old_tail;
@@ -159,7 +163,11 @@ public:
             return remove_last();
         }
 
-        Wrapper* e = get_wrapper(i);
+        WrapperType* e = get_wrapper(i).value_or(nullptr);
+        if (e == nullptr) {
+            return std::nullopt;
+        }
+
         Type ret = *e;
 
         e->next->prev = e->prev;
@@ -168,7 +176,7 @@ public:
         delete e;
         num_elements = num_elements - 1;
 
-        return std::make_optional(ret);
+        return ret;
     }
 
     std::optional<Type> remove_first() override {
@@ -177,7 +185,7 @@ public:
         }
 
         Type e = *head;
-        Wrapper* old_head = head;
+        WrapperType* old_head = head;
 
         head = head->next;
         if (head != nullptr) {
@@ -189,7 +197,7 @@ public:
         delete old_head;
         num_elements = num_elements - 1;
 
-        return std::make_optional(e);
+        return e;
     }
 
     std::optional<Type> remove_last() override {
@@ -198,32 +206,34 @@ public:
         }
 
         Type e = *tail;
-        Wrapper* old_tail = tail;
+        WrapperType* old_tail = tail;
 
         tail = tail->prev;
         if (tail != nullptr) {
             tail->next = nullptr;
         } else {
-            head == nullptr;
+            head = nullptr;
         }
 
         delete old_tail;
         num_elements = num_elements - 1;
 
-        return std::make_optional(e);
+        return e;
     }
 
     bool remove(Type e) override {
         unsigned int pos = 0;
-        Wrapper* wrapper = head;
+        WrapperType* wrapper = head;
         while (wrapper != nullptr) {
             if (*wrapper == e) {
-                return remove_at(pos);
+                return remove_at(pos).has_value();
             }
 
             wrapper = wrapper->next;
             pos++;
         }
+
+        return false;
     }
 
     std::optional<Type> get(unsigned int i) const override {
@@ -238,11 +248,11 @@ public:
             return last();
         }
 
-        Wrapper* wrapper = head;
+        WrapperType* wrapper = head;
         for (unsigned int pos = 0; pos < i; ++pos) {
             wrapper = wrapper->next;
         }
-        return std::make_optional(*wrapper);
+        return *wrapper;
     }
 
     std::optional<Type> first() const override {
@@ -250,7 +260,7 @@ public:
             return std::nullopt;
         }
 
-        return std::make_optional(*head);
+        return *head;
     }
 
     std::optional<Type> last() const override {
@@ -258,7 +268,7 @@ public:
             return std::nullopt;
         }
 
-        return std::make_optional(*tail);
+        return *tail;
     }
 
     bool empty() const override {

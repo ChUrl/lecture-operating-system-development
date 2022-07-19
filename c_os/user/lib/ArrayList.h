@@ -143,7 +143,7 @@ public:
 
         if (i == size()) {
             // Insert at end
-            return insert_last(e);
+            return insert_last(std::forward<Type>(e));
         }
 
         copy_right(i);  // Changes pos
@@ -153,7 +153,7 @@ public:
     }
 
     std::size_t insert_first(Type e) override {
-        return insert_at(e, 0);
+        return insert_at(std::forward<Type>(e), 0);
     }
 
     std::size_t insert_last(Type e) override {
@@ -173,7 +173,7 @@ public:
 
         Type e = std::move(buf[i]);
         copy_left(i);
-        return std::make_optional(e);
+        return e;
     }
 
     std::optional<Type> remove_first() override {
@@ -204,7 +204,7 @@ public:
             return std::nullopt;
         }
 
-        return std::make_optional(buf[i]);
+        return buf[i];
     }
 
     std::optional<Type> first() const override {
@@ -233,7 +233,7 @@ public:
 
             out << "Print List (" << dec << size() << " elements): ";
             for (std::size_t i = 0; i < size(); ++i) {
-                out << dec << get(i) << " ";
+                out << dec << buf[i] << " ";
             }
             out << endl;
         }

@@ -23,6 +23,7 @@
 
 #include "kernel/threads/Scheduler.h"
 #include "kernel/threads/IdleThread.h"
+#include <optional>
 
 /*****************************************************************************
  * Methode:         Dispatcher::start                                        *
@@ -108,12 +109,18 @@ void Scheduler::exit() {
         cpu.enable_int();
         return;
     }
-    Thread& next = *(Thread*)this->ready_queue.remove_first();
 
-    log << DEBUG << "Exiting thread, ID: " << dec << this->active->tid << " => " << next.tid << endl;
+    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
+    if (next == nullptr) {
+        log << ERROR << "(Exit) Couldn't remove thread from ready_queue" << endl;
+        cpu.enable_int();
+        return;
+    }
+
+    log << DEBUG << "Exiting thread, ID: " << dec << this->active->tid << " => " << next->tid << endl;
     delete this->active;
 
-    this->dispatch(next);
+    this->dispatch(*next);
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
     // dispatch kehr nicht zurueck
@@ -203,12 +210,18 @@ void Scheduler::yield() {
         return;
     }
 
-    Thread& next = *(Thread*)this->ready_queue.remove_first();
+    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
+    if (next == nullptr) {
+        log << ERROR << "(Yield) Couldn't remove thread from ready_queue" << endl;
+        cpu.enable_int();
+        return;
+    }
+
     this->ready_queue.insert_last(this->active);
 
     // log << TRACE << "Yielding, ID: " << dec << this->active->tid << " => " << next.tid << endl;
 
-    this->dispatch(next);
+    this->dispatch(*next);
 }
 
 /*****************************************************************************
@@ -251,10 +264,17 @@ void Scheduler::block() {
 
     this->block_queue.insert_last(this->active);  // Thread that will be blocked waits in block_queue, so the scheduler can also
                                                   // kill blocked threads (for example keyboard demo needs this)
-    Thread& next = *(Thread*)this->ready_queue.remove_first();
-    log << TRACE << "Blocking thread, ID: " << dec << this->active->tid << " => " << next.tid << endl;
 
-    this->dispatch(next);
+    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
+    if (next == nullptr) {
+        log << ERROR << "(Block) Couldn't remove thread from ready_queue" << endl;
+        cpu.enable_int();
+        return;
+    }
+
+    log << TRACE << "Blocking thread, ID: " << dec << this->active->tid << " => " << next->tid << endl;
+
+    this->dispatch(*next);
 }
 
 /*****************************************************************************

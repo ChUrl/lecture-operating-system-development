@@ -70,9 +70,9 @@ void ArrayListDemo::run() {
     kout << "Starting..." << endl;
     for (unsigned int n = 0; n < 10000; ++n) {
         this->list.insert_last(active);
-        active = list.remove_first();
+        active = list.remove_first().value_or(-1);
 
-        if (this->list.size() != 3) {
+        if (this->list.size() != 3 || active == -1) {
             kout << "ERROR: Thread went missing" << endl;
             break;
         }
