@@ -4,11 +4,10 @@
 // NOTE: I decided to implement this because I wanted some sort of dynamic array (for example for the keyeventmanager).
 //       Also I wanted to template the Queue (for the scheduler) but with this I can just replace the Queue and use the
 //       ArrayList instead, without additional effort.
-//       It's also cool to use the allocator a bit more and introduce realloc because I coded that thing
 
 #include "user/lib/List.h"
 #include <cstddef>
-#include <memory>
+#include <utility>
 
 // I put most of the implementation in the header because the templating makes it cumbersome to split
 
@@ -22,18 +21,13 @@ private:
     static constexpr const std::size_t default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
     static constexpr const std::size_t min_cap = 5;       // Slots to allocate extra when array full
 
-    std::unique_ptr<Type[]> buf;  // Heap allocated as size needs to change during runtime
-                                  // Can't use Array for the same reason so we use a C Style array
-                                  // NOTE: Normally I wouldn't use smart pointers for low level data structers
-                                  //       but in this case it's ok as buf doesn't change often
-                                  //       and the unique_ptr basically has no overhead.
-                                  //       At least I didn't have to write any of the 3 deletes that would
-                                  //       be necessary otherwise ¯\_(ツ)_/¯
+    Type* buf = nullptr;  // Heap allocated as size needs to change during runtime
+                          // Can't use Array for the same reason so we use a C Style array
     std::size_t buf_pos = 0;
     std::size_t buf_cap = 0;
 
     void init() {
-        buf = std::make_unique<Type[]>(default_cap);
+        buf = new Type[ArrayList::default_cap];
         buf_cap = ArrayList::default_cap;
     }
 
@@ -44,7 +38,7 @@ private:
     // Enlarges the buffer if we run out of space
     std::size_t expand() {
         // Init if necessary
-        if (!buf) {
+        if (buf == nullptr) {
             init();
             return buf_cap;  // Dont have to realloc after init
         }
@@ -54,16 +48,17 @@ private:
             std::size_t new_cap = buf_cap + min_cap;
 
             // Alloc new array
-            std::unique_ptr<Type[]> new_buf = std::make_unique<Type[]>(new_cap);
+            Type* new_buf = new Type[new_cap];
 
             // Swap current elements to new array
             for (std::size_t i = 0; i < size(); ++i) {
-                new_buf.get()[i] = std::move(buf.get()[i]);  // Should I have just used a regular pointer?
+                new_buf[i] = std::move(buf[i]);  // Should I have just used a regular pointer?
             }
 
             // Move new array to buf, deleting the old array
-            buf = std::move(new_buf);
+            buf = new_buf;
             buf_cap = new_cap;
+            delete buf;
         }
 
         return buf_cap;
@@ -92,7 +87,7 @@ private:
             //    ^     |                           |
             //         pos = 4                     pos = 5
             for (std::size_t idx = size(); idx > i; --idx) {  // idx > i so idx - 1 is never < 0
-                buf.get()[idx] = std::move(buf.get()[idx - 1]);
+                buf[idx] = std::move(buf[idx - 1]);
             }
 
             // Only change pos if elements were copied
@@ -118,19 +113,23 @@ private:
         //    ^   |                       |
         //       pos = 3                 pos = 2
         for (std::size_t idx = i; idx < size(); ++idx) {  // idx < pos so idx + 1 is never outside of size limit
-            buf.get()[idx] = std::move(buf.get()[idx + 1]);
+            buf[idx] = std::move(buf[idx + 1]);
         }
 
         return size();
     }
 
 public:
+    ~ArrayList() override {
+        delete[] buf;  // Deleting nullptr has no effect
+    }
+
     Iterator begin() override {
-        return Iterator(&buf.get()[0]);
+        return Iterator(&buf[0]);
     }
 
     Iterator end() override {
-        return Iterator(&buf.get()[size()]);
+        return Iterator(&buf[size()]);
     }
 
     // Returns new pos
@@ -146,7 +145,7 @@ public:
         }
 
         copy_right(i);  // Changes pos
-        buf.get()[i] = e;
+        buf[i] = e;
 
         return size();
     }
@@ -157,7 +156,7 @@ public:
 
     std::size_t insert_last(Type e) override {
         expand();
-        buf.get()[size()] = e;
+        buf[size()] = e;
         ++buf_pos;
 
         return size();
@@ -170,7 +169,7 @@ public:
             return NULL;
         }
 
-        Type e = buf.get()[i];
+        Type e = buf[i];
         copy_left(i);
         return e;
     }
@@ -187,7 +186,7 @@ public:
     // Returns true on success
     bool remove(Type e) override {
         for (std::size_t i = 0; i < size(); ++i) {
-            if (buf.get()[i] == e) {
+            if (buf[i] == e) {
                 copy_left(i);
                 return true;
             }
@@ -202,7 +201,7 @@ public:
             return NULL;
         }
 
-        return buf.get()[i];
+        return buf[i];
     }
 
     Type first() const override {
@@ -222,16 +221,16 @@ public:
     }
 
     void print(OutStream& out) const override {
-        if (empty()) {
-            out << "Print List (0 elements)" << endl;
-            return;
-        }
+        // if (empty()) {
+        //     out << "Print List (0 elements)" << endl;
+        //     return;
+        // }
 
-        out << "Print List (" << dec << size() << " elements): ";
-        for (std::size_t i = 0; i < size(); ++i) {
-            out << dec << get(i) << " ";
-        }
-        out << endl;
+        // out << "Print List (" << dec << size() << " elements): ";
+        // for (std::size_t i = 0; i < size(); ++i) {
+        //     out << dec << get(i) << " ";
+        // }
+        // out << endl;
     }
 };
 
