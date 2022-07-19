@@ -120,7 +120,7 @@ private:
     }
 
 public:
-    ~ArrayList() override {
+    ~ArrayList() {
         delete[] buf;  // Deleting nullptr has no effect
     }
 

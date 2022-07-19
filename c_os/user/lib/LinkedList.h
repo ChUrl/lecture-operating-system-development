@@ -65,7 +65,7 @@ private:
     }
 
 public:
-    ~LinkedList() override {
+    ~LinkedList() {
         typename Iterator::Type* current = head;
         typename Iterator::Type* next;
 
