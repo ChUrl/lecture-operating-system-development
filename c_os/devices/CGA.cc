@@ -12,6 +12,7 @@
  *                  Aenderungen von Michael Schoettner, HHU, 21.8.2016       *
  *****************************************************************************/
 #include "devices/CGA.h"
+#include "user/lib/MyLib.h"
 
 /*****************************************************************************
  * Methode:         CGA::setpos                                              *
@@ -152,10 +153,10 @@ void CGA::scrollup() {
     /* Hier muss Code eingefuegt werden */
 
     // Move up
-    mmem::memcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
+    bse::memcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
 
     // Clear last line
-    mmem::zero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
+    bse::zero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
 }
 
 /*****************************************************************************
@@ -167,7 +168,7 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    mmem::zero<cga_page_t>((cga_page_t*)CGA_START);
+    bse::zero<cga_page_t>((cga_page_t*)CGA_START);
     this->setpos(0, 0);
 }
 
