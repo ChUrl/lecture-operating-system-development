@@ -8,19 +8,25 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
       in {
+
         devShell = pkgs.mkShell {
           # Native inputs run on host
           nativeBuildInputs = with pkgs; [
-            bashInteractive
-            gnumake
-            gcc
+            gcc_multi # Compile with 32bit
             glibc_multi
             nasm
-            qemu
-            gdb
+            binutils
+            gnumake
             bear # To generate compilation database
+<<<<<<< Updated upstream
             clang-tools_14
             cling # To try out my bullshit implementations
+=======
+            gdb
+            qemu # Start os in virtual machine
+            clang-tools_14 # Editor LSP
+            # cling # To try out my bullshit implementations
+>>>>>>> Stashed changes
           ];
 
           # Build inputs are for target platform, app will be linked against those
