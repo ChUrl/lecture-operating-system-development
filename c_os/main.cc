@@ -88,10 +88,12 @@ int main() {
     // CANCELED: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
     // DONE: Array wrapper
     // DONE: Rewrite Logging with a basic logger
-    // TODO: String wrapper
+    // TODO: Static Logger
+    // CANCELED: String wrapper
     // DONE: Linked List
     // DONE: Iterator support for structures
     // DONE: Implement own basic managed pointers
+    // TODO: Scheduler should owns threads
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -119,6 +121,7 @@ int main() {
     // DONE: Remove Iterator from List.h
     // TODO: Move Array/ArrayList/LinkedList/List to bse namespace
     // TODO: Remove the Input.h file and replace functionality with kevman
+    // TODO: Fix the output locking, lock for every kout till endl? (kout << ... << endl)
 
     // Scheduler doesn't return
     return 0;
