@@ -71,9 +71,22 @@ ASM = nasm
 CC ?= gcc
 CXX ?= g++
 
+# CC = clang
+# CXX = clang++
+
+# Separate these as they are not compatible with clang14
+EMPTY :=
+GCC = gcc
+ifeq ($(CXX),$(GCC))
+EXTRAFLAGS = -mmanual-endbr -mpreferred-stack-boundary=2
+else
+EXTRAFLAGS = $(EMPTY)
+endif
+
+
 # NOTE: In some cases I needed O1/O0 to allow paging/bluescreen to work (We need the ebp on the stack)
 #       I don't know why but right now it works with O2
-CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 -mmanual-endbr -mpreferred-stack-boundary=2
+CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 $(EXTRAFLAGS)
 
 # I added -std=c++17 for if constexpr, but it isn't necessary for anything critical (I think?)
 # -std=c++20 is needed for template concepts and optional references, but we don't have it available :(
@@ -187,6 +200,11 @@ clean:
 	@echo "RM		$(DEPDIR)"
 	$(VERBOSE) rm -rf $(DEPDIR)
 	$(MAKE) -C $(BOOT) clean
+
+# --------------------------------------------------------------------------
+# 'ast' erlaubt das betrachten des generierten template codes
+ast:
+	clang++ -Xclang -ast-print -fsyntax-only $(f) | clang-format | bat -f -l cpp -P
 
 # --------------------------------------------------------------------------
 # 'bootdisk' erzeugt zunaechst das System, falls das noch nicht geschehen ist.
