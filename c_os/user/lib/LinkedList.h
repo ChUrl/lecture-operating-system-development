@@ -72,7 +72,8 @@ public:
 
         while (current != nullptr) {
             next = current->next;
-            delete current;
+            ((Type)*current).~Type();  // Object
+            delete current;            // Wrapper
             current = next;
         }
     }
@@ -85,6 +86,7 @@ public:
         return Iterator(tail->next);
     }
 
+    // NOTE: Insert copies
     unsigned int insert_at(Type e, unsigned int i) override {
         if (i > size()) {
             return -1;
@@ -150,6 +152,7 @@ public:
         return size();
     }
 
+    // NOTE: Remove moves
     std::optional<Type> remove_at(unsigned int i) override {
         if (empty() || i >= size()) {
             return std::nullopt;
@@ -168,14 +171,15 @@ public:
             return std::nullopt;
         }
 
-        Type ret = *e;
+        Type ret = std::move(*e);
+        ((Type)*e).~Type();  // Cleanup rest of the move
 
+        // Remove the wrapper
         e->next->prev = e->prev;
         e->prev->next = e->next;
-
         delete e;
-        num_elements = num_elements - 1;
 
+        num_elements = num_elements - 1;
         return ret;
     }
 
@@ -184,19 +188,20 @@ public:
             return std::nullopt;
         }
 
-        Type e = *head;
-        WrapperType* old_head = head;
+        Type e = std::move(*head);
+        ((Type)*head).~Type();  // Cleanup rest of the move
 
+        // Remove wrapper
+        WrapperType* old_head = head;
         head = head->next;
         if (head != nullptr) {
             head->prev = nullptr;
         } else {
             tail = nullptr;
         }
-
         delete old_head;
-        num_elements = num_elements - 1;
 
+        num_elements = num_elements - 1;
         return e;
     }
 
@@ -205,19 +210,20 @@ public:
             return std::nullopt;
         }
 
-        Type e = *tail;
-        WrapperType* old_tail = tail;
+        Type e = std::move(*tail);
+        ((Type)*tail).~Type();  // Cleanup rest of the move
 
+        // Remove wrapper
+        WrapperType* old_tail = tail;
         tail = tail->prev;
         if (tail != nullptr) {
             tail->next = nullptr;
         } else {
             head = nullptr;
         }
-
         delete old_tail;
-        num_elements = num_elements - 1;
 
+        num_elements = num_elements - 1;
         return e;
     }
 
@@ -280,7 +286,7 @@ public:
 
     void print(OutStream& out) const override {
         // Our stream cannot print all types so enable this only for debugging purposes (only int)
-        if constexpr (std::is_same<Type, int>::value) {
+        if constexpr (std::is_same_v<Type, int>) {
             if (empty()) {
                 out << "Print List (0 elements)" << endl;
                 return;
