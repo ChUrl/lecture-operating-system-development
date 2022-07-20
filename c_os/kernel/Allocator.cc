@@ -73,3 +73,10 @@ void operator delete[](void* ptr) {
 void operator delete(void* ptr, unsigned int sz) {
     allocator.free(ptr);
 }
+
+// I don't know if accidentally deleted it but one delete was missing
+// https://en.cppreference.com/w/cpp/memory/new/operator_delete
+
+void operator delete[](void* ptr, unsigned int sz) {
+    allocator.free(ptr);
+}
