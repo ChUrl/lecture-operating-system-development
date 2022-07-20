@@ -7,6 +7,9 @@
 
 // Define the list interface for ArrayList/LinkedList implementations with support for Iterators/ranged based for loops
 
+// NOTE: Can't be used with types that are not movable
+//       Also if used with unique_ptr the get methods can't be used as it deletes the pointer inside the list
+
 template<typename T, typename I = Iterator<T>>
 class List {
 public:
@@ -20,24 +23,27 @@ public:
     constexpr Iterator end() const { return this->end(); }
 
     // Insert
-    virtual unsigned int insert_at(Type e, unsigned int i) = 0;
-    virtual unsigned int insert_first(Type e) = 0;
-    virtual unsigned int insert_last(Type e) = 0;
+    // NOTE: Copies an element into the structure
+    virtual std::size_t insert_at(Type e, unsigned int i) = 0;
+    virtual std::size_t insert_first(Type e) = 0;
+    virtual std::size_t insert_last(Type e) = 0;
 
     // Remove
-    virtual std::optional<Type> remove_at(unsigned int i) = 0;
+    // NOTE: Moves an element out of the structure
+    virtual std::optional<Type> remove_at(std::size_t i) = 0;
     virtual std::optional<Type> remove_first() = 0;
     virtual std::optional<Type> remove_last() = 0;
     virtual bool remove(Type e) = 0;
 
     // Get
-    virtual std::optional<Type> get(unsigned int i) const = 0;
+    // TODO: Return c++20 optional references
+    virtual std::optional<Type> get(std::size_t i) const = 0;
     virtual std::optional<Type> first() const = 0;
     virtual std::optional<Type> last() const = 0;
 
     // Misc
     virtual bool empty() const = 0;
-    virtual unsigned int size() const = 0;
+    virtual std::size_t size() const = 0;
     virtual void print(OutStream& out) const = 0;
 };
 
