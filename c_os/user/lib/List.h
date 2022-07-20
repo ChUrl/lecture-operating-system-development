@@ -22,7 +22,7 @@ public:
     constexpr Iterator begin() const { return this->begin(); }
     constexpr Iterator end() const { return this->end(); }
 
-    // Insert
+    // Insert, should return 0 on fail
     // NOTE: Copies an element into the structure
     virtual std::size_t insert_at(Type e, unsigned int i) = 0;
     virtual std::size_t insert_first(Type e) = 0;
