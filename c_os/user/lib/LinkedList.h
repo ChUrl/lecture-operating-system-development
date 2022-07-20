@@ -46,13 +46,13 @@ public:
     using WrapperType = typename Iterator::Type;
 
 private:
-    unsigned int num_elements = 0;
+    std::size_t num_elements = 0;
     WrapperType* head = nullptr;
     WrapperType* tail = nullptr;
 
-    std::optional<WrapperType*> get_wrapper(unsigned int i) {
+    std::optional<WrapperType*> get_wrapper(std::size_t i) {
         WrapperType* current = head;
-        unsigned int pos = 0;
+        std::size_t pos = 0;
         while (current != nullptr) {
             if (pos == i) {
                 return current;
@@ -87,9 +87,9 @@ public:
     }
 
     // NOTE: Insert copies
-    unsigned int insert_at(Type e, unsigned int i) override {
+    std::size_t insert_at(Type e, std::size_t i) override {
         if (i > size()) {
-            return -1;
+            return 0;
         }
 
         if (i == 0) {
@@ -102,7 +102,7 @@ public:
 
         WrapperType* old_e = get_wrapper(i).value_or(nullptr);
         if (old_e == nullptr) {
-            return -1;
+            return 0;
         }
 
         WrapperType* new_e = new WrapperType(e);
@@ -116,7 +116,7 @@ public:
         return size();
     }
 
-    unsigned int insert_first(Type e) override {
+    std::size_t insert_first(Type e) override {
         WrapperType* old_head = head;
         head = new WrapperType(e);
 
@@ -134,7 +134,7 @@ public:
         return size();
     }
 
-    unsigned int insert_last(Type e) override {
+    std::size_t insert_last(Type e) override {
         WrapperType* old_tail = tail;
         tail = new WrapperType(e);
 
@@ -153,7 +153,7 @@ public:
     }
 
     // NOTE: Remove moves
-    std::optional<Type> remove_at(unsigned int i) override {
+    std::optional<Type> remove_at(std::size_t i) override {
         if (empty() || i >= size()) {
             return std::nullopt;
         }
@@ -228,7 +228,7 @@ public:
     }
 
     bool remove(Type e) override {
-        unsigned int pos = 0;
+        std::size_t pos = 0;
         WrapperType* wrapper = head;
         while (wrapper != nullptr) {
             if (*wrapper == e) {
@@ -242,7 +242,7 @@ public:
         return false;
     }
 
-    std::optional<Type> get(unsigned int i) const override {
+    std::optional<Type> get(std::size_t i) const override {
         if (i >= size()) {
             return std::nullopt;
         }
@@ -255,7 +255,7 @@ public:
         }
 
         WrapperType* wrapper = head;
-        for (unsigned int pos = 0; pos < i; ++pos) {
+        for (std::size_t pos = 0; pos < i; ++pos) {
             wrapper = wrapper->next;
         }
         return *wrapper;
@@ -280,7 +280,7 @@ public:
     bool empty() const override {
         return !size();
     }
-    unsigned int size() const override {
+    std::size_t size() const override {
         return num_elements;
     }
 

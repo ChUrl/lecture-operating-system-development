@@ -145,7 +145,7 @@ public:
     std::size_t insert_at(Type e, std::size_t i) override {
         if (i > size()) {
             // Error: Space between elements
-            return -1;
+            return 0;
         }
 
         if (i == size()) {
@@ -157,7 +157,7 @@ public:
             copy_right(i);  // Changes pos
             buf[i] = e;
         } else {
-            return -1;
+            return 0;
         }
 
         return size();
@@ -177,7 +177,7 @@ public:
             ++buf_pos;
             expand();
         } else {
-            return -1;
+            return 0;
         }
 
         return size();
