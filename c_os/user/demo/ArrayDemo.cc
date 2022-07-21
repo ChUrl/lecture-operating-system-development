@@ -1,9 +1,9 @@
 #include "user/demo/ArrayDemo.h"
 
 void ArrayDemo::run() {
-    Array<int, 10> arr1 {};
-    Array<int, 10> arr2 {};
-    Array<Thread*, 10> arr3 {};
+    bse::Array<int, 10> arr1 {};
+    bse::Array<int, 10> arr2 {};
+    bse::Array<Thread*, 10> arr3 {};
 
     kout.lock();
     kout.clear();
