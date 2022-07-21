@@ -5,39 +5,16 @@
 
 namespace bse {
 
-    template<typename T>
-    class AbstractIterator {
-    public:
-        T* ptr;
-
-        // *this is always <= other
-        virtual std::size_t dist(const AbstractIterator& other) const = 0;
-
-        AbstractIterator(T* ptr) : ptr(ptr) {}
-
-        virtual AbstractIterator& operator++() = 0;
-
-        T* operator->() { return this->ptr; }
-        T& operator*() { return *this->ptr; }
-        bool operator==(const AbstractIterator& other) const { return this->ptr == other.ptr; }
-        bool operator!=(const AbstractIterator& other) const { return !(*this == other); }
-
-        friend std::size_t distance(const AbstractIterator& first, const AbstractIterator& last) {
-            return first.dist(last);
-        }
-    };
-
     // This iterator works for structures where the elements are adjacent in memory.
     template<typename T>
-    class ContinuousIterator : public AbstractIterator<T> {
+    class ContinuousIterator {
+    private:
+        T* ptr;
+
     public:
-        std::size_t dist(const AbstractIterator<T>& other) const override {
-            return other.ptr - this->ptr;
-        }
+        ContinuousIterator(T* ptr) : ptr(ptr) {}
 
-        ContinuousIterator(T* ptr) : AbstractIterator<T>(ptr) {}
-
-        ContinuousIterator& operator++() override {
+        ContinuousIterator& operator++() {
             ++this->ptr;
             return *this;
         }
@@ -51,7 +28,28 @@ namespace bse {
             this->ptr -= sub;
             return *this;
         }
+
+        // Convenience
+        T* operator->() { return this->ptr; }
+        const T* operator->() const { return this->ptr; }
+        T& operator*() { return *this->ptr; }
+        const T& operator*() const { return *this->ptr; }
+
+        bool operator<(const ContinuousIterator& other) const { return this->ptr < other.ptr; }
+        bool operator<=(const ContinuousIterator& other) const { return this->ptr <= other.ptr; }
+        bool operator>(const ContinuousIterator& other) const { return this->ptr > other.ptr; }
+        bool operator>=(const ContinuousIterator& other) const { return this->ptr >= other.ptr; }
+        bool operator==(const ContinuousIterator& other) const { return this->ptr == other.ptr; }
+        bool operator!=(const ContinuousIterator& other) const { return !(*this == other); }
+
+        template<typename t>
+        friend std::size_t distance(const ContinuousIterator<t>& first, const ContinuousIterator<t>& last);
     };
+
+    template<typename T>
+    std::size_t distance(const ContinuousIterator<T>& first, const ContinuousIterator<T>& last) {
+        return last.ptr - first.ptr;
+    }
 
 }  // namespace bse
 
