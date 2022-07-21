@@ -119,7 +119,9 @@ namespace bse {
 
         // Iterator
         Iterator begin() { return Iterator(&buf[0]); }
+        Iterator begin() const { return Iterator(&buf[0]); }
         Iterator end() { return Iterator(&buf[size()]); }
+        Iterator end() const { return Iterator(&buf[size()]); }
 
         // Add elements
         void push_back(const T& copy) {
@@ -197,6 +199,23 @@ namespace bse {
             return buf_pos;
         }
     };
+
+    // Erase all elements that match a predicate
+    // NOTE: pred is no real predicate as one would need closures for this, but we don't have <functional> available
+    //       This means the result has to be passed separately and the function differs from the c++20 std::erase_if
+    template<typename T, typename arg>
+    std::size_t erase_if(Vector<T>& vec, arg (*pred)(const T&), arg result) {
+        std::size_t erased_els = 0;
+        for (typename Vector<T>::Iterator it = vec.begin(); it != vec.end(); /*Do nothing*/) {
+            if (pred(*it) == result) {
+                it = vec.erase(it);  // erase returns the iterator to the next element
+                ++erased_els;
+            } else {
+                ++it;  // move forward when nothing was deleted
+            }
+        }
+        return erased_els;
+    }
 
 }  // namespace bse
 
