@@ -38,7 +38,7 @@ void VectorDemo::run() {
 
     kout << "Removing all elements from the back" << endl;
     for (unsigned int i = 0; i < 10; ++i) {
-        list.erase(--list.end());
+        list.erase(list.end() - 1);
     }
     print(list);
 
