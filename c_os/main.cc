@@ -62,8 +62,8 @@ int main() {
     waitForReturn();
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
-    scheduler.ready(new MainMenu());  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
-                                      //       because scheduler.schedule() doesn't return, only threads get cpu time
+    scheduler.ready<MainMenu>();  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
+                                  //       because scheduler.schedule() doesn't return, only threads get cpu time
     scheduler.schedule();
 
     // NOTE: Enforced ToDo's (needed)
@@ -119,7 +119,7 @@ int main() {
     // TODO: Use singleton pattern for some device classes/classes used only in globals
     // TODO: Introduce name to threads?
     // DONE: Remove Iterator from List.h
-    // TODO: Move Array/ArrayList/LinkedList/List to bse namespace
+    // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // TODO: Remove the Input.h file and replace functionality with kevman
     // TODO: Fix the output locking, lock for every kout till endl? (kout << ... << endl)
 

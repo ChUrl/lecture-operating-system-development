@@ -22,7 +22,7 @@ private:
     KeyEventListener listener;
 
 public:
-    KeyboardDemo() : listener(*this) {
+    KeyboardDemo() : listener(this->tid) {
         log << INFO << "Initialized KeyboardDemo with ID: " << dec << this->tid << endl;
         kevman.subscribe(this->listener);
     }

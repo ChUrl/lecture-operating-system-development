@@ -10,9 +10,9 @@ private:
     char lastChar = '\0';
 
 public:
-    Thread& thread;  // Thread which contains this listener, so the listener can block the thread
+    unsigned int tid;  // Thread which contains this listener, so the listener can block the thread
 
-    KeyEventListener(Thread& thread) : thread(thread) {}
+    KeyEventListener(unsigned int tid) : tid(tid) {}
 
     char waitForKeyEvent() const;  // Blocks the thread until woken up by manager
     void trigger(char c);          // Gets called from KeyEventManager

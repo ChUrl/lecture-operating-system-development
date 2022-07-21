@@ -31,7 +31,7 @@ extern "C" {
 }
 
 Logger Thread::log = Logger("Thread");
-unsigned int ThreadCnt = 0;
+unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preemption with 0
 
 /*****************************************************************************
  * Prozedur:        Coroutine_init                                           *

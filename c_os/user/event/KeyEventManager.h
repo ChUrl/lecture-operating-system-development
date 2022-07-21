@@ -18,8 +18,8 @@ private:
 public:
     KeyEventManager() : log("KEvMan") {}
 
-    void subscribe(KeyEventListener& listener);
-    void unsubscribe(KeyEventListener& listener);
+    void subscribe(KeyEventListener& sub);
+    void unsubscribe(KeyEventListener& unsub);
     void broadcast(char c);  // Unblocks all input waiting threads, I don't have a method to direct input
 };
 

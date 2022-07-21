@@ -20,7 +20,7 @@ private:
     Semaphore(const Semaphore& copy) = delete;  // Verhindere Kopieren
 
     // Queue fuer wartende Threads.
-    bse::Vector<Thread*> waitQueue;
+    bse::Vector<unsigned int> wait_queue;
     SpinLock lock;
 
     int counter;

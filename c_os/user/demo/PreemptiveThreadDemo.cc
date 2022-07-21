@@ -7,6 +7,8 @@ void PreemptiveLoopThread::run() {
         // Basic synchronization by semaphore
         // NOTE: I placed the semaphore inside the CGA_Stream so multiple demos can synchronize, not
         //       only this one. This is optional so disruptions can still occur because of preemption
+        //       (I only use this for the user output (demos), anywhere else could become problematic
+        //        quickly...)
         kout.lock();
 
         // Saving + restoring kout position doesn't help much as preemption still occurs
@@ -19,17 +21,13 @@ void PreemptiveLoopThread::run() {
 
 void PreemptiveThreadDemo::run() {
     kout << "Preemptive Thread Demo" << endl;
-    Thread* threads[this->number_of_threads];
-    kout << "Allocating LoopThreads" << endl;
-    for (unsigned int i = 0; i < this->number_of_threads; ++i) {
-        threads[i] = new PreemptiveLoopThread(i);
-    }
 
-    kout << "Adding threads to ready queue" << endl;
+    kout << "Readying LoopThreads" << endl;
     for (unsigned int i = 0; i < this->number_of_threads; ++i) {
-        scheduler.ready(threads[i]);
+        threads.push_back(scheduler.ready<PreemptiveLoopThread>(i));
     }
 
     kout << "Exiting main thread" << endl;
+    while (listener.waitForKeyEvent() != 'L') {}
     scheduler.exit();
 }

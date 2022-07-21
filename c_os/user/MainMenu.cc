@@ -29,52 +29,47 @@ void MainMenu::run() {
     print_demo_menu();
 
     char input = '\0';
-    Thread* choosen_demo = NULL;
+    unsigned int running_demo = 0;
     while (true) {
         input = this->listener.waitForKeyEvent();
 
-        if (choosen_demo == NULL) {
+        if (running_demo == 0) {
             switch (input) {
             case '1':
-                choosen_demo = new TextDemo();
+                running_demo = scheduler.ready<TextDemo>();
                 break;
             case '2':
-                choosen_demo = new PCSPKdemo(&PCSPK::aerodynamic);
+                running_demo = scheduler.ready<PCSPKdemo>(&PCSPK::aerodynamic);
                 break;
             case '3':
-                choosen_demo = new KeyboardDemo();
+                running_demo = scheduler.ready<KeyboardDemo>();
                 break;
             case '4':
-                choosen_demo = new HeapDemo();
+                running_demo = scheduler.ready<HeapDemo>();
                 break;
             case '5':
-                choosen_demo = new VBEdemo();
+                running_demo = scheduler.ready<VBEdemo>();
                 break;
             case '6':
-                choosen_demo = new BlueScreenDemo();
+                running_demo = scheduler.ready<BlueScreenDemo>();
                 break;
             case '7':
-                choosen_demo = new PreemptiveThreadDemo(3);
+                running_demo = scheduler.ready<PreemptiveThreadDemo>(3);
                 break;
 
             case 'q':
-                choosen_demo = new VectorDemo();
+                running_demo = scheduler.ready<VectorDemo>();
                 break;
             case 'w':
-                choosen_demo = new ArrayDemo();
+                running_demo = scheduler.ready<ArrayDemo>();
                 break;
             case 'e':
-                choosen_demo = new SmartPointerDemo();
+                running_demo = scheduler.ready<SmartPointerDemo>();
                 break;
             }
-
-            if (choosen_demo != NULL) {
-                // We actually chose something
-                scheduler.ready(choosen_demo);
-            }
         } else if (input == 'K') {
-            scheduler.kill(choosen_demo);  // NOTE: If thread exits itself this will throw error
-            choosen_demo = NULL;
+            scheduler.kill(running_demo);  // NOTE: If thread exits itself this will throw error
+            running_demo = 0;
             print_demo_menu();
         }
 

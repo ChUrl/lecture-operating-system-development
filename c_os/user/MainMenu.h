@@ -12,7 +12,7 @@ private:
     KeyEventListener listener;
 
 public:
-    MainMenu() : listener(*this) {
+    MainMenu() : listener(this->tid) {
         log << INFO << "MainMenu initialized with ID: " << dec << this->tid << endl;
         kevman.subscribe(this->listener);
     }

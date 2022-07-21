@@ -1,21 +1,26 @@
 #include "user/event/KeyEventManager.h"
 #include "kernel/Globals.h"
 
-void KeyEventManager::subscribe(KeyEventListener& listener) {
-    log << DEBUG << "Subscribe, Thread ID: " << dec << listener.thread.tid << endl;
-    this->listeners.insert_last(&listener);
+void KeyEventManager::subscribe(KeyEventListener& sub) {
+    log << DEBUG << "Subscribe, Thread ID: " << dec << sub.tid << endl;
+    this->listeners.push_back(&sub);
 }
 
-void KeyEventManager::unsubscribe(KeyEventListener& listener) {
-    log << DEBUG << "Unsubscribe, Thread ID: " << dec << listener.thread.tid << endl;
-    this->listeners.remove(&listener);
+void KeyEventManager::unsubscribe(KeyEventListener& unsub) {
+    log << DEBUG << "Unsubscribe, Thread ID: " << dec << unsub.tid << endl;
+    for (bse::Vector<KeyEventListener*>::Iterator it = listeners.begin(); it != listeners.end(); ++it) {
+        if ((*it)->tid == unsub.tid) {
+            this->listeners.erase(it);
+            return;
+        }
+    }
 }
 
 void KeyEventManager::broadcast(char c) {
     log << TRACE << "Beginning Broadcast" << endl;
     for (KeyEventListener* listener : this->listeners) {
-        log << TRACE << "Broadcasting " << c << " to Thread ID: " << dec << listener->thread.tid << endl;
+        log << TRACE << "Broadcasting " << c << " to Thread ID: " << dec << listener->tid << endl;
         listener->trigger(c);
-        scheduler.deblock(&listener->thread);
+        scheduler.deblock(listener->tid);
     }
 }

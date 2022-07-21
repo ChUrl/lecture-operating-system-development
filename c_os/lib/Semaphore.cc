@@ -11,7 +11,7 @@ void Semaphore::p() {
         this->lock.release();
     } else {
         // Block and manage thread in semaphore queue until it's woken up by v() again
-        this->waitQueue.push_back(scheduler.get_active());
+        this->wait_queue.push_back(scheduler.get_active());
         this->lock.release();
         scheduler.block();  // Moves to next thread
     }
@@ -20,16 +20,16 @@ void Semaphore::p() {
 void Semaphore::v() {
     this->lock.acquire();
 
-    if (!this->waitQueue.empty()) {
+    if (!this->wait_queue.empty()) {
         // Semaphore stays busy and unblocks next thread to work in critical section
-        if (this->waitQueue.empty()) {
+        if (this->wait_queue.empty()) {
             this->lock.release();
             return;
         }
-        Thread* next = this->waitQueue[0];
-        this->waitQueue.erase(waitQueue.begin());
+        unsigned int tid = this->wait_queue.front();
+        this->wait_queue.erase(wait_queue.begin());
         this->lock.release();
-        scheduler.deblock(next);
+        scheduler.deblock(tid);
     } else {
         // No more threads want to work so free semaphore
         this->counter = this->counter + 1;
