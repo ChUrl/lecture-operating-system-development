@@ -7,7 +7,7 @@
 
 // NOTE: Because of the way the scheduling works our functions are not executed completely.
 //       This means that object destructors are not called if the objects live in a scope
-//       that is left because of thread switching...
+//       that is left because of thread switching (e.g. a threads run function)...
 
 namespace bse {
 
