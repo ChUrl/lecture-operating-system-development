@@ -1,40 +1,61 @@
 #ifndef __Iterator_Include_H_
 #define __Iterator_Include_H_
 
-// This iterator works for structures where the elements are adjacent in memory.
-// For things like LinkedList, the operator++ has to be overriden to implement the traversal.
-template<typename T>
-class Iterator {
-public:
-    using Type = T;
+#include <cstddef>
 
-protected:
-    Type* ptr;
+namespace bse {
 
-public:
-    Iterator(Type* ptr) : ptr(ptr) {}
+    template<typename T>
+    class AbstractIterator {
+    public:
+        T* ptr;
 
-    // I only implement the least necessary operators
-    virtual Iterator& operator++() {
-        this->ptr = this->ptr + 1;
-        return *this;
-    }
+        // *this is always <= other
+        virtual std::size_t dist(const AbstractIterator& other) const = 0;
 
-    Type* operator->() {
-        return this->ptr;
-    }
+        AbstractIterator(T* ptr) : ptr(ptr) {}
 
-    Type& operator*() {
-        return *this->ptr;
-    }
+        T* operator->() { return this->ptr; }
+        T& operator*() { return *this->ptr; }
+        bool operator==(const AbstractIterator& other) const { return this->ptr == other.ptr; }
+        bool operator!=(const AbstractIterator& other) const { return !(*this == other); }
 
-    bool operator==(const Iterator& other) const {
-        return this->ptr == other.ptr;
-    }
+        friend std::size_t distance(const AbstractIterator& first, const AbstractIterator& last) {
+            return first.dist(last);
+        }
+    };
 
-    bool operator!=(const Iterator& other) const {
-        return !(*this == other);  // Use our == implementation
-    }
-};
+    // This iterator works for structures where the elements are adjacent in memory.
+    template<typename T>
+    class ContinuousIterator : public AbstractIterator<T> {
+    public:
+        std::size_t dist(const AbstractIterator<T>& other) const override {
+            return other.ptr - this->ptr;
+        }
+
+        ContinuousIterator(T* ptr) : AbstractIterator<T>(ptr) {}
+
+        friend ContinuousIterator& operator++(ContinuousIterator& rhs) {
+            ++rhs.ptr;
+            return rhs;
+        }
+
+        friend ContinuousIterator& operator--(ContinuousIterator& rhs) {
+            --rhs.ptr;
+            return rhs;
+        }
+
+        friend ContinuousIterator operator+(ContinuousIterator lhs, std::size_t add) {
+            lhs.ptr += add;
+            return lhs;
+        }
+
+        friend ContinuousIterator operator-(ContinuousIterator lhs, std::size_t sub) {
+            lhs.ptr -= sub;
+            return lhs;
+        }
+    };
+
+}  // namespace bse
 
 #endif
