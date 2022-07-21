@@ -23,35 +23,26 @@
 
 #include "kernel/threads/Scheduler.h"
 #include "kernel/threads/IdleThread.h"
-#include <optional>
+#include <utility>
 
-/*****************************************************************************
- * Methode:         Dispatcher::start                                        *
- *---------------------------------------------------------------------------*
- * Beschreibung:    Thread starten.                                          *
- *                                                                           *
- * Parameter:                                                                *
- *      first       Zu startender Thread.                                    *
- *****************************************************************************/
-void Scheduler::start(Thread& first) {
-    if (active == nullptr) {
-        active = &first;
-        active->start();
-    }
+void Scheduler::lock() {
+    cpu.disable_int();
+}
+
+void Scheduler::unlock() {
+    cpu.enable_int();
 }
 
 /*****************************************************************************
  * Methode:         Dispatcher::dispatch                                     *
  *---------------------------------------------------------------------------*
- * Beschreibung:    Auf einen gegebenen Thread wechseln.                     *
+ * Beschreibung:    Auf den active thread wechseln.                          *
  *                                                                           *
  * Parameter:                                                                *
  *      next        Thread der die CPU erhalten soll.                        *
  *****************************************************************************/
-void Scheduler::dispatch(Thread& next) {
-    Thread* current = active;
-    active = &next;
-    current->switchTo(next);
+void Scheduler::dispatch(Thread* prev_raw) {
+    prev_raw->switchTo(**active);  // First dereference the Iterator, then the unique_ptr to get Thread
 }
 
 /*****************************************************************************
@@ -64,30 +55,13 @@ void Scheduler::schedule() {
     /* hier muss Code eingefuegt werden */
 
     // We need to start the idle thread first as this one sets the scheduler to initialized
-    // Other wise preemption will be blocked and nothing will happen if the first threads
-    // ready() function is blocking
-    this->start(*(Thread*)new IdleThread());  // The idle thread set initialized to true, so preemption
-                                              // only starts after this
-}
+    // and enables preemption.
+    // Otherwise preemption will be blocked and nothing will happen if the first threads
+    // run() function is blocking
 
-/*****************************************************************************
- * Methode:         Scheduler::ready                                         *
- *---------------------------------------------------------------------------*
- * Beschreibung:    Thread in readyQueue eintragen.                          *
- *                                                                           *
- * Parameter:                                                                *
- *      that        Einzutragender Thread                                    *
- *****************************************************************************/
-void Scheduler::ready(Thread* that) {
-
-    /* hier muss Code eingefuegt werden */
-
-    // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
-    this->ready_queue.insert_last(that);
-
-    log << DEBUG << "Adding to ready_queue, ID: " << dec << that->tid << endl;
-    cpu.enable_int();
+    ready_queue.push_back(std::move(bse::make_unique<IdleThread>()));
+    active = ready_queue.end() - 1;
+    (*active)->start();
 }
 
 /*****************************************************************************
@@ -103,24 +77,22 @@ void Scheduler::exit() {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
-    if (this->ready_queue.empty()) {
-        log << ERROR << "Can't exit last thread, active ID: " << dec << this->active->tid << endl;
-        cpu.enable_int();
+    lock();
+    if (ready_queue.size() == 1) {
+        log << ERROR << "Can't exit last thread, active ID: " << dec << (*active)->tid << endl;
+        unlock();
         return;
     }
 
-    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
-    if (next == nullptr) {
-        log << ERROR << "(Exit) Couldn't remove thread from ready_queue" << endl;
-        cpu.enable_int();
-        return;
+    Thread* prev_raw = (*active).get();
+    log << DEBUG << "Exiting thread, ID: " << dec << (*active)->tid << endl;
+
+    active = ready_queue.erase(active);
+    if (active == ready_queue.end()) {
+        active = ready_queue.begin();
     }
 
-    log << DEBUG << "Exiting thread, ID: " << dec << this->active->tid << " => " << next->tid << endl;
-    delete this->active;
-
-    this->dispatch(*next);
+    dispatch(prev_raw);
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
     // dispatch kehr nicht zurueck
@@ -137,54 +109,34 @@ void Scheduler::exit() {
  * Parameter:                                                                *
  *      that        Zu terminierender Thread                                 *
  *****************************************************************************/
-void Scheduler::kill(Thread* that) {
+void Scheduler::kill(unsigned int tid) {
+    unsigned int (*pred)(const bse::unique_ptr<Thread>&) =
+      [](const bse::unique_ptr<Thread>& ptr) -> unsigned int { return ptr->tid; };
 
-    /* hier muss Code eingefuegt werden */
+    lock();
+    Thread* prev_raw = (*active).get();
+    std::size_t erased_els = bse::erase_if(ready_queue, pred, tid);
+    erased_els += bse::erase_if(block_queue, pred, tid);
 
-    // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
-    if (!this->ready_queue.remove(that)) {
-        // Not in ready queue
-        if (!this->block_queue.remove(that)) {
-            // Not in block queue
-            log << ERROR << "Can't kill thread that is not in any queue, ID: " << dec << that->tid << endl;
-            cpu.enable_int();
-            return;
-        }
+    if (erased_els == 0) {
+        log << ERROR << "Couldn't find thread with id: " << tid << " in ready- or block-queue" << endl;
+        unlock();
+        return;
     }
 
-    log << DEBUG << "Killing thread, ID: " << dec << that->tid << endl;
-    delete that;
-    cpu.enable_int();
-}
-
-void Scheduler::kill(unsigned int id) {
-    cpu.disable_int();
-    Thread* to_remove = NULL;
-    for (Thread* thread : this->ready_queue) {
-        if (thread->tid == id) {
-            this->ready_queue.remove(to_remove);
-            log << DEBUG << "Killing thread, ID: " << dec << id << endl;
-            delete to_remove;
-
-            cpu.enable_int();
-            return;
-        }
+    if (erased_els > 1) {
+        log << ERROR << "Killed more than 1 thread (oops)" << endl;
+        unlock();
+        return;
     }
 
-    for (Thread* thread : this->block_queue) {
-        if (thread->tid == id) {
-            this->block_queue.remove(to_remove);
-            log << DEBUG << "Killing thread, ID: " << dec << id << endl;
-            delete to_remove;
-
-            cpu.enable_int();
-            return;
-        }
+    // Active thread could have been killed
+    if (active >= ready_queue.end()) {
+        active = ready_queue.begin();
     }
+    dispatch(prev_raw);
 
-    log << ERROR << "Can't kill thread that is not in any queue, ID: " << dec << id << endl;
-    cpu.enable_int();
+    unlock();
 }
 
 /*****************************************************************************
@@ -203,25 +155,21 @@ void Scheduler::yield() {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
-    if (this->ready_queue.empty()) {
-        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << this->active->tid << endl;
-        cpu.enable_int();
+    lock();
+    if (ready_queue.size() == 1) {
+        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << active->tid << endl;
+        unlock();
         return;
     }
 
-    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
-    if (next == nullptr) {
-        log << ERROR << "(Yield) Couldn't remove thread from ready_queue" << endl;
-        cpu.enable_int();
-        return;
+    // log << TRACE << "Yielding, ID: " << dec << active->tid << " => " << next.tid << endl;
+
+    Thread* prev_raw = (*active).get();
+    ++active;
+    if (active == ready_queue.end()) {
+        active = ready_queue.begin();
     }
-
-    this->ready_queue.insert_last(this->active);
-
-    // log << TRACE << "Yielding, ID: " << dec << this->active->tid << " => " << next.tid << endl;
-
-    this->dispatch(*next);
+    dispatch(prev_raw);
 }
 
 /*****************************************************************************
@@ -235,8 +183,8 @@ void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
-    cpu.disable_int();
-    this->yield();
+    lock();
+    yield();
 }
 
 /*****************************************************************************
@@ -253,28 +201,23 @@ void Scheduler::block() {
 
     /* hier muss Code eingefuegt werden */
 
-    // Basically the same as exit()
-
-    cpu.disable_int();
-    if (this->ready_queue.empty()) {
-        log << ERROR << "Can't block last thread, active ID: " << dec << this->active->tid << endl;
-        cpu.enable_int();
+    lock();
+    if (ready_queue.size() == 1) {
+        log << ERROR << "Can't block last thread, active ID: " << dec << (*active)->tid << endl;
+        unlock();
         return;
     }
 
-    this->block_queue.insert_last(this->active);  // Thread that will be blocked waits in block_queue, so the scheduler can also
-                                                  // kill blocked threads (for example keyboard demo needs this)
+    Thread* prev_raw = (*active).get();
+    std::size_t active_idx = bse::distance(ready_queue.begin(), active);
+    block_queue.push_back(std::move(ready_queue[active_idx]));
 
-    Thread* next = this->ready_queue.remove_first().value_or(nullptr);
-    if (next == nullptr) {
-        log << ERROR << "(Block) Couldn't remove thread from ready_queue" << endl;
-        cpu.enable_int();
-        return;
+    active = ready_queue.erase(active);
+    if (active == ready_queue.end()) {
+        active = ready_queue.begin();
     }
 
-    log << TRACE << "Blocking thread, ID: " << dec << this->active->tid << " => " << next->tid << endl;
-
-    this->dispatch(*next);
+    dispatch(prev_raw);
 }
 
 /*****************************************************************************
@@ -288,18 +231,30 @@ void Scheduler::block() {
  *                                                                           *
  * Parameter:       that:  Thread der deblockiert werden soll.               *
  *****************************************************************************/
-void Scheduler::deblock(Thread* that) {
+void Scheduler::deblock(unsigned int tid) {
 
     /* hier muss Code eingefuegt werden */
 
-    // Basically the same as ready()
+    lock();
 
-    cpu.disable_int();
-    if (!this->block_queue.remove(that)) {
-        log << ERROR << "Unblocked thread wasn't in block_queue" << endl;
+    bse::unique_ptr<Thread> thread;
+    for (bse::Vector<bse::unique_ptr<Thread>>::Iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
+        if ((*it)->tid == tid) {
+            // Found thread with correct tid
+            std::size_t pos = bse::distance(block_queue.begin(), it);
+            thread = std::move(block_queue[pos]);
+            block_queue.erase(it);
+            break;
+        }
     }
-    this->ready_queue.insert_at(that, 0);  // Prefer deblocked
 
-    log << TRACE << "Adding to start of ready_queue, ID: " << dec << that->tid << endl;
-    cpu.enable_int();
+    if (!thread) {
+        log << ERROR << "Couldn't deblock thread with id: " << tid << endl;
+        unlock();
+        return;
+    }
+
+    ready_queue.push_back(std::move(thread));
+
+    unlock();
 }
