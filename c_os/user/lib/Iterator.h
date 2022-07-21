@@ -15,6 +15,8 @@ namespace bse {
 
         AbstractIterator(T* ptr) : ptr(ptr) {}
 
+        virtual AbstractIterator& operator++() = 0;
+
         T* operator->() { return this->ptr; }
         T& operator*() { return *this->ptr; }
         bool operator==(const AbstractIterator& other) const { return this->ptr == other.ptr; }
@@ -35,24 +37,19 @@ namespace bse {
 
         ContinuousIterator(T* ptr) : AbstractIterator<T>(ptr) {}
 
-        friend ContinuousIterator& operator++(ContinuousIterator& rhs) {
-            ++rhs.ptr;
-            return rhs;
+        ContinuousIterator& operator++() override {
+            ++this->ptr;
+            return *this;
         }
 
-        friend ContinuousIterator& operator--(ContinuousIterator& rhs) {
-            --rhs.ptr;
-            return rhs;
+        ContinuousIterator operator+(std::size_t add) {
+            this->ptr += add;
+            return *this;
         }
 
-        friend ContinuousIterator operator+(ContinuousIterator lhs, std::size_t add) {
-            lhs.ptr += add;
-            return lhs;
-        }
-
-        friend ContinuousIterator operator-(ContinuousIterator lhs, std::size_t sub) {
-            lhs.ptr -= sub;
-            return lhs;
+        ContinuousIterator operator-(std::size_t sub) {
+            this->ptr -= sub;
+            return *this;
         }
     };
 
