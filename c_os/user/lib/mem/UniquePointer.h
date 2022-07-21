@@ -22,7 +22,7 @@ namespace bse {
         T_* ptr = nullptr;
 
         // Only use make_unique or reset for construction
-        unique_ptr(T_* ptr) : ptr(std::move(ptr)) {}
+        unique_ptr(T_* ptr) : ptr(ptr) {}
 
         // I didn't want to introduce custom deleters for my small needs
         void del() {
@@ -46,8 +46,8 @@ namespace bse {
         friend typename std::enable_if_t<!std::is_array_v<t>, unique_ptr<t>>
         make_unique(Args&&... args);
 
-        template<typename Tt>
-        friend typename std::enable_if_t<std::is_array_v<Tt>, unique_ptr<Tt>>
+        template<typename t>
+        friend typename std::enable_if_t<std::is_array_v<t>, unique_ptr<t>>
         make_unique(std::size_t size);
 
         // Deletion
@@ -56,7 +56,17 @@ namespace bse {
         }
 
         // Moving
-        unique_ptr(unique_ptr&& move) noexcept { reset(move.release()); }
+        unique_ptr(unique_ptr&& move) noexcept { reset(move.release()); };
+
+        // Implicit upcasting is needed: for sth like
+        // unique_ptr<Thread> ptr = make_unique<IdleThread>();
+        // IdleThread is derived from Thread so the assert passes
+        template<typename t>
+        unique_ptr(unique_ptr<t>&& move) noexcept {
+            static_assert(std::is_base_of_v<T, t>, "Has to be derived type");
+            reset(move.release());
+        }
+
         unique_ptr& operator=(unique_ptr&& move) noexcept {
             reset(move.release());
             return *this;
@@ -77,11 +87,20 @@ namespace bse {
             return std::exchange(ptr, nullptr);
         }
 
+        // Get: Access the raw pointer without taking ownership
+        T_* get() const {
+            return ptr;
+        }
+
         // Nice to have operators
         T_* operator->() { return ptr; }
+        const T_* operator->() const { return ptr; }
+        T_& operator*() { return *ptr; }
         const T_& operator*() const { return *ptr; }
+
         explicit operator void*() const { return ptr; }
         explicit operator bool() const { return (ptr != nullptr); }
+
         bool operator==(const unique_ptr& other) const { return ptr == other.ptr; }
 
         // These are only for array unique_ptr but I didn't want to define a full template specialization just for this
