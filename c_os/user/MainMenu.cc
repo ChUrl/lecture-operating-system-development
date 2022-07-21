@@ -1,15 +1,14 @@
 #include "user/MainMenu.h"
 #include "user/demo/ArrayDemo.h"
-#include "user/demo/ArrayListDemo.h"
 #include "user/demo/BlueScreenDemo.h"
 #include "user/demo/HeapDemo.h"
 #include "user/demo/KeyboardDemo.h"
-#include "user/demo/LinkedListDemo.h"
 #include "user/demo/PCSPKdemo.h"
 #include "user/demo/PreemptiveThreadDemo.h"
 #include "user/demo/SmartPointerDemo.h"
 #include "user/demo/TextDemo.h"
 #include "user/demo/VBEdemo.h"
+#include "user/demo/VectorDemo.h"
 
 void print_demo_menu() {
     kout.lock();
@@ -59,17 +58,12 @@ void MainMenu::run() {
                 break;
 
             case 'q':
-                choosen_demo = new ArrayListDemo();
+                choosen_demo = new VectorDemo();
                 break;
             case 'w':
-                // NOTE: The LinkedListDemo will take considerably longer for the threadswitching part
-                //       because for every insertion/deletion memory will be allocated for the wrappers
-                choosen_demo = new LinkedListDemo();
-                break;
-            case 'e':
                 choosen_demo = new ArrayDemo();
                 break;
-            case 'r':
+            case 'e':
                 choosen_demo = new SmartPointerDemo();
                 break;
             }
