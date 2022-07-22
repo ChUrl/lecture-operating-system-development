@@ -1,6 +1,7 @@
 #include "user/lib/Logger.h"
 #include "kernel/Globals.h"
 
+SpinLock Logger::sem;
 bool Logger::kout_enabled = true;
 bool Logger::serial_enabled = true;
 // const Semaphore Logger::sem = Semaphore(1);
@@ -16,13 +17,11 @@ constexpr char* ansi_cyan = "\033[1;36m";
 constexpr char* ansi_white = "\033[1;37m";
 constexpr char* ansi_default = "\033[0;39m ";
 
-// TODO: Lock this
 void Logger::log(char* message, CGA::color col) const {
     if (Logger::kout_enabled) {
         CGA::color old_col = kout.color_fg;
         kout << fgc(col)
              << Logger::level_to_string(this->current_message_level) << "::"
-             << this->name << ":: "
              << message << fgc(old_col);
         kout.flush();  // Don't add newline, Logger already does that
     }
@@ -44,8 +43,6 @@ void Logger::log(char* message, CGA::color col) const {
             serial.write(ansi_default);
         }
         serial.write(Logger::level_to_string(this->current_message_level));
-        serial.write("::");
-        serial.write(this->name);
         serial.write(":: ");
         serial.write(message);
         serial.write('\r');
@@ -73,6 +70,7 @@ void Logger::flush() {
 
     this->current_message_level = Logger::INFO;
     this->pos = 0;
+    Logger::unlock();
 }
 
 void Logger::trace(char* message) const {

@@ -3,25 +3,31 @@
 
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
-// #include "lib/Semaphore.h"
+#include "lib/SpinLock.h"
 
 class Logger : public OutStream {
-private:
-    Logger(const Logger& copy) = delete;
+public:
+    static Logger& instance() {
+        static Logger log;
+        return log;
+    }
 
-    char* name;
+private:
+    Logger() = default;
+    Logger(const Logger& copy) = delete;
+    void operator=(const Logger& copy) = delete;
+
     static bool kout_enabled;
     static bool serial_enabled;
 
-    // TODO: Don't mix logs
-    // static const Semaphore sem;
-
     void log(char* message, CGA::color col) const;
 
-public:
-    Logger(char* name) : name(name) {}
-    virtual ~Logger() = default;
+    friend class NamedLogger;  // Allow NamedLogger to lock/unlock
+    static SpinLock sem;
+    static void lock() { Logger::sem.acquire(); }
+    static void unlock() { Logger::sem.release(); }
 
+public:
     enum LogLevel {
         TRACE,
         DEBUG,
@@ -75,5 +81,33 @@ Logger& TRACE(Logger& log);
 Logger& DEBUG(Logger& log);
 Logger& ERROR(Logger& log);
 Logger& INFO(Logger& log);
+
+class NamedLogger {
+private:
+    char* name;
+
+public:
+    NamedLogger(char* name) : name(name) {}
+
+    Logger& trace() {
+        Logger::lock();
+        return Logger::instance() << TRACE << name << "::";
+    }
+
+    Logger& debug() {
+        Logger::lock();
+        return Logger::instance() << DEBUG << name << "::";
+    }
+
+    Logger& error() {
+        Logger::lock();
+        return Logger::instance() << ERROR << name << "::";
+    }
+
+    Logger& info() {
+        Logger::lock();
+        return Logger::instance() << INFO << name << "::";
+    }
+};
 
 #endif
