@@ -72,7 +72,7 @@ int main() {
     // DONE: Rewrite demos for threads
     // DONE: Make menu for demos
     // DONE: Thread switching stops after a while
-    // TODO: Threads are not cleanup after exit, use managed pointer?
+    // DONE: Threads are not cleanup after exit, use managed pointer?
     // DONE: Fix PCSKP/Keyboard Demos: Keyboard Thread gets missing after blocking waiting for input, kevman doesn't wake up...
     //
     // NOTE: Main ToDo's (extra)
@@ -95,12 +95,12 @@ int main() {
     // DONE: Linked List
     // DONE: Iterator support for structures
     // DONE: Implement own basic managed pointers
-    // TODO: Scheduler should own threads
+    // DONE: Scheduler should own threads
     // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
     //       just get esp as argument
     // TODO: Use singleton pattern for some device classes/classes used only in globals
-    // TODO: Introduce name to threads?
-    // TODO: Allow to gracefully kill threads
+    // DONE: Introduce name to threads?
+    // DONE: Allow to gracefully kill threads
     // TODO: Request thread status from scheduler
     // TODO: Fix the output locking, locking gets "entangled" when threads are killed...
     //
@@ -125,7 +125,7 @@ int main() {
     // DONE: Synchronize the outstream
     // DONE: Remove Iterator from List.h
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
-    // TODO: Remove the Input.h file and replace functionality with kevman
+    // DONE: Remove the Input.h file and replace functionality with kevman
 
     // Scheduler doesn't return
     return 0;
