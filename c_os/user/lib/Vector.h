@@ -6,12 +6,15 @@
 //       ArrayList instead
 
 #include "Iterator.h"
+#include "Logger.h"
 #include <cstddef>
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
 
 namespace bse {
+
+    // static Logger log("Vector");
 
     template<typename T>
     class Vector {
@@ -28,6 +31,7 @@ namespace bse {
         std::size_t buf_cap = 0;
 
         void init() {
+            // log << DEBUG << "Initializing Vector" << endl;
             buf = new T[Vector::default_cap];
             buf_cap = Vector::default_cap;
         }
@@ -37,11 +41,11 @@ namespace bse {
         }
 
         // Enlarges the buffer if we run out of space
-        std::size_t expand() {
+        void expand() {
             // Init if necessary
             if (buf == nullptr) {
                 init();
-                return buf_cap;  // Dont have to realloc after init
+                return;  // Dont have to realloc after init
             }
 
             // Since we only ever add single elements this should never get below zero
@@ -62,51 +66,25 @@ namespace bse {
                 buf = new_buf;
                 buf_cap = new_cap;
             }
-
-            return buf_cap;
         }
 
-        // Returns new pos, both do element copying if necessary, -1 if failed
-        // Index is location where space should be made/removed
-        std::size_t copy_right(std::size_t i) {
-            if (i > size()) {
-                // Error: No elements here
-                return 0;
-            }
-
-            expand();
-
-            // Otherwise i == pos and we don't need to copy anything
+        // Index is location where space should be made
+        void copy_right(std::size_t i) {
             if (i < size()) {
-                // Enough space to copy elements after pos i
-                for (std::size_t idx = size(); idx > i; --idx) {  // idx > i so idx - 1 is never < 0
+                for (std::size_t idx = size(); idx > i; --idx) {
                     buf[idx] = std::move(buf[idx - 1]);
                     buf[idx - 1].~T();
                 }
-                ++buf_pos;
-            }
-
-            return size();
+            }  // Otherwise i == pos and we don't need to copy anything
         }
 
-        // Don't realloc here, we don't need to shring the buffer every time
-        // One could introduce a limit of free space but I don't care for now
-        // Would be bad if the scheduler triggers realloc everytime a thread is removed (if used as readyqueue)...
-        std::size_t copy_left(std::size_t i) {
-            if (i >= size()) {
-                // Error: No elements here
-                return -1;
-            }
-
-            // Decrement before loop because we overwrite 1 element (1 copy less than expand)
-            --buf_pos;
-
-            for (std::size_t idx = i; idx < size(); ++idx) {  // idx < pos so idx + 1 is never outside of size limit
+        // Index is the location that will be removed
+        void copy_left(std::size_t i) {
+            buf[i].~T();  // Delete the element that will be overwritten
+            for (std::size_t idx = i; idx < size(); ++idx) {
                 buf[idx] = std::move(buf[idx + 1]);
                 buf[idx + 1].~T();
             }
-
-            return size();
         }
 
     public:
@@ -124,6 +102,7 @@ namespace bse {
         Iterator end() const { return Iterator(&buf[size()]); }
 
         // Add elements
+        // https://en.cppreference.com/w/cpp/container/vector/push_back
         void push_back(const T& copy) {
             if (buf == nullptr) {
                 init();
@@ -132,6 +111,7 @@ namespace bse {
             buf[size()] = copy;
             ++buf_pos;
             expand();
+            // log << TRACE << "PushBack: Vector size: " << size() << endl;
         }
 
         void push_back(T&& move) {
@@ -142,12 +122,18 @@ namespace bse {
             buf[size()] = std::move(move);
             ++buf_pos;
             expand();
+            // log << TRACE << "PushBack: Vector size: " << size() << endl;
         }
 
+        // https://en.cppreference.com/w/cpp/container/vector/insert
+        // The element will be inserted before the pos iterator, pos can be the end() iterator
         Iterator insert(Iterator pos, const T& copy) {
             std::size_t idx = distance(begin(), pos);
             copy_right(idx);
             buf[idx] = copy;
+            ++buf_pos;
+            expand();
+            // log << TRACE << "Insert: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
@@ -155,13 +141,21 @@ namespace bse {
             std::size_t idx = distance(begin(), pos);
             copy_right(idx);
             buf[idx] = std::move(move);
+            ++buf_pos;
+            expand();
+            // log << TRACE << "Insert: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
         // Remove elements
+        // https://en.cppreference.com/w/cpp/container/vector/erase
+        // Returns the iterator after the removed element, pos can't be end() iterator
         Iterator erase(Iterator pos) {
             std::size_t idx = distance(begin(), pos);
             copy_left(idx);
+            --buf_pos;
+            // shrink();
+            // log << TRACE << "Erase: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
@@ -190,13 +184,20 @@ namespace bse {
             return buf[pos];
         }
 
-        // Information
+        // Misc
         bool empty() const {
             return !size();
         }
 
         std::size_t size() const {
             return buf_pos;
+        }
+
+        void clear() {
+            while (buf_pos > 0) {
+                --buf_pos;
+                buf[buf_pos].~T();
+            }
         }
     };
 
