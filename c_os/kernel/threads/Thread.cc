@@ -107,8 +107,8 @@ void kickoff(Thread* object) {
  * Parameter:                                                                *
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
-Thread::Thread() : stack(new unsigned int[1024]), tid(ThreadCnt++) {
-    Thread::log << INFO << "Initialized thread with ID: " << this->tid << endl;
+Thread::Thread(char* name) : name(name), stack(new unsigned int[1024]), tid(ThreadCnt++) {
+    Thread::log << INFO << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
     Thread_init(&regs, stack + 1024, kickoff, this);  // Stack grows from top to bottom
 }
 

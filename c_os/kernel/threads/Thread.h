@@ -39,15 +39,18 @@ private:
     struct ThreadState regs;
 
 protected:
+    Thread(char* name);
+
     static Logger log;
 
+    bool running = true;     // For soft exit, if thread uses infinite loop inside run(), use this as condition
+    char* name;              // For logging
+    unsigned int tid;        // Thread-ID (wird im Konstruktor vergeben)
+    friend class Scheduler;  // Scheduler can access tid
+
 public:
-    unsigned int tid;  // Thread-ID (wird im Konstruktor vergeben)
-
-    Thread();
-
     virtual ~Thread() {
-        log << INFO << "Uninitialized thread, ID: " << dec << this->tid << endl;
+        log << INFO << "Uninitialized thread, ID: " << dec << this->tid << " (" << name << ")" << endl;
         delete[] this->stack;
     }
 
@@ -56,6 +59,9 @@ public:
 
     // Umschalten auf Thread 'next'
     void switchTo(Thread& next);
+
+    // Ask thread to terminate itself
+    void suicide() { running = false; }
 
     // Methode des Threads, muss in Sub-Klasse implementiert werden
     virtual void run() = 0;
