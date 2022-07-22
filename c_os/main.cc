@@ -12,10 +12,10 @@
 
 #include "kernel/Globals.h"
 #include "kernel/Paging.h"
-#include "lib/Input.h"
 #include "user/MainMenu.h"
 
 void print_startup_message() {
+    kout.clear();
     kout << "BSEos 1.0\n"
          << "==========\n"
          << "Unterstuetzte Funktionen:\n"
@@ -36,6 +36,8 @@ void print_startup_message() {
          << endl;
 }
 
+// #include "test/VectorTest.h"
+
 int main() {
     Logger::set_level(Logger::TRACE);
     Logger::disable_kout();
@@ -55,11 +57,11 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
+    // Tests
+    // run_test();
+
     // Startmeldung
-    kout.clear();
-    print_startup_message();
-    // NOTE: Because this is blocking with an empty loop we have to disable optimizations (at least on my compiler version)
-    waitForReturn();
+    // print_startup_message();
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.ready<MainMenu>();  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
