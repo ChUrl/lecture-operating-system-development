@@ -90,7 +90,7 @@ int main() {
     // CANCELED: Implement realloc so ArrayList can realloc instead of newly allocate bigger block
     // DONE: Array wrapper
     // DONE: Rewrite Logging with a basic logger
-    // TODO: Static Logger
+    // DONE: Static Logger
     // CANCELED: String wrapper
     // DONE: Linked List
     // DONE: Iterator support for structures
@@ -98,11 +98,10 @@ int main() {
     // DONE: Scheduler should own threads
     // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
     //       just get esp as argument
-    // TODO: Use singleton pattern for some device classes/classes used only in globals
+    // CANCELED: Use singleton pattern for some device classes/classes used only in globals (needs stdlib for exita)
     // DONE: Introduce name to threads?
     // DONE: Allow to gracefully kill threads
-    // TODO: Request thread status from scheduler
-    // TODO: Fix the output locking, locking gets "entangled" when threads are killed...
+    // CANCELED: Request thread status from scheduler (don't need it)
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -112,7 +111,7 @@ int main() {
     // DONE: Remove Math "lib" or do something with it
     // CANCELED: Add some fixed point math like sine approximation or fractions?
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
-    // TODO: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
+    // CANCELED: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
     // CANCELED: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>?
     // TODO: Make more stuff const and static and static constexpr const
     // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
