@@ -194,6 +194,34 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     cpu.enable_int();
 }
 
+// TODO: Can't retrive the thread right now because it's not clear when it's finished,
+//       maybe introduce a exited_queue and get it from there
+void Scheduler::nice_kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
+    cpu.disable_int();
+
+    for (bse::unique_ptr<Thread>& thread : block_queue) {
+        if (thread->tid == tid) {
+            thread->suicide();
+            log << INFO << "Nice killed thread in block_queue with id: " << tid << endl;
+            deblock(tid);
+            cpu.enable_int();
+            return;
+        }
+    }
+
+    for (bse::unique_ptr<Thread>& thread : ready_queue) {
+        if (thread->tid == tid) {
+            thread->suicide();
+            log << INFO << "Nice killed thread in ready_queue with id: " << tid << endl;
+            cpu.enable_int();
+            return;
+        }
+    }
+
+    log << ERROR << "Can't nice kill thread (not found) with id: " << tid << endl;
+    cpu.enable_int();
+}
+
 /*****************************************************************************
  * Methode:         Scheduler::yield                                         *
  *---------------------------------------------------------------------------*

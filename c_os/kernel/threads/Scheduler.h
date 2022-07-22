@@ -90,6 +90,13 @@ public:
     void kill(unsigned int tid, bse::unique_ptr<Thread>* ptr);
     void kill(unsigned int tid) { kill(tid, nullptr); }
 
+    // Ask thread to exit
+    // NOTE: I had many problems with killing threads that were stuck in some semaphore
+    //       or were involved in any locking mechanisms, so with this a thread can make sure
+    //       to "set things right" before exiting itself (but could also be ignored)
+    void nice_kill(unsigned int tid, bse::unique_ptr<Thread>* ptr);
+    void nice_kill(unsigned int tid) { nice_kill(tid, nullptr); }
+
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield();
 
