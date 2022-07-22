@@ -25,7 +25,7 @@
 #include "kernel/threads/IdleThread.h"
 #include <utility>
 
-constexpr const bool INSANE_TRACE = true;
+constexpr const bool INSANE_TRACE = false;
 
 /*****************************************************************************
  * Methode:         Dispatcher::dispatch                                     *
