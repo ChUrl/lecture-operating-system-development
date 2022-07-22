@@ -45,16 +45,14 @@ private:
     // SpinLock lock;  // Use spinlock instead of cpu.disable_int() because it still allows preemption
     //                 // for threads that don't use the scheduler
 
-    // Make it easy to switch locking mechanism in the future
-    static void lock();
-    static void unlock();
-
     void start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next);                        // Switches from prev to current active
     void switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next);  // Switches from prev to current active
 
     // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }
     friend class IdleThread;
+
+    void ready(bse::unique_ptr<Thread>&& thread);
 
 public:
     Scheduler() : log("SCHED") {}
@@ -71,22 +69,13 @@ public:
     // Scheduler starten
     void schedule();
 
-    /*****************************************************************************
-     * Methode:         Scheduler::ready                                         *
-     *---------------------------------------------------------------------------*
-     * Beschreibung:    Thread in readyQueue eintragen.                          *
-     *****************************************************************************/
+    // Helper that directly constructs the thread, then readys it
     template<typename T, typename... Args>
     unsigned int ready(Args... args) {
-        lock();
-
-        bse::unique_ptr<T> thread = bse::make_unique<T>(std::forward<Args>(args)...);
-
+        bse::unique_ptr<Thread> thread = bse::make_unique<T>(std::forward<Args>(args)...);
         unsigned int tid = thread->tid;
-        log << DEBUG << "Adding to ready_queue, ID: " << dec << tid << endl;
-        ready_queue.push_back(std::move(thread));
 
-        unlock();
+        ready(std::move(thread));
 
         return tid;
     }
