@@ -250,7 +250,7 @@ qemu-gdb: $(OBJDIR)/bootdisk.vmi
 # gestarteten Qemu.
 
 gdb:
-	gdb -x /tmp/gdbcommands.$(shell id -u) $(OBJDIR)/system
+	gdb -tui -x /tmp/gdbcommands.$(shell id -u) $(OBJDIR)/system
 
 # --------------------------------------------------------------------------
 # 'ddd' startet den DDD-Debugger und verbindet sich mit dem GDB-Stub des vorher
