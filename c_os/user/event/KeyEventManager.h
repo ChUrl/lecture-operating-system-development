@@ -6,6 +6,7 @@
 #include "user/lib/Vector.h"
 
 // NOTE: Could do this more generally but we only have key events
+//       Also pretty limited: One thread can have one listener as identification is done over tid
 
 class KeyEventManager {
 private:

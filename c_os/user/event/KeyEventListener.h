@@ -7,6 +7,8 @@ class KeyEventListener {
 private:
     KeyEventListener(const KeyEventListener& copy) = delete;
 
+    static Logger log;
+
     char lastChar = '\0';
 
 public:
