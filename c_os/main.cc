@@ -17,7 +17,7 @@
 void print_startup_message() {
     kout.clear();
     kout << "BSEos 1.0\n"
-         << "==========\n"
+         << "=========\n"
          << "Unterstuetzte Funktionen:\n"
          << "   - Bildschirmausgaben\n"
          << "   - Sound ueber den PC-Lautsprecher\n"
@@ -80,7 +80,7 @@ int main() {
     //       This also works well with a blocked-queue in the scheduler for threads waiting for input
     //
     // DONE: Serial output
-    // TODO: Output graphviz stuff over serial
+    // CANCELED: Output graphviz stuff over serial?
     // CANCELED: Fix the damn TreeAllocator: Allow root deletion without bluescreen
     //           Maybe just remove the red black tree stuff and replace with usual binary search tree?
     //           I can just balance this tree unefficiantly by reinserting all nodes
@@ -95,7 +95,14 @@ int main() {
     // DONE: Linked List
     // DONE: Iterator support for structures
     // DONE: Implement own basic managed pointers
-    // TODO: Scheduler should owns threads
+    // TODO: Scheduler should own threads
+    // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
+    //       just get esp as argument
+    // TODO: Use singleton pattern for some device classes/classes used only in globals
+    // TODO: Introduce name to threads?
+    // TODO: Allow to gracefully kill threads
+    // TODO: Request thread status from scheduler
+    // TODO: Fix the output locking, locking gets "entangled" when threads are killed...
     //
     // NOTE: Cleanup + Refactor
     // DONE: Use templates for queue so threads don't have to be casted down from chain
@@ -109,8 +116,6 @@ int main() {
     // CANCELED: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>?
     // TODO: Make more stuff const and static and static constexpr const
     // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
-    // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
-    //       just get esp as argument
     // DONE: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
     //       Or check if thread is still running
     // TODO: Delete copy constructors that weren't already deleted
@@ -118,12 +123,9 @@ int main() {
     // TODO: Add virtual destructors and make sure to call them with delete when objects are removed
     // TODO: Replace empty constructors/destructors with default keyword
     // DONE: Synchronize the outstream
-    // TODO: Use singleton pattern for some device classes/classes used only in globals
-    // TODO: Introduce name to threads?
     // DONE: Remove Iterator from List.h
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // TODO: Remove the Input.h file and replace functionality with kevman
-    // TODO: Fix the output locking, lock for every kout till endl? (kout << ... << endl)
 
     // Scheduler doesn't return
     return 0;
