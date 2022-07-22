@@ -10,8 +10,8 @@
 #ifndef __VBEdemo_include__
 #define __VBEdemo_include__
 
-#include "kernel/threads/Thread.h"
 #include "kernel/Globals.h"
+#include "kernel/threads/Thread.h"
 
 class VBEdemo : public Thread {
 
@@ -26,6 +26,10 @@ public:
     // Gib dem Anwendungsthread einen Stack.
     VBEdemo() {
         kout << "Initialized VBEdemo" << endl;
+    }
+
+    ~VBEdemo() override {
+        vesa.initTextMode();
     }
 
     // Thread-Startmethode

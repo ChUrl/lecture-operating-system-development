@@ -103,5 +103,5 @@ void VBEdemo::run() {
     drawFonts();
 
     // selbst terminieren
-    scheduler.exit();
+    // scheduler.exit();
 }

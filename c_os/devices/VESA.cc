@@ -56,8 +56,9 @@ struct VbeInfoBlock {
  * Beschreibung:    Schalter in den Text-Modus 80x25 Zeichen.                *
  *****************************************************************************/
 void VESA::initTextMode() {
-    BC_params->AX = 0x4f02;  // SVFA BIOS, init mode
-    BC_params->BX = 0x4003;  // 80x25
+    allocator.free((void*)hfb);  // Memory is allocated after every start and never deleted, so add that
+    BC_params->AX = 0x4f02;      // SVFA BIOS, init mode
+    BC_params->BX = 0x4003;      // 80x25
     bios.Int(0x10);
 }
 
