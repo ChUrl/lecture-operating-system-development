@@ -26,8 +26,8 @@
 // extern "C" deklariert werden, da sie nicht dem Name-Mangeling von C++
 // entsprechen.
 extern "C" {
-    void Thread_start(struct ThreadState* regs);
-    void Thread_switch(struct ThreadState* regs_now, struct ThreadState* reg_then);
+    void Thread_start(unsigned int esp);
+    void Thread_switch(unsigned int esp_now, unsigned int esp_then);
 }
 
 unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preemption with 0
@@ -38,8 +38,9 @@ unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preempt
  * Beschreibung:    Bereitet den Kontext der Koroutine fuer den ersten       *
  *                  Aufruf vor.                                              *
  *****************************************************************************/
-void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(Thread*), void* object) {
+void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*), void* object) {
 
+    // NOTE: c++17 doesn't allow register
     register unsigned int** sp = (unsigned int**)stack;
 
     // Stack initialisieren. Es soll so aussehen, als waere soeben die
@@ -50,8 +51,11 @@ void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(
     // Funktion muss daher dafuer sorgen, dass diese Adresse nie benoetigt
     // wird, sie darf also nicht terminieren, sonst kracht's.
 
-    *(--sp) = (unsigned int*)object;    // Parameter
-    *(--sp) = (unsigned int*)0x131155;  // Ruecksprungadresse (Dummy)
+    // *(--sp) = (unsigned int*)object;    // Parameter
+    stack[-1] = (unsigned int)object;
+
+    // *(--sp) = (unsigned int*)0x131155;  // Ruecksprungadresse (Dummy)
+    stack[-2] = 0x131155U;
 
     // Nun legen wir noch die Adresse der Funktion "kickoff" ganz oben auf
     // den Stack. Wenn dann bei der ersten Aktivierung dieser Koroutine der
@@ -59,26 +63,54 @@ void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(
     // verweist, genuegt ein ret, um die Funktion kickoff zu starten.
     // Genauso sollen auch alle spaeteren Threadwechsel ablaufen.
 
-    *(--sp) = (unsigned int*)kickoff;  // Adresse
+    // *(--sp) = (unsigned int*)kickoff;  // Adresse
+    stack[-3] = (unsigned int)kickoff;
 
     // Initialisierung der Struktur ThreadState mit den Werten, die die
     // nicht-fluechtigen Register beim ersten Starten haben sollen.
     // Wichtig ist dabei nur der Stackpointer.
 
-    regs->ebx = 0;
-    regs->esi = 0;
-    regs->edi = 0;
-    regs->ebp = 0;
-    regs->esp = sp;  // esp now points to the location of the address of kickoff
+    // NOTE: Old code before I used pusha/popa
+    // regs->ebx = 0;
+    // regs->esi = 0;
+    // regs->edi = 0;
+    // regs->ebp = 0;
+    // regs->esp = sp;  // esp now points to the location of the address of kickoff
 
     // nachfolgend die fluechtige Register
     // wichtig fuer preemptives Multitasking
-    regs->eax = 0;
-    regs->ecx = 0;
-    regs->edx = 0;
+    // regs->eax = 0;
+    // regs->ecx = 0;
+    // regs->edx = 0;
 
     // flags initialisieren
-    regs->efl = (void*)0x200;  // Interrupt-Enable
+    // regs->efl = (void*)0x200;  // Interrupt-Enable
+
+    // NOTE: New code with pusha/popa
+    // unsigned int* temp = (unsigned int*)sp;
+    // *(--sp) = 0;                    // EAX
+    // *(--sp) = 0;                    // ECX
+    // *(--sp) = 0;                    // EDX
+    // *(--sp) = 0;                    // EBX
+    // *(--sp) = (unsigned int*)temp;  // ESP
+    // *(--sp) = 0;                    // EBP
+    // *(--sp) = 0;                    // ESI
+    // *(--sp) = 0;                    // EDI
+    stack[-4] = 0;                         // EAX
+    stack[-5] = 0;                         // ECX
+    stack[-6] = 0;                         // EDX
+    stack[-7] = 0;                         // EBX
+    stack[-8] = (unsigned int)&stack[-3];  // ESP
+    stack[-9] = 0;                         // EBP
+    stack[-10] = 0;                        // ESI
+    stack[-11] = 0;                        // EDI
+
+    // popf
+    // *(--sp) = (unsigned int*)0x200;  // Interrupt-Enable
+    stack[-12] = 0x200U;
+
+    // *esp = (unsigned int)sp;
+    *esp = (unsigned int)&stack[-12];
 }
 
 /*****************************************************************************
@@ -95,7 +127,7 @@ void kickoff(Thread* object) {
     object->run();
 
     // object->run() kehrt hoffentlich nie hierher zurueck
-    for (;;) {}
+    while (true) {}
 }
 
 /*****************************************************************************
@@ -108,7 +140,7 @@ void kickoff(Thread* object) {
  *****************************************************************************/
 Thread::Thread(char* name) : stack(new unsigned int[1024]), log(name), name(name), tid(ThreadCnt++) {
     log.info() << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
-    Thread_init(&regs, stack + 1024, kickoff, this);  // Stack grows from top to bottom
+    Thread_init(&esp, stack + 1024, kickoff, this);  // Stack grows from top to bottom
 }
 
 /*****************************************************************************
@@ -120,7 +152,7 @@ void Thread::switchTo(Thread& next) {
 
     /* hier muss Code eingefügt werden */
 
-    Thread_switch(&this->regs, &next.regs);
+    Thread_switch(this->esp, next.esp);
 }
 
 /*****************************************************************************
@@ -132,5 +164,5 @@ void Thread::start() {
 
     /* hier muss Code eingefügt werden */
 
-    Thread_start(&this->regs);
+    Thread_start(this->esp);
 }
