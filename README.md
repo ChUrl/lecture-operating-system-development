@@ -9,11 +9,11 @@ Changes
 - Removed the Input.h/Input.cc files
 - Made device classes singletons
 - Changed the multitasking assembly (use stack instead of thread_state)
-- Extensive changes to the scheduling:
+- Many changes to the scheduler (strategy is still round robin):
   - Merged dispatcher into the scheduler
   - Scheduler no longer uses queue but vector
-  - Scheduler owns threads
-  - Threads are addressed by tid
+  - Scheduler owns threads (no outside references)
+  - Threads are addressed by tid from the outside
   - Threads are deallocated automatically when killed/exited
   - Retrieve threads from the scheduler without deallocation
   - Scheduler manages blocked threads
@@ -22,14 +22,14 @@ Additions
 ======================================
 - Some stream manipulators for CGA_Stream (color) and OutStream (fixed width)
 - Logging class with support for colored serial port output
-- Main menu to start demo
+- Main menu to start demos
 - A very basic system to broadcast keyboard events to threads
 - Basic implementation of vector with iterator support
 - Basic implementation of unique_ptr
-- Basic implementation of fixed size array
+- Basic implementation of fixed size array (just a wrapper for C-style arrays)
 
 Bugs
 ======================================
-- Can't exit the PCSPKdemo
+- Can't exit the PCSPKdemo (bluescreen)
 - Random bluescreens that are hard to pinpoint
 - Tree Allocator (uses a red black tree to find best-fit blocks) crashes when freelist root is removed
