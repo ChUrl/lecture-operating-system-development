@@ -22,16 +22,20 @@ private:
     KeyEventListener listener;
 
 public:
-    KeyboardDemo() : listener(this->tid) {
-        log << INFO << "Initialized KeyboardDemo with ID: " << dec << this->tid << endl;
+    KeyboardDemo() : Thread("KeyboardDemo"), listener(this->tid) {
         kevman.subscribe(this->listener);
     }
 
     // Base class destructor will be called automatically
     ~KeyboardDemo() override {
-        log << INFO << "Uninitialized KeyboardDemo" << endl;
+        if (running) {
+            // NOTE: If the thread was exited nicely it can unlock before destructor,
+            //       but on forced kill kout has to be unlocked in the destructor.
+            //       This is bad since it could release the lock although some other
+            //       thread set it (so use nice_kill)
+            kout.unlock();
+        }
         kevman.unsubscribe(this->listener);
-        kout.unlock();
     }
 
     void run() override;

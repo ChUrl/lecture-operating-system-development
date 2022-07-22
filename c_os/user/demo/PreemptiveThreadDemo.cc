@@ -3,7 +3,7 @@
 void PreemptiveLoopThread::run() {
     int cnt = 0;
 
-    while (true) {
+    while (running) {
         // Basic synchronization by semaphore
         kout.lock();
 
@@ -13,6 +13,8 @@ void PreemptiveLoopThread::run() {
 
         kout.unlock();
     }
+
+    scheduler.exit();
 }
 
 void PreemptiveThreadDemo::run() {

@@ -19,9 +19,7 @@ private:
     TextDemo(const TextDemo& copy) = delete;
 
 public:
-    TextDemo() {
-        log << INFO << "Initialized TextDemo" << endl;
-    }
+    TextDemo() : Thread("TextDemo") {}
 
     void run() override;
 };

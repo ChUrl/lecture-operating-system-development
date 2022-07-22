@@ -8,9 +8,7 @@ private:
     SmartPointerDemo(const SmartPointerDemo& copy) = delete;
 
 public:
-    SmartPointerDemo() {
-        kout << "Initialized SmartPointerDemo" << endl;
-    }
+    SmartPointerDemo() : Thread("SmartPointerDemo") {}
 
     void run() override;
 };

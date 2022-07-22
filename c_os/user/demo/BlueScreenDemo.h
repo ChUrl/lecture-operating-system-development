@@ -9,12 +9,9 @@ private:
     BlueScreenDemo(const BlueScreenDemo& copy) = delete;
 
 public:
-    BlueScreenDemo() {
-        kout << "Initialized BlueScreenDemo" << endl;
-    }
+    BlueScreenDemo() : Thread("BlueScreenDemo") {}
 
     void run() override;
 };
-
 
 #endif

@@ -19,13 +19,7 @@ private:
     IdleThread(const Thread& copy) = delete;  // Verhindere Kopieren
 
 public:
-    IdleThread() {
-        log << INFO << "Initialized Idle Thread with ID: " << dec << this->tid << endl;
-    }
-
-    ~IdleThread() override {
-        log << ERROR << "Uninitialized Idle Thread with ID: " << dec << this->tid << endl;
-    }
+    IdleThread() : Thread("IdleThread") {}
 
     void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert

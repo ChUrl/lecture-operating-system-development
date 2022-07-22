@@ -12,7 +12,7 @@ private:
 
 public:
     // Gibt der Loop einen Stack und eine Id.
-    PreemptiveLoopThread(int i) : id(i) {}
+    PreemptiveLoopThread(int i) : Thread("LoopThread"), id(i) {}
 
     // Zaehlt einen Zaehler hoch und gibt ihn auf dem Bildschirm aus.
     void run() override;
@@ -25,9 +25,7 @@ private:
     unsigned int number_of_threads;
 
 public:
-    PreemptiveThreadDemo(unsigned int n) : number_of_threads(n) {
-        kout << "Initialized PreemptiveThreadDemo" << endl;
-    }
+    PreemptiveThreadDemo(unsigned int n) : Thread("PreemptiveThreadDemo"), number_of_threads(n) {}
 
     // Thread-Startmethode
     void run() override;

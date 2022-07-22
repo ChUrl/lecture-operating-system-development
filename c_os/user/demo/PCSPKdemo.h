@@ -11,9 +11,7 @@ private:
     void (PCSPK::*melody)(void);  // Allow to pass a melody to play when initializing the demo
 
 public:
-    PCSPKdemo(void (PCSPK::*melody)(void)) : melody(melody) {
-        kout << "Initialized PCSPKdemo" << endl;
-    }
+    PCSPKdemo(void (PCSPK::*melody)(void)) : Thread("PCSPKdemo"), melody(melody) {}
 
     ~PCSPKdemo() override {
         pcspk.off();

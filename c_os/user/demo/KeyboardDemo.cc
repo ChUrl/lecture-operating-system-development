@@ -24,8 +24,11 @@ void KeyboardDemo::run() {
     kout << "\nInput: ";
     kout.flush();
 
-    while (true) {
+    while (running) {
         kout << listener.waitForKeyEvent();
         kout.flush();
     }
+
+    kout.unlock();
+    scheduler.exit();
 }

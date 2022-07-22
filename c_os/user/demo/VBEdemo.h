@@ -24,9 +24,7 @@ private:
 
 public:
     // Gib dem Anwendungsthread einen Stack.
-    VBEdemo() {
-        kout << "Initialized VBEdemo" << endl;
-    }
+    VBEdemo() : Thread("VBEdemo") {}
 
     ~VBEdemo() override {
         vesa.initTextMode();

@@ -9,9 +9,7 @@ private:
     ArrayDemo(const ArrayDemo& copy) = delete;
 
 public:
-    ArrayDemo() {
-        kout << "Initialized ArrayDemo" << endl;
-    }
+    ArrayDemo() : Thread("ArrayDemo") {}
 
     void run() override;
 };

@@ -102,6 +102,8 @@ void VBEdemo::run() {
     drawBitmap();
     drawFonts();
 
+    while (running) {}
+
     // selbst terminieren
-    // scheduler.exit();
+    scheduler.exit();
 }

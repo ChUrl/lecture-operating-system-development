@@ -12,13 +12,11 @@ private:
     KeyEventListener listener;
 
 public:
-    MainMenu() : listener(this->tid) {
-        log << INFO << "MainMenu initialized with ID: " << dec << this->tid << endl;
+    MainMenu() : Thread("MainMenu"), listener(this->tid) {
         kevman.subscribe(this->listener);
     }
 
     ~MainMenu() override {
-        log << INFO << "Unitialized MainMenu" << endl;
         kevman.unsubscribe(this->listener);
     }
 

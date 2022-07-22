@@ -13,7 +13,7 @@
 void print_demo_menu() {
     kout.lock();
     kout.clear();
-    kout << "Demo Menu, press number to start, K to kill:\n"
+    kout << "Demo Menu, press number to start, k/K to kill:\n"
          << "1 - Text Demo\n"
          << "2 - PCSPK Demo\n"
          << "3 - Keyboard Demo\n"
@@ -30,10 +30,10 @@ void MainMenu::run() {
 
     char input = '\0';
     unsigned int running_demo = 0;
-    while (true) {
+    while (running) {
         input = this->listener.waitForKeyEvent();
 
-        if (running_demo == 0) {
+        if (input >= '0' && input <= '9') {
             switch (input) {
             case '1':
                 running_demo = scheduler.ready<TextDemo>();
@@ -57,23 +57,23 @@ void MainMenu::run() {
                 running_demo = scheduler.ready<PreemptiveThreadDemo>(3);
                 break;
 
-            case 'q':
+            case '8':
                 running_demo = scheduler.ready<VectorDemo>();
                 break;
-            case 'w':
+            case '9':
                 running_demo = scheduler.ready<ArrayDemo>();
                 break;
-            case 'e':
+            case '0':
                 running_demo = scheduler.ready<SmartPointerDemo>();
                 break;
             }
+        } else if (input == 'k') {
+            scheduler.nice_kill(running_demo);  // NOTE: If thread exits itself this will throw error
+            print_demo_menu();
         } else if (input == 'K') {
-            scheduler.kill(running_demo);  // NOTE: If thread exits itself this will throw error
-            running_demo = 0;
+            scheduler.kill(running_demo);
             print_demo_menu();
         }
-
-        input = '\0';
     }
 
     scheduler.exit();

@@ -25,9 +25,7 @@ private:
     HeapDemo(const HeapDemo& copy) = delete;
 
 public:
-    HeapDemo() {
-        kout << "Initialized HeapDemo" << endl;
-    }
+    HeapDemo() : Thread("HeapDemo") {}
 
     void run() override;
 };

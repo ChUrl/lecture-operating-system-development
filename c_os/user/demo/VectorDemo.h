@@ -10,9 +10,7 @@ private:
     VectorDemo(const VectorDemo& copy) = delete;
 
 public:
-    VectorDemo() {
-        kout << "Initialized VectorDemo" << endl;
-    }
+    VectorDemo() : Thread("VectorDemo") {}
 
     void run() override;
 };
