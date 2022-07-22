@@ -11,7 +11,6 @@
 #include "user/demo/HeapDemo.h"
 
 void HeapDemo::run() {
-    kout.lock();
     kout.clear();
     kout << "HEAP_DEMO ===================================================================" << endl;
 
@@ -73,6 +72,5 @@ void HeapDemo::run() {
 
     kout << "HEAP_DEMO END ===============================================================" << endl;
 
-    kout.unlock();
     scheduler.exit();
 }

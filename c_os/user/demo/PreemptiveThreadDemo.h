@@ -8,7 +8,7 @@
 class PreemptiveLoopThread : public Thread {
 private:
     int id;
-    // Semaphore* sem;
+    static Semaphore sem;
 
     PreemptiveLoopThread(const PreemptiveLoopThread& copy) = delete;  // Verhindere Kopieren
 

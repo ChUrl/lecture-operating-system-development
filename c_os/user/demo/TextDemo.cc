@@ -14,15 +14,14 @@ void TextDemo::run() {
 
     /* Hier muess Code eingefuegt werden */
 
-    kout.lock();
     kout.clear();
     kout << "TextDemo\n"
          << endl;
 
     kout << "Attribut (GREEN on WHITE): "
-         << white_b << green_f << "GREEN on WHITE" << endl
+         << bgc(CGA::WHITE) << green << "GREEN on WHITE" << endl
          << "Attribut (WHITE on BLACK): "
-         << black_b << white_f << "WHITE on BLACK" << endl;
+         << bgc(CGA::BLACK) << white << "WHITE on BLACK" << endl;
     kout << endl;
 
     kout << "Test der Zahlenausgabefunktion:" << endl
@@ -37,7 +36,6 @@ void TextDemo::run() {
     }
 
     kout << endl;
-    kout.unlock();
 
     scheduler.exit();
 }

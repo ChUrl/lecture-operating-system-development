@@ -35,39 +35,27 @@ public:
     const CGA::color bg;
 };
 
-// NOTE: I didn't want to use macro definitions since I don't like them,
-//       makes it easier to change colors
-constexpr bgc white_b = bgc(CGA::WHITE);
-constexpr bgc black_b = bgc(CGA::BLACK);
-constexpr bgc green_b = bgc(CGA::GREEN);
-constexpr bgc red_b = bgc(CGA::RED);
-constexpr bgc lgrey_b = bgc(CGA::LIGHT_GREY);
-constexpr fgc white_f = fgc(CGA::WHITE);
-constexpr fgc black_f = fgc(CGA::BLACK);
-constexpr fgc green_f = fgc(CGA::GREEN);
-constexpr fgc red_f = fgc(CGA::RED);
-constexpr fgc lgrey_f = fgc(CGA::LIGHT_GREY);
+constexpr fgc white = fgc(CGA::WHITE);
+constexpr fgc black = fgc(CGA::BLACK);
+constexpr fgc green = fgc(CGA::GREEN);
+constexpr fgc red = fgc(CGA::RED);
+constexpr fgc lgrey = fgc(CGA::LIGHT_GREY);
 
 class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
-
-    Semaphore sem;
 
 public:
     CGA::color color_fg;
     CGA::color color_bg;
     bool blink;
 
-    CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
+    CGA_Stream() : color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
         flush();
     }
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
-
-    void lock() { sem.p(); }
-    void unlock() { sem.v(); }
 
     // Change stream color
     template<typename T>

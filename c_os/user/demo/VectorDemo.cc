@@ -11,7 +11,6 @@ void print(bse::Vector<int> list) {
 void VectorDemo::run() {
     bse::Vector<int> list;
 
-    kout.lock();
     kout.clear();
     kout << "Initial list size: " << dec << list.size() << endl;
 
@@ -103,6 +102,5 @@ void VectorDemo::run() {
         kout << "List contains element: " << dec << i << endl;
     }
 
-    kout.unlock();
     scheduler.exit();
 }

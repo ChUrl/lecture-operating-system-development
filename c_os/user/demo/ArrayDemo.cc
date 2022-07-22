@@ -5,7 +5,6 @@ void ArrayDemo::run() {
     bse::Array<int, 10> arr2 {};
     bse::Array<Thread*, 10> arr3 {};
 
-    kout.lock();
     kout.clear();
 
     kout << "Adding..." << endl;
@@ -36,6 +35,5 @@ void ArrayDemo::run() {
 
     // arr1.swap(arr3);  // Not possible as type/size has to match
 
-    kout.unlock();
     scheduler.exit();
 }
