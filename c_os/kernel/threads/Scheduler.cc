@@ -45,9 +45,9 @@ void Scheduler::start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next) {
     active = next;
     if (active >= ready_queue.end()) {
         active = ready_queue.begin();
-        log << INFO << "Scheduler::start started different thread than passed" << endl;
+        log << DEBUG << "Scheduler::start started different thread than passed" << endl;
     }
-    log << INFO << "Starting Thread with id: " << dec << (*active)->tid << endl;
+    // log << TRACE << "Starting Thread with id: " << dec << (*active)->tid << endl;
     (*active)->start();  // First dereference the Iterator, then the unique_ptr to get Thread
 }
 
@@ -55,9 +55,9 @@ void Scheduler::switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>
     active = next;
     if (active >= ready_queue.end()) {
         active = ready_queue.begin();
-        log << INFO << "Scheduler::switch_to started different thread than passed" << endl;
+        // log << DEBUG << "Scheduler::switch_to started different thread than passed" << endl;
     }
-    log << INFO << "Switching to Thread with id: " << dec << (*active)->tid << endl;
+    // log << TRACE << "Switching to Thread with id: " << dec << (*active)->tid << endl;
     prev_raw->switchTo(**active);
 }
 
