@@ -6,15 +6,12 @@
 //       ArrayList instead
 
 #include "Iterator.h"
-#include "Logger.h"
 #include <cstddef>
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
 
 namespace bse {
-
-    // static Logger log("Vector");
 
     template<typename T>
     class Vector {
@@ -31,7 +28,6 @@ namespace bse {
         std::size_t buf_cap = 0;
 
         void init() {
-            // log << DEBUG << "Initializing Vector" << endl;
             buf = new T[Vector::default_cap];
             buf_cap = Vector::default_cap;
         }
@@ -111,7 +107,6 @@ namespace bse {
             buf[size()] = copy;
             ++buf_pos;
             expand();
-            // log << TRACE << "PushBack: Vector size: " << size() << endl;
         }
 
         void push_back(T&& move) {
@@ -122,18 +117,16 @@ namespace bse {
             buf[size()] = std::move(move);
             ++buf_pos;
             expand();
-            // log << TRACE << "PushBack: Vector size: " << size() << endl;
         }
 
         // https://en.cppreference.com/w/cpp/container/vector/insert
         // The element will be inserted before the pos iterator, pos can be the end() iterator
         Iterator insert(Iterator pos, const T& copy) {
             std::size_t idx = distance(begin(), pos);
-            copy_right(idx);
+            copy_right(idx);  // nothing will be done if pos == end()
             buf[idx] = copy;
             ++buf_pos;
             expand();
-            // log << TRACE << "Insert: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
@@ -143,7 +136,6 @@ namespace bse {
             buf[idx] = std::move(move);
             ++buf_pos;
             expand();
-            // log << TRACE << "Insert: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
@@ -155,7 +147,6 @@ namespace bse {
             copy_left(idx);
             --buf_pos;
             // shrink();
-            // log << TRACE << "Erase: Vector size: " << size() << endl;
             return Iterator(&buf[idx]);
         }
 
