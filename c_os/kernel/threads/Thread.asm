@@ -56,7 +56,21 @@ Thread_start:
     ;; };
 
     ;; Load the contents of CoroutineState to the registers
+    ;; NOTE: I added all the registers saved in thread_state as I use it to switch to a new thread when the old thread
+    ;;       was killed/exited before (so thread_state not available)
+
+    mov ebx, [eax + efl_offset]     ; restore eflags before restoring ebx
+    push ebx                        ; could be pushed directly from address but i didn't want to specify wordsize
+    popf
+
+    mov ebx, [eax + ebx_offset] ; restore other regs
+    mov esi, [eax + esi_offset]
+    mov edi, [eax + edi_offset]
+    mov ebp, [eax + ebp_offset]
     mov esp, [eax + esp_offset]
+    mov ecx, [eax + ecx_offset]
+    mov edx, [eax + edx_offset]
+    mov eax, [eax + eax_offset] ; restore eax
 
     ;; The stackpointer now points to the coroutine stack
     ;; struct CoroutineState {
@@ -66,6 +80,11 @@ Thread_start:
     ;; SP: *KICKOFF
     ;; == Low address ==
     ;; };
+
+    ;; Reenable interrupts
+    ;; NOTE: I added this also to Thread_start as I use it to switch to a new thread when the old thread
+    ;;       was killed/exited before (so thread_state not available)
+    sti
 
     ;; Return to kickoff
     ret

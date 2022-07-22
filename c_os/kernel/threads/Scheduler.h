@@ -38,20 +38,21 @@ private:
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
-    unsigned int idle_tid = 0;
+    unsigned int idle_tid = 0U;
 
     // NOTE: I would have to release the lock when switching threads but I don't know exactly how to do this
     //       in the assembly function
     // SpinLock lock;  // Use spinlock instead of cpu.disable_int() because it still allows preemption
     //                 // for threads that don't use the scheduler
 
-    // Make it easy to switch locking mechanism
+    // Make it easy to switch locking mechanism in the future
     static void lock();
     static void unlock();
 
-    void dispatch(Thread* prev);  // Switches from prev to current active
+    void start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next);                        // Switches from prev to current active
+    void switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next);  // Switches from prev to current active
 
-    // ruft nur der Idle-Thread (erster Thread der vom Scheduler gestartet wird)
+    // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }
     friend class IdleThread;
 
@@ -97,7 +98,8 @@ public:
     void exit();
 
     // Thread mit 'Gewalt' terminieren
-    void kill(unsigned int tid);
+    void kill(unsigned int tid, bse::unique_ptr<Thread>* ptr);
+    void kill(unsigned int tid) { kill(tid, nullptr); }
 
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
     void yield();

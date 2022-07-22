@@ -41,8 +41,24 @@ void Scheduler::unlock() {
  * Parameter:                                                                *
  *      next        Thread der die CPU erhalten soll.                        *
  *****************************************************************************/
-void Scheduler::dispatch(Thread* prev_raw) {
-    prev_raw->switchTo(**active);  // First dereference the Iterator, then the unique_ptr to get Thread
+void Scheduler::start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next) {
+    active = next;
+    if (active >= ready_queue.end()) {
+        active = ready_queue.begin();
+        log << INFO << "Scheduler::start started different thread than passed" << endl;
+    }
+    log << INFO << "Starting Thread with id: " << dec << (*active)->tid << endl;
+    (*active)->start();  // First dereference the Iterator, then the unique_ptr to get Thread
+}
+
+void Scheduler::switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next) {
+    active = next;
+    if (active >= ready_queue.end()) {
+        active = ready_queue.begin();
+        log << INFO << "Scheduler::switch_to started different thread than passed" << endl;
+    }
+    log << INFO << "Switching to Thread with id: " << dec << (*active)->tid << endl;
+    prev_raw->switchTo(**active);
 }
 
 /*****************************************************************************
@@ -59,9 +75,9 @@ void Scheduler::schedule() {
     // Otherwise preemption will be blocked and nothing will happen if the first threads
     // run() function is blocking
 
-    ready_queue.push_back(std::move(bse::make_unique<IdleThread>()));
-    active = ready_queue.end() - 1;
-    (*active)->start();
+    ready_queue.push_back(bse::make_unique<IdleThread>());
+    log << INFO << "Starting scheduling: starting thread with id: " << dec << (*(ready_queue.end() - 1))->tid << endl;
+    start(ready_queue.end() - 1);
 }
 
 /*****************************************************************************
@@ -78,21 +94,17 @@ void Scheduler::exit() {
 
     // Thread-Wechsel durch PIT verhindern
     lock();
+
     if (ready_queue.size() == 1) {
         log << ERROR << "Can't exit last thread, active ID: " << dec << (*active)->tid << endl;
         unlock();
         return;
     }
 
-    Thread* prev_raw = (*active).get();
     log << DEBUG << "Exiting thread, ID: " << dec << (*active)->tid << endl;
-
-    active = ready_queue.erase(active);
-    if (active == ready_queue.end()) {
-        active = ready_queue.begin();
-    }
-
-    dispatch(prev_raw);
+    start(ready_queue.erase(active));  // erase returns the next iterator after the erased element
+                                       // cannot use switch_to here as the previous thread no longer
+                                       // exists (was deleted by erase)
 
     // Interrupts werden in Thread_switch in Thread.asm wieder zugelassen
     // dispatch kehr nicht zurueck
@@ -109,33 +121,60 @@ void Scheduler::exit() {
  * Parameter:                                                                *
  *      that        Zu terminierender Thread                                 *
  *****************************************************************************/
-void Scheduler::kill(unsigned int tid) {
-    unsigned int (*pred)(const bse::unique_ptr<Thread>&) =
-      [](const bse::unique_ptr<Thread>& ptr) -> unsigned int { return ptr->tid; };
-
+void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     lock();
-    Thread* prev_raw = (*active).get();
-    std::size_t erased_els = bse::erase_if(ready_queue, pred, tid);
-    erased_els += bse::erase_if(block_queue, pred, tid);
 
-    if (erased_els == 0) {
-        log << ERROR << "Couldn't find thread with id: " << tid << " in ready- or block-queue" << endl;
-        unlock();
-        return;
+    unsigned int prev_tid = (*active)->tid;
+
+    // Ready queue
+    for (bse::Vector<bse::unique_ptr<Thread>>::Iterator it = ready_queue.begin(); it != ready_queue.end(); ++it) {
+        if ((*it)->tid == tid) {
+            // Found thread to kill
+
+            if (ptr != nullptr) {
+                // Move old thread out of queue to return it
+                unsigned int pos = bse::distance(ready_queue.begin(), it);
+                *ptr = std::move(ready_queue[pos]);  // Return the killed thread
+            }
+
+            if (tid == prev_tid) {
+                // If we killed the active thread we need to switch to another one
+                log << INFO << "Killed active thread from ready_queue with id: " << tid << endl;
+
+                // Switch to current active after old active was removed
+                start(ready_queue.erase(it));
+            }
+
+            // Just erase from queue, do not need to switch
+            ready_queue.erase(it);
+            log << INFO << "Killed thread from ready_queue with id: " << tid << endl;
+
+            unlock();
+            return;
+        }
     }
 
-    if (erased_els > 1) {
-        log << ERROR << "Killed more than 1 thread (oops)" << endl;
-        unlock();
-        return;
+    // Block queue
+    for (bse::Vector<bse::unique_ptr<Thread>>::Iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
+        if ((*it)->tid == tid) {
+            // Found thread to kill
+
+            if (ptr != nullptr) {
+                // Move old thread out of queue to return it
+                unsigned int pos = bse::distance(block_queue.begin(), it);
+                *ptr = std::move(block_queue[pos]);  // Return the killed thread
+            }
+
+            // Just erase from queue, do not need to switch
+            block_queue.erase(it);
+            log << INFO << "Killed thread from block_queue with id: " << tid << endl;
+
+            unlock();
+            return;
+        }
     }
 
-    // Active thread could have been killed
-    if (active >= ready_queue.end()) {
-        active = ready_queue.begin();
-    }
-    dispatch(prev_raw);
-
+    log << ERROR << "Kill: Couldn't find thread with id: " << tid << " in ready- or block-queue" << endl;
     unlock();
 }
 
@@ -156,20 +195,15 @@ void Scheduler::yield() {
 
     // Thread-Wechsel durch PIT verhindern
     lock();
+
     if (ready_queue.size() == 1) {
-        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << active->tid << endl;
+        // log << TRACE << "Skipping yield as no thread is waiting, active ID: " << dec << (*active)->tid << endl;
         unlock();
         return;
     }
 
-    // log << TRACE << "Yielding, ID: " << dec << active->tid << " => " << next.tid << endl;
-
-    Thread* prev_raw = (*active).get();
-    ++active;
-    if (active == ready_queue.end()) {
-        active = ready_queue.begin();
-    }
-    dispatch(prev_raw);
+    // log << TRACE << "Yielding, ID: " << dec << (*active)->tid << endl;
+    switch_to((*active).get(), active + 1);  // prev_raw is valid since no thread was killed/deleted
 }
 
 /*****************************************************************************
@@ -183,7 +217,6 @@ void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
-    lock();
     yield();
 }
 
@@ -202,6 +235,7 @@ void Scheduler::block() {
     /* hier muss Code eingefuegt werden */
 
     lock();
+
     if (ready_queue.size() == 1) {
         log << ERROR << "Can't block last thread, active ID: " << dec << (*active)->tid << endl;
         unlock();
@@ -209,15 +243,12 @@ void Scheduler::block() {
     }
 
     Thread* prev_raw = (*active).get();
-    std::size_t active_idx = bse::distance(ready_queue.begin(), active);
-    block_queue.push_back(std::move(ready_queue[active_idx]));
+    std::size_t pos = bse::distance(ready_queue.begin(), active);
+    block_queue.push_back(std::move(ready_queue[pos]));
 
-    active = ready_queue.erase(active);
-    if (active == ready_queue.end()) {
-        active = ready_queue.begin();
-    }
+    // log << TRACE << "Blocked thread with id: " << prev_raw->tid << endl;
 
-    dispatch(prev_raw);
+    switch_to(prev_raw, ready_queue.erase(active));  // prev_raw is valid as thread was moved before vector erase
 }
 
 /*****************************************************************************
@@ -237,24 +268,21 @@ void Scheduler::deblock(unsigned int tid) {
 
     lock();
 
-    bse::unique_ptr<Thread> thread;
     for (bse::Vector<bse::unique_ptr<Thread>>::Iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
         if ((*it)->tid == tid) {
             // Found thread with correct tid
+
             std::size_t pos = bse::distance(block_queue.begin(), it);
-            thread = std::move(block_queue[pos]);
+            ready_queue.insert(active + 1, std::move(block_queue[pos]));  // We insert the thread after the active
+                                                                          // thread to prefer deblocked threads
             block_queue.erase(it);
-            break;
+
+            // log << TRACE << "Deblocked thread with id: " << tid << endl;
+            unlock();
+            return;
         }
     }
 
-    if (!thread) {
-        log << ERROR << "Couldn't deblock thread with id: " << tid << endl;
-        unlock();
-        return;
-    }
-
-    ready_queue.push_back(std::move(thread));
-
+    log << ERROR << "Couldn't deblock thread with id: " << tid << endl;
     unlock();
 }
