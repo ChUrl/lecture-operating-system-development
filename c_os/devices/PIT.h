@@ -21,15 +21,13 @@ private:
     enum { time_base = 838 }; /* ns */
     int timer_interval;
 
-    Logger log;
-
     char indicator[4] = {'|', '/', '-', '\\'};
     unsigned int indicator_pos = 0;
     unsigned long last_indicator_refresh = 0;
 
 public:
     // Zeitgeber initialisieren.
-    PIT(int us) : log("PIT") {
+    PIT(int us) {
         this->interval(us);
     }
 

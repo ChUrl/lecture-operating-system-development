@@ -37,7 +37,7 @@ private:
     // Root of the rbt
     tree_block_t* free_start;
 
-    Logger log;
+    NamedLogger log;
 
     TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 

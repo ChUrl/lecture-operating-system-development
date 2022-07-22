@@ -38,7 +38,7 @@ void LinkedListAllocator::init() {
     this->free_start->size = this->heap_size - sizeof(free_block_t);
     this->free_start->next = this->free_start;  // Only one block, points to itself
 
-    log << INFO << "Initialized LinkedList Allocator" << endl;
+    log.info() << "Initialized LinkedList Allocator" << endl;
 }
 
 /*****************************************************************************
@@ -77,10 +77,10 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
     /* Hier muess Code eingefuegt werden */
     // NOTE: next pointer zeigt auf headeranfang, returned wird zeiger auf anfang des nutzbaren freispeichers
 
-    log << DEBUG << "Requested " << hex << req_size << " Bytes" << endl;
+    log.debug() << "Requested " << hex << req_size << " Bytes" << endl;
 
     if (this->free_start == NULL) {
-        log << ERROR << " - No free memory remaining :(" << endl;
+        log.error() << " - No free memory remaining :(" << endl;
         this->lock.release();
         return NULL;
     }
@@ -89,7 +89,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
     unsigned int req_size_diff = (BASIC_ALIGN - req_size % BASIC_ALIGN) % BASIC_ALIGN;
     unsigned int rreq_size = req_size + req_size_diff;
     if (req_size_diff > 0) {
-        log << TRACE << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
+        log.trace() << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
     }
 
     free_block_t* current = this->free_start;
@@ -121,7 +121,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 // Next-fit
                 this->free_start = new_next;
 
-                log << TRACE << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
+                log.trace() << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
             } else {
                 // Block too small to be cut, allocate whole block
 
@@ -129,11 +129,11 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 this->free_start = current->next;  // Pointer keeps pointing to current if last block
                 if (this->free_start == current) {
                     // No free block remaining
-                    log << TRACE << " - Disabled freelist" << endl;
+                    log.trace() << " - Disabled freelist" << endl;
                     this->free_start = NULL;
                 }
 
-                log << TRACE << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
+                log.trace() << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
             }
 
             // Block aushängen
@@ -149,14 +149,14 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
 
             // HACK: Checking list integrity
             // free_block_t* c = current;
-            // log << DEBUG << "Checking list Integrity" << endl;
+            // log.debug() << "Checking list Integrity" << endl;
             // while (c->allocated) {
-            //     log << DEBUG << hex << (unsigned int)c << endl;
+            //     log.debug() << hex << (unsigned int)c << endl;
             //     c = c->next;
             // }
-            // log << DEBUG << "Finished check" << endl;
+            // log.debug() << "Finished check" << endl;
 
-            log << DEBUG << "Returning memory address " << hex << ((unsigned int)current + sizeof(free_block_t)) << endl;
+            log.debug() << "Returning memory address " << hex << ((unsigned int)current + sizeof(free_block_t)) << endl;
             this->lock.release();
             return (void*)((unsigned int)current + sizeof(free_block_t));  // Speicheranfang, nicht header
         }
@@ -164,7 +164,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
         current = current->next;
     } while (current != this->free_start);  // Stop when arriving at the first block again
 
-    log << ERROR << " - More memory requested than available :(" << endl;
+    log.error() << " - More memory requested than available :(" << endl;
     this->lock.release();
     return NULL;
 }
@@ -182,10 +182,10 @@ void LinkedListAllocator::free(void* ptr) {
     // Account for header
     free_block_t* block_start = (free_block_t*)((unsigned int)ptr - sizeof(free_block_t));
 
-    log << DEBUG << "Freeing " << hex << (unsigned int)ptr << ", Size: " << block_start->size << endl;
+    log.debug() << "Freeing " << hex << (unsigned int)ptr << ", Size: " << block_start->size << endl;
 
     if (!block_start->allocated) {
-        log << ERROR << "Block already free" << endl;
+        log.error() << "Block already free" << endl;
         this->lock.release();
         return;
     }
@@ -197,7 +197,7 @@ void LinkedListAllocator::free(void* ptr) {
         block_start->allocated = false;
         block_start->next = block_start;
 
-        log << TRACE << " - Enabling freelist with one block" << endl;
+        log.trace() << " - Enabling freelist with one block" << endl;
         this->lock.release();
         return;
     }
@@ -226,16 +226,16 @@ void LinkedListAllocator::free(void* ptr) {
     //  - If previous_free_next and block_start are the same block we can merge backward
     //    Should result in: [block_start]
 
-    // log << TRACE << "Before doing any merging:" << endl;
-    // log << TRACE << "previous_free:" << hex << (unsigned int)previous_free << "Size:" << previous_free->size << "Next:" << (unsigned int)previous_free->next << endl;
-    // log << TRACE << "previous_free_next:" << hex << (unsigned int)previous_free_next << "Size:" << previous_free_next->size << "Next:" << (unsigned int)previous_free_next->next << endl;
-    // log << TRACE << "block_start:" << hex << (unsigned int)block_start << "Size:" << block_start->size << "Next:" << (unsigned int)block_start->next << endl;
-    // log << TRACE << "next_block:" << hex << (unsigned int)next_block << "Size:" << next_block->size << "Next:" << (unsigned int)next_block->next << endl;
-    // log << TRACE << "next_free:" << hex << (unsigned int)next_free << "Size:" << next_free->size << "Next:" << (unsigned int)next_free->next << endl;
+    // log.trace() << "Before doing any merging:" << endl;
+    // log.trace() << "previous_free:" << hex << (unsigned int)previous_free << "Size:" << previous_free->size << "Next:" << (unsigned int)previous_free->next << endl;
+    // log.trace() << "previous_free_next:" << hex << (unsigned int)previous_free_next << "Size:" << previous_free_next->size << "Next:" << (unsigned int)previous_free_next->next << endl;
+    // log.trace() << "block_start:" << hex << (unsigned int)block_start << "Size:" << block_start->size << "Next:" << (unsigned int)block_start->next << endl;
+    // log.trace() << "next_block:" << hex << (unsigned int)next_block << "Size:" << next_block->size << "Next:" << (unsigned int)next_block->next << endl;
+    // log.trace() << "next_free:" << hex << (unsigned int)next_free << "Size:" << next_free->size << "Next:" << (unsigned int)next_free->next << endl;
 
     // Try to merge forward ========================================================================
     if (next_block == next_free) {
-        log << TRACE << " - Merging block forward" << endl;
+        log.trace() << " - Merging block forward" << endl;
 
         // Current and next adjacent block can be merged
         // [previous_free | previous_free_next | <> | block_start | next_free]
@@ -257,7 +257,7 @@ void LinkedListAllocator::free(void* ptr) {
 
         if (this->free_start == next_free) {
             // next_free is now invalid after merge
-            log << TRACE << " - Moving freelist start to " << hex << (unsigned int)block_start << endl;
+            log.trace() << " - Moving freelist start to " << hex << (unsigned int)block_start << endl;
             this->free_start = block_start;
         }
     } else {
@@ -273,7 +273,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     // Try to merge backward   =====================================================================
     if (previous_free_next == block_start) {
-        log << TRACE << " - Merging block backward" << endl;
+        log.trace() << " - Merging block backward" << endl;
 
         // Current and previous adjacent block can be merged
         // [previous_free | block_start]
@@ -286,7 +286,7 @@ void LinkedListAllocator::free(void* ptr) {
 
         if (this->free_start == block_start) {
             // block_start is now invalid after merge
-            log << TRACE << " - Moving freelist start to " << hex << (unsigned int)previous_free << endl;
+            log.trace() << " - Moving freelist start to " << hex << (unsigned int)previous_free << endl;
             this->free_start = previous_free;
         }
     }

@@ -41,7 +41,7 @@ private:
 protected:
     Thread(char* name);
 
-    static Logger log;
+    NamedLogger log;
 
     bool running = true;     // For soft exit, if thread uses infinite loop inside run(), use this as condition
     char* name;              // For logging
@@ -50,7 +50,7 @@ protected:
 
 public:
     virtual ~Thread() {
-        log << INFO << "Uninitialized thread, ID: " << dec << this->tid << " (" << name << ")" << endl;
+        log.info() << "Uninitialized thread, ID: " << dec << this->tid << " (" << name << ")" << endl;
         delete[] this->stack;
     }
 

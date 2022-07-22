@@ -82,12 +82,12 @@ bool VESA::initGraphicMode(unsigned short mode) {
 
     // Signaturen pruefen
     if (BC_params->AX != 0x004F) {
-        log << ERROR << "VESA wird nicht unterstuetzt." << endl;
+        log.error() << "VESA wird nicht unterstuetzt." << endl;
         return false;
     }
     if (ib->VbeSignature[0] != 'V' || ib->VbeSignature[1] != 'E' ||
         ib->VbeSignature[2] != 'S' || ib->VbeSignature[3] != 'A') {
-        log << ERROR << "VESA wird nicht unterstuetzt." << endl;
+        log.error() << "VESA wird nicht unterstuetzt." << endl;
         return false;
     }
 
@@ -109,7 +109,7 @@ bool VESA::initGraphicMode(unsigned short mode) {
 
             // Text-Modi 0-3 haben keinen LFB
             if (mode > 3 && (minf->attributes & 0x90) == 0) {
-                log << ERROR << "Grafikmodus bietet keinen linearen Framebuffer." << endl;
+                log.error() << "Grafikmodus bietet keinen linearen Framebuffer." << endl;
                 return false;
             }
 
@@ -128,6 +128,6 @@ bool VESA::initGraphicMode(unsigned short mode) {
             return true;
         }
     }
-    log << ERROR << "Grafikmodus nicht gefunden." << endl;
+    log.error() << "Grafikmodus nicht gefunden." << endl;
     return false;
 }

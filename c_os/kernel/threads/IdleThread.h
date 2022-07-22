@@ -23,10 +23,10 @@ public:
 
     void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
-        log << INFO << "IdleThread enabled preemption" << endl;
+        log.info() << "IdleThread enabled preemption" << endl;
         scheduler.enable_preemption(this->tid);
         if (!scheduler.preemption_enabled()) {
-            log << ERROR << "Preemption disabled" << endl;
+            log.error() << "Preemption disabled" << endl;
         }
 
         while (true) {

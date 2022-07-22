@@ -17,11 +17,10 @@
 #include "user/lib/Logger.h"
 
 class IntDispatcher {
-
 private:
     IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren
 
-    Logger log;
+    NamedLogger log;
 
     enum { size = 256 };
     ISR* map[size];

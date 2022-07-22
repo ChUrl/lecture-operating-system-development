@@ -12,7 +12,7 @@ class KeyEventManager {
 private:
     KeyEventManager(const KeyEventManager& copy) = delete;
 
-    Logger log;
+    NamedLogger log;
 
     bse::Vector<KeyEventListener*> listeners;
 

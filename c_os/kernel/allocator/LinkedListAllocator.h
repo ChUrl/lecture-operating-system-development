@@ -41,7 +41,7 @@ private:
     // aren't reachable from the freelist.
     static struct free_block* find_previous_block(struct free_block*);
 
-    Logger log;
+    NamedLogger log;
     SpinLock lock;
 
 public:

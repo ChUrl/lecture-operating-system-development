@@ -61,12 +61,12 @@ int IntDispatcher::assign(unsigned int vector, ISR& isr) {
     /* hier muss Code eingefuegt werden */
 
     if (vector >= this->size) {
-        log << ERROR << "Invalid vector number when assigning" << endl;
+        log.error() << "Invalid vector number when assigning" << endl;
         return -1;
     }
 
     this->map[vector] = &isr;
-    log << INFO << "Registered ISR for vector " << dec << vector << endl;
+    log.info() << "Registered ISR for vector " << dec << vector << endl;
 
     return 0;
 }
@@ -92,15 +92,15 @@ int IntDispatcher::report(unsigned int vector) {
     ISR* isr = this->map[vector];
 
     if (isr == 0) {
-        log << ERROR << "No ISR registered for vector " << vector << endl;
+        log.error() << "No ISR registered for vector " << vector << endl;
         return -1;
     }
 
     // 32 = Timer
     // 33 = Keyboard
-    // log << TRACE << "Interrupt: " << dec << vector << endl;
+    // log.trace() << "Interrupt: " << dec << vector << endl;
     if (vector == 33) {
-        log << DEBUG << "Keyboard Interrupt" << endl;
+        log.debug() << "Keyboard Interrupt" << endl;
     }
 
     isr->trigger();

@@ -25,7 +25,7 @@
 class VESA : public LFBgraphics {
 private:
     int mode_nr;  // Nummer des Modus
-    Logger log;
+    NamedLogger log;
 
     VESA(const VESA& copy) = delete;  // Verhindere Kopieren
 

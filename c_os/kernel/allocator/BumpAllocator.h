@@ -21,7 +21,7 @@ private:
     unsigned char* next;
     unsigned int allocations;
 
-    Logger log;
+    NamedLogger log;
 
     BumpAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 

@@ -22,7 +22,7 @@ class Scheduler {
 private:
     Scheduler(const Scheduler& copy) = delete;  // Verhindere Kopieren
 
-    Logger log;
+    NamedLogger log;
 
     // NOTE: Using this instead of the Queue is a side effect, I added the ArrayList for different reasons
     //       but my Queue was shit so I replaced it

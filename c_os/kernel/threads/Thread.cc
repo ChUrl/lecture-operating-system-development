@@ -30,7 +30,6 @@ extern "C" {
     void Thread_switch(struct ThreadState* regs_now, struct ThreadState* reg_then);
 }
 
-Logger Thread::log = Logger("Thread");
 unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preemption with 0
 
 /*****************************************************************************
@@ -107,8 +106,8 @@ void kickoff(Thread* object) {
  * Parameter:                                                                *
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
-Thread::Thread(char* name) : name(name), stack(new unsigned int[1024]), tid(ThreadCnt++) {
-    Thread::log << INFO << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
+Thread::Thread(char* name) : stack(new unsigned int[1024]), log(name), name(name), tid(ThreadCnt++) {
+    log.info() << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
     Thread_init(&regs, stack + 1024, kickoff, this);  // Stack grows from top to bottom
 }
 
