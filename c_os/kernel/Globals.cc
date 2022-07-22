@@ -29,6 +29,7 @@ Scheduler scheduler;
 
 KeyEventManager kevman;
 SerialOut serial;
+Logger& logger = Logger::instance();
 
 unsigned int total_mem;  // RAM total
 unsigned long systime = 0;

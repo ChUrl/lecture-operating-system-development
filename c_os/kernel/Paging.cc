@@ -161,9 +161,9 @@ void pg_init() {
     // sodass genau der physikalische Adressraum abgedeckt ist?
     num_pages = total_mem / (4096 * 1024);
 
-    Logger::instance() << INFO << "pg_init: " << total_mem << endl;
-    Logger::instance() << INFO << "   total_mem: " << total_mem << endl;
-    Logger::instance() << INFO << "   #pages: " << total_mem / (4096 * 1024) << endl;
+    logger << INFO << "pg_init: " << total_mem << endl;
+    logger << INFO << "   total_mem: " << total_mem << endl;
+    logger << INFO << "   #pages: " << total_mem / (4096 * 1024) << endl;
 
     //
     // Aufbau des Page-Directory

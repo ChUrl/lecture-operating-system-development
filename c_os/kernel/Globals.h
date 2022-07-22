@@ -26,6 +26,8 @@
 #include "user/devices/SerialOut.h"
 #include "user/event/KeyEventManager.h"
 
+// I wanted to make more of these singletons but there were problems with atexit missing because of nostdlib I guess
+
 extern CPU cpu;          // CPU-spezifische Funktionen
 extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
 extern BIOS bios;        // Schnittstelle zum 16-Bit BIOS
@@ -45,6 +47,7 @@ extern Scheduler scheduler;
 
 extern KeyEventManager kevman;
 extern SerialOut serial;
+extern Logger& logger;
 
 extern unsigned int total_mem;  // RAM total
 extern unsigned long systime;   // wird all 10ms hochgezaehlt

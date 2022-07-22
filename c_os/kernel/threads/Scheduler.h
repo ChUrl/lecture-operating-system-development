@@ -13,7 +13,6 @@
 #define __Scheduler_include__
 
 #include "kernel/threads/Thread.h"
-#include "lib/SpinLock.h"
 #include "user/lib/Logger.h"
 #include "user/lib/mem/UniquePointer.h"
 #include "user/lib/Vector.h"
@@ -40,13 +39,9 @@ private:
     // bevor er initialisiert wurde
     unsigned int idle_tid = 0U;
 
-    // NOTE: I would have to release the lock when switching threads but I don't know exactly how to do this
-    //       in the assembly function
-    // SpinLock lock;  // Use spinlock instead of cpu.disable_int() because it still allows preemption
-    //                 // for threads that don't use the scheduler
-
-    void start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next);                        // Switches from prev to current active
-    void switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next);  // Switches from prev to current active
+    // Roughly the old dispatcher functionality
+    void start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next);                        // Start next without prev
+    void switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next);  // Switch from prev to next
 
     // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }
