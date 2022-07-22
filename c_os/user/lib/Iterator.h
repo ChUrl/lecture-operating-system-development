@@ -19,14 +19,17 @@ namespace bse {
             return *this;
         }
 
-        ContinuousIterator operator+(std::size_t add) {
-            this->ptr += add;
+        ContinuousIterator& operator--() {
+            --this->ptr;
             return *this;
         }
 
+        ContinuousIterator operator+(std::size_t add) {
+            return ContinuousIterator(this->ptr + add);
+        }
+
         ContinuousIterator operator-(std::size_t sub) {
-            this->ptr -= sub;
-            return *this;
+            return ContinuousIterator(this->ptr - sub);
         }
 
         // Convenience
@@ -40,7 +43,7 @@ namespace bse {
         bool operator>(const ContinuousIterator& other) const { return this->ptr > other.ptr; }
         bool operator>=(const ContinuousIterator& other) const { return this->ptr >= other.ptr; }
         bool operator==(const ContinuousIterator& other) const { return this->ptr == other.ptr; }
-        bool operator!=(const ContinuousIterator& other) const { return !(*this == other); }
+        bool operator!=(const ContinuousIterator& other) const { return this->ptr != other.ptr; }
 
         template<typename t>
         friend std::size_t distance(const ContinuousIterator<t>& first, const ContinuousIterator<t>& last);
