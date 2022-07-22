@@ -45,14 +45,21 @@ class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
+    Semaphore sem;
+
 public:
     CGA::color color_fg;
     CGA::color color_bg;
     bool blink;
 
-    CGA_Stream() : color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
+    CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
         flush();
     }
+
+    void lock() { sem.p(); }
+    void unlock() { sem.v(); }
+    // void lock() {}
+    // void unlock() {}
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;

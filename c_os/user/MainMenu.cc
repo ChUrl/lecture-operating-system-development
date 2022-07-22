@@ -11,6 +11,7 @@
 #include "user/demo/VectorDemo.h"
 
 void print_demo_menu() {
+    kout.lock();
     kout.clear();
     kout << "Demo Menu, press number to start, K to kill:\n"
          << "1 - Text Demo\n"
@@ -21,6 +22,7 @@ void print_demo_menu() {
          << "6 - Bluescreen Demo\n"
          << "7 - Preemption Demo\n"
          << endl;
+    kout.unlock();
 }
 
 void MainMenu::run() {

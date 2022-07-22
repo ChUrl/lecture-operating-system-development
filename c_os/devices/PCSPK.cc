@@ -71,7 +71,6 @@ inline void PCSPK::delay(int time) {
 
     // systime is incremented in 10ms steps
     while ((systime - start_time) * 10 < time) {}
-
 }
 
 /*****************************************************************************

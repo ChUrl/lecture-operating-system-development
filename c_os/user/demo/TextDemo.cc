@@ -14,6 +14,7 @@ void TextDemo::run() {
 
     /* Hier muess Code eingefuegt werden */
 
+    kout.lock();
     kout.clear();
     kout << "TextDemo\n"
          << endl;
@@ -37,5 +38,6 @@ void TextDemo::run() {
 
     kout << endl;
 
+    kout.unlock();
     scheduler.exit();
 }

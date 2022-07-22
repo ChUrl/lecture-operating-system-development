@@ -7,6 +7,7 @@
 class PCSPKdemo : public Thread {
 private:
     PCSPKdemo(const PCSPKdemo& copy) = delete;
+
     void (PCSPK::*melody)(void);  // Allow to pass a melody to play when initializing the demo
 
 public:

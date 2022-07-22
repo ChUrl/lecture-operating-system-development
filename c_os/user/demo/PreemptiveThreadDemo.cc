@@ -1,23 +1,22 @@
 #include "user/demo/PreemptiveThreadDemo.h"
 
-Semaphore PreemptiveLoopThread::sem(1);
-
 void PreemptiveLoopThread::run() {
     int cnt = 0;
 
     while (true) {
         // Basic synchronization by semaphore
-        sem.p();
+        kout.lock();
 
         // Saving + restoring kout position doesn't help much as preemption still occurs
         kout.setpos(55, this->id);
         kout << fillw(3) << this->id << fillw(0) << ": " << dec << cnt++ << endl;
 
-        sem.v();
+        kout.unlock();
     }
 }
 
 void PreemptiveThreadDemo::run() {
+    kout.lock();
     kout.clear();
 
     kout << "Preemptive Thread Demo:" << endl;
@@ -28,5 +27,6 @@ void PreemptiveThreadDemo::run() {
     }
 
     kout << "Exiting main thread" << endl;
+    kout.unlock();
     scheduler.exit();
 }
