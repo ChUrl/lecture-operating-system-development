@@ -6,11 +6,11 @@
 //       ArrayList instead
 
 #include "Iterator.h"
+#include "Logger.h"
 #include <cstddef>
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
-
 namespace bse {
 
     template<typename T>
@@ -37,7 +37,7 @@ namespace bse {
         }
 
         // Enlarges the buffer if we run out of space
-        void expand() {
+        void min_expand() {
             // Init if necessary
             if (buf == nullptr) {
                 init();
@@ -46,38 +46,53 @@ namespace bse {
 
             // Since we only ever add single elements this should never get below zero
             if (get_rem_cap() < min_cap) {
-                std::size_t new_cap = buf_cap + min_cap;
-
-                // Alloc new array
-                T* new_buf = new T[new_cap];
-
-                // Swap current elements to new array
-                for (std::size_t i = 0; i < size(); ++i) {
-                    new_buf[i] = std::move(buf[i]);
-                    buf[i].~T();
-                }
-
-                // Move new array to buf, deleting the old array
-                delete[] buf;
-                buf = new_buf;
-                buf_cap = new_cap;
+                switch_buf(buf_cap + min_cap);
             }
+        }
+
+        // 1. Allocates new buffer
+        // 2. Moves stuff to new buffer
+        // 3. Deletes old buffer
+        // 4. Sets new pos/cap
+        void switch_buf(std::size_t cap) {
+            // Alloc new array
+            T* new_buf = new T[cap];
+
+            // Swap current elements to new array
+            for (std::size_t i = 0; i < size(); ++i) {
+                new_buf[i] = std::move(buf[i]);
+                buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
+            }
+
+            // Move new array to buf, deleting the old array
+            delete[] buf;
+            buf = new_buf;
+            buf_cap = cap;
         }
 
         // Index is location where space should be made
         void copy_right(std::size_t i) {
-            if (i < size()) {
-                for (std::size_t idx = size(); idx > i; --idx) {
-                    buf[idx] = std::move(buf[idx - 1]);
-                    buf[idx - 1].~T();
-                }
-            }  // Otherwise i == pos and we don't need to copy anything
+            if (i >= size()) {
+                // We don't need to copy anything as space is already there
+                return;
+            }
+
+            for (std::size_t idx = size(); idx > i; --idx) {
+                buf[idx].~T();                       // Delete previously contained element that will be overridden
+                buf[idx] = std::move(buf[idx - 1]);  // This leaves a "shell" of the old object that has to be deleted
+                buf[idx - 1].~T();                   // Delete element in moved-out state
+            }
         }
 
         // Index is the location that will be removed
         void copy_left(std::size_t i) {
-            buf[i].~T();  // Delete the element that will be overwritten
+            if (i >= size()) {
+                // We don't need to copy anything as nothing will be overridden
+                return;
+            }
+
             for (std::size_t idx = i; idx < size(); ++idx) {
+                buf[idx].~T();  // Delete the element that will be overwritten
                 buf[idx] = std::move(buf[idx + 1]);
                 buf[idx + 1].~T();
             }
@@ -86,16 +101,36 @@ namespace bse {
     public:
         ~Vector() {
             for (std::size_t i; i < size(); ++i) {
-                buf[i].~T();
+                buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
             delete[] buf;
         }
 
         // Iterator
-        Iterator begin() { return Iterator(&buf[0]); }
-        Iterator begin() const { return Iterator(&buf[0]); }
-        Iterator end() { return Iterator(&buf[size()]); }
-        Iterator end() const { return Iterator(&buf[size()]); }
+        Iterator begin() {
+            if (buf == nullptr) {
+                init();
+            }
+            return Iterator(&buf[0]);
+        }
+        Iterator begin() const {
+            if (buf == nullptr) {
+                init();
+            }
+            return Iterator(&buf[0]);
+        }
+        Iterator end() {
+            if (buf == nullptr) {
+                init();
+            }
+            return Iterator(&buf[size()]);
+        }
+        Iterator end() const {
+            if (buf == nullptr) {
+                init();
+            }
+            return Iterator(&buf[size()]);
+        }
 
         // Add elements
         // https://en.cppreference.com/w/cpp/container/vector/push_back
@@ -106,7 +141,7 @@ namespace bse {
 
             buf[size()] = copy;
             ++buf_pos;
-            expand();
+            min_expand();
         }
 
         void push_back(T&& move) {
@@ -116,26 +151,26 @@ namespace bse {
 
             buf[size()] = std::move(move);
             ++buf_pos;
-            expand();
+            min_expand();
         }
 
         // https://en.cppreference.com/w/cpp/container/vector/insert
         // The element will be inserted before the pos iterator, pos can be the end() iterator
         Iterator insert(Iterator pos, const T& copy) {
-            std::size_t idx = distance(begin(), pos);
-            copy_right(idx);  // nothing will be done if pos == end()
+            std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
+            copy_right(idx);                           // nothing will be done if pos == end()
             buf[idx] = copy;
             ++buf_pos;
-            expand();
+            min_expand();
             return Iterator(&buf[idx]);
         }
 
         Iterator insert(Iterator pos, T&& move) {
-            std::size_t idx = distance(begin(), pos);
+            std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
             copy_right(idx);
             buf[idx] = std::move(move);
             ++buf_pos;
-            expand();
+            min_expand();
             return Iterator(&buf[idx]);
         }
 
@@ -189,6 +224,13 @@ namespace bse {
                 --buf_pos;
                 buf[buf_pos].~T();
             }
+        }
+
+        void reserve(std::size_t cap) {
+            if (buf == nullptr) {
+                init();
+            }
+            switch_buf(cap);
         }
     };
 
