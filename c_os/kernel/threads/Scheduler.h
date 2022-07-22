@@ -34,7 +34,7 @@ private:
 
     // NOTE: It makes sense to keep track of the active thread through this as it makes handling the
     //       unique_ptr easier and reduces the copying in the vector when cycling through the threads
-    bse::Vector<bse::unique_ptr<Thread>>::Iterator active = ready_queue.begin();
+    bse::Vector<bse::unique_ptr<Thread>>::Iterator active = nullptr;
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
