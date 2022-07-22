@@ -25,18 +25,10 @@ private:
     PreemptiveThreadDemo(const PreemptiveThreadDemo& copy) = delete;  // Verhindere Kopieren
 
     unsigned int number_of_threads;
-    bse::Vector<unsigned int> threads;
-    KeyEventListener listener;
 
 public:
-    PreemptiveThreadDemo(unsigned int n) : number_of_threads(n), listener(this->tid) {
+    PreemptiveThreadDemo(unsigned int n) : number_of_threads(n) {
         kout << "Initialized PreemptiveThreadDemo" << endl;
-    }
-
-    ~PreemptiveThreadDemo() override {
-        for (unsigned int tid : threads) {
-            scheduler.kill(tid);
-        }
     }
 
     // Thread-Startmethode

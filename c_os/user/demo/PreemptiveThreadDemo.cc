@@ -20,14 +20,15 @@ void PreemptiveLoopThread::run() {
 }
 
 void PreemptiveThreadDemo::run() {
-    kout << "Preemptive Thread Demo" << endl;
+    kout.clear();
+
+    kout << "Preemptive Thread Demo:" << endl;
 
     kout << "Readying LoopThreads" << endl;
     for (unsigned int i = 0; i < this->number_of_threads; ++i) {
-        threads.push_back(scheduler.ready<PreemptiveLoopThread>(i));
+        scheduler.ready<PreemptiveLoopThread>(i);
     }
 
     kout << "Exiting main thread" << endl;
-    while (listener.waitForKeyEvent() != 'L') {}
     scheduler.exit();
 }

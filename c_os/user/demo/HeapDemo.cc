@@ -72,7 +72,7 @@ void HeapDemo::run() {
     allocator.dump_free_memory();
 
     kout << "HEAP_DEMO END ===============================================================" << endl;
-    kout.unlock();
 
+    kout.unlock();
     scheduler.exit();
 }

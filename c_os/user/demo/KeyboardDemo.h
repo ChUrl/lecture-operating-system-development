@@ -31,7 +31,7 @@ public:
     ~KeyboardDemo() override {
         log << INFO << "Uninitialized KeyboardDemo" << endl;
         kevman.unsubscribe(this->listener);
-        kout.unlock();
+        // kout.unlock();
     }
 
     void run() override;

@@ -103,9 +103,6 @@ void VectorDemo::run() {
         kout << "List contains element: " << dec << i << endl;
     }
 
-    for (bse::Vector<int>::Iterator it = list.begin(); it != list.end(); ++it) {
-    }
-
     kout.unlock();
     scheduler.exit();
 }

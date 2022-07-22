@@ -23,10 +23,6 @@ public:
         log << INFO << "Initialized TextDemo" << endl;
     }
 
-    ~TextDemo() override {
-        log << INFO << "Uninitialized TextDemo" << endl;
-    }
-
     void run() override;
 };
 

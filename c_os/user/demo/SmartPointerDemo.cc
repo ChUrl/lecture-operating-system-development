@@ -4,7 +4,9 @@
 #include "user/lib/mem/UniquePointer.h"
 
 void SmartPointerDemo::run() {
+    kout.lock();
     kout.clear();
+
     kout << "Output is written to log to be able to trace memory allocations/deallocations" << endl;
 
     {
@@ -117,5 +119,6 @@ void SmartPointerDemo::run() {
     }
     log << INFO << "Should be deleted by now..." << endl;
 
+    kout.unlock();
     scheduler.exit();
 }

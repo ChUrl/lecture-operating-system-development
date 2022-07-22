@@ -16,17 +16,14 @@ void KeyboardDemo::run() {
 
     kout << "Keyboard Demo: " << endl;
 
-    kout.lock();
+    // kout.lock();
     kout.clear();
-    kout << "Info: Die Keyboard Demo sperrt den Output Stream:\n"
-         << "      Wenn die Preemption Demo laeuft wird diese also erst\n"
-         << "      fortfahren wenn die Keyboard Demo wieder beendet ist." << endl;
 
     while (true) {
         kout << listener.waitForKeyEvent();
         kout.flush();
     }
 
-    kout.unlock();
+    // kout.unlock();
     scheduler.exit();
 }
