@@ -31,6 +31,9 @@ public:
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
         log << INFO << "IdleThread enabled preemption" << endl;
         scheduler.enable_preemption(this->tid);
+        if (!scheduler.preemption_enabled()) {
+            log << ERROR << "Preemption disabled" << endl;
+        }
 
         while (true) {
             // kout << "Idle!" << endl;
