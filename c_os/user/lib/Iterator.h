@@ -9,10 +9,16 @@ namespace bse {
     template<typename T>
     class ContinuousIterator {
     private:
-        T* ptr;
+        T* ptr = nullptr;
+
+        ContinuousIterator() = delete;
 
     public:
         ContinuousIterator(T* ptr) : ptr(ptr) {}
+
+        T* get() const {
+            return ptr;
+        }
 
         ContinuousIterator& operator++() {
             ++this->ptr;
