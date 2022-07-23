@@ -138,7 +138,7 @@ void kickoff(Thread* object) {
  * Parameter:                                                                *
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
-Thread::Thread(char* name) : stack(new unsigned int[1024]), log(name), name(name), tid(ThreadCnt++) {
+Thread::Thread(char* name) : stack(new unsigned int[1024]), esp(0), log(name), name(name), tid(ThreadCnt++) {
     log.info() << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
     Thread_init(&esp, &stack[1024], kickoff, this);  // Stack grows from top to bottom
 }
@@ -148,7 +148,7 @@ Thread::Thread(char* name) : stack(new unsigned int[1024]), log(name), name(name
  *---------------------------------------------------------------------------*
  * Beschreibung:    Auf die nächste Koroutine umschalten.                    *
  *****************************************************************************/
-void Thread::switchTo(Thread& next) {
+void Thread::switchTo(Thread& next) const {
 
     /* hier muss Code eingefügt werden */
 
@@ -160,7 +160,7 @@ void Thread::switchTo(Thread& next) {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Aktivierung der Koroutine.                               *
 *****************************************************************************/
-void Thread::start() {
+void Thread::start() const {
 
     /* hier muss Code eingefügt werden */
 
