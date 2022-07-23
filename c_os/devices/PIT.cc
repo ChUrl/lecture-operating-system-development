@@ -76,7 +76,7 @@ void PIT::trigger() {
     // Indicator
     if (systime - this->last_indicator_refresh >= 10) {
         this->indicator_pos = (this->indicator_pos + 1) % 4;
-        kout.show(79, 0, this->indicator[this->indicator_pos]);
+        CGA::show(79, 0, this->indicator[this->indicator_pos]);
         this->last_indicator_refresh = systime;
     }
 

@@ -19,7 +19,7 @@
  *---------------------------------------------------------------------------*
  * Beschreibung:    Setzen des Cursors in Spalte x und Zeile y.              *
  *****************************************************************************/
-void CGA::setpos(int x, int y) {
+void CGA::setpos(unsigned int x, unsigned int y) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -42,7 +42,7 @@ void CGA::setpos(int x, int y) {
  *                                                                           *
  * Rückgabewerte:   x und y                                                  *
  *****************************************************************************/
-void CGA::getpos(int& x, int& y) const {
+void CGA::getpos(unsigned int& x, unsigned int& y) const {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -70,7 +70,7 @@ void CGA::getpos(int& x, int& y) const {
  *      character   Das auszugebende Zeichen                                 *
  *      attrib      Attributbyte fuer das Zeichen                            *
  *****************************************************************************/
-void CGA::show(int x, int y, char character, unsigned char attrib) {
+void CGA::show(unsigned int x, unsigned int y, char character, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -79,7 +79,7 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
         return;
     }
 
-    cga_char_t* pos = (cga_char_t*)CGA_START + x + y * COLUMNS;
+    cga_char_t* pos = reinterpret_cast<cga_char_t*>(CGA_START) + x + y * COLUMNS;
     pos->cga_char = character;
     pos->cga_attribute = attrib;
 }
@@ -95,12 +95,13 @@ void CGA::show(int x, int y, char character, unsigned char attrib) {
  *      n           Laenger der Zeichenkette                                 *
  *      attrib      Attributbyte fuer alle Zeichen der Zeichenkette          *
  *****************************************************************************/
-void CGA::print(char* string, int n, unsigned char attrib) {
+void CGA::print(char* string, unsigned int n, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
-    int cursor_x, cursor_y;  // Don't poll registers every stroke
-    this->getpos(cursor_x, cursor_y);
+    unsigned int cursor_x = 0;
+    unsigned int cursor_y = 0;  // Don't poll registers every stroke
+    getpos(cursor_x, cursor_y);
 
     for (int byte = 0; byte < n; ++byte) {
         char current = *(string + byte);
@@ -110,7 +111,7 @@ void CGA::print(char* string, int n, unsigned char attrib) {
 
             if (cursor_y >= ROWS) {
                 // Bottom of screen reached
-                this->scrollup();
+                scrollup();
                 cursor_y = cursor_y - 1;
             }
 
@@ -122,7 +123,7 @@ void CGA::print(char* string, int n, unsigned char attrib) {
             break;
         }
 
-        this->show(cursor_x, cursor_y, current, attrib);
+        show(cursor_x, cursor_y, current, attrib);
         cursor_x = cursor_x + 1;
 
         if (cursor_x >= COLUMNS) {
@@ -132,13 +133,13 @@ void CGA::print(char* string, int n, unsigned char attrib) {
 
             if (cursor_y >= ROWS) {
                 // Bottom of screen reached
-                this->scrollup();
+                scrollup();
                 cursor_y = cursor_y - 1;
             }
         }
     }
 
-    this->setpos(cursor_x, cursor_y);
+    setpos(cursor_x, cursor_y);
 }
 
 /*****************************************************************************
@@ -153,10 +154,12 @@ void CGA::scrollup() {
     /* Hier muss Code eingefuegt werden */
 
     // Move up
-    bse::memcpy<cga_line_t>((cga_line_t*)CGA_START, (cga_line_t*)CGA_START + 1, ROWS - 1);
+    bse::memcpy<cga_line_t>(reinterpret_cast<cga_line_t*>(CGA_START),
+                            reinterpret_cast<cga_line_t*>(CGA_START) + 1,
+                            ROWS - 1);
 
     // Clear last line
-    bse::zero<cga_line_t>((cga_line_t*)CGA_START + ROWS - 1);
+    bse::zero<cga_line_t>(reinterpret_cast<cga_line_t*>(CGA_START) + ROWS - 1);
 }
 
 /*****************************************************************************
@@ -168,8 +171,8 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    bse::zero<cga_page_t>((cga_page_t*)CGA_START);
-    this->setpos(0, 0);
+    bse::zero<cga_page_t>(reinterpret_cast<cga_page_t*>(CGA_START));
+    setpos(0, 0);
 }
 
 /*****************************************************************************

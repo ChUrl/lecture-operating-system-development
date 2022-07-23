@@ -15,23 +15,21 @@
 #define __CGA_include__
 
 #include "kernel/IOport.h"
+#include "user/lib/Array.h"
 
 class CGA {
 private:
-    IOport index_port;  // Auswahl eines Register der Grafikkarte
-    IOport data_port;   // Lese-/Schreib-Zugriff auf Register der Grafikk.
-
     // Copy Konstrutkor unterbinden
     CGA(const CGA& copy) = delete;
 
+    IOport index_port;  // Auswahl eines Register der Grafikkarte
+    IOport data_port;   // Lese-/Schreib-Zugriff auf Register der Grafikk.
+
 public:
-    // NOTE: I change CGA_START to this const because I think the address should be constant and macro-like,
-    //       not the data at this address (we want that data to change).
     static const unsigned int CGA_START = 0xb8000U;
 
     // Konstruktur mit Initialisierung der Ports
     CGA() : index_port(0x3d4), data_port(0x3d5) {
-        // NOTE: I added this
         this->setpos(0, 0);
     }
 
@@ -62,29 +60,32 @@ public:
     enum { ROWS = 25,
            COLUMNS = 80 };
 
-    // NOTE: I added this
+    // Easier access to memory (also easier copying of lines/pages etc)
     typedef struct {
         char cga_char;
         unsigned char cga_attribute;
     } cga_char_t;
+
     typedef struct {
-        cga_char_t cga_line[COLUMNS];
+        // Can use these arrays since they don't have memory overhead (except for the methods that are elsewhere)
+        bse::array<cga_char_t, COLUMNS> cga_line;
     } cga_line_t;
+
     typedef struct {
-        cga_line_t cga_page[ROWS];
+        bse::array<cga_line_t, ROWS> cga_page;
     } cga_page_t;
 
     // Setzen des Cursors in Spalte x und Zeile y.
-    void setpos(int x, int y);
+    void setpos(unsigned int x, unsigned int y);
 
     // Abfragen der Cursorpostion
-    void getpos(int& x, int& y) const;
+    void getpos(unsigned int& x, unsigned int& y) const;
 
     // Anzeige eines Zeichens mit Attribut an einer bestimmten Stelle
-    void show(int x, int y, char character, unsigned char attrib = STD_ATTR);
+    static void show(unsigned int x, unsigned int y, char character, unsigned char attrib = STD_ATTR);
 
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
-    virtual void print(char* string, int n, unsigned char attrib = STD_ATTR);
+    virtual void print(char* string, unsigned int n, unsigned char attrib = STD_ATTR);
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen
