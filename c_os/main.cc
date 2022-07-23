@@ -15,6 +15,7 @@
 #include "user/MainMenu.h"
 
 void print_startup_message() {
+    kout.lock();
     kout.clear();
     kout << "BSEos 1.0\n"
          << "=========\n"
@@ -34,6 +35,7 @@ void print_startup_message() {
          << "   - Serial Output Logging\n"
          << "\nPress Enter to continue\n"
          << endl;
+    kout.unlock();
 }
 
 // #include "test/VectorTest.h"
@@ -96,14 +98,14 @@ int main() {
     // DONE: Iterator support for structures
     // DONE: Implement own basic managed pointers
     // DONE: Scheduler should own threads
-    // TODO: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
+    // DONE: Remove CoroutineState/ThreadState and just use pusha/popa, start/switch methods should
     //       just get esp as argument
     // CANCELED: Use singleton pattern for some device classes/classes used only in globals (needs stdlib for exita)
     // DONE: Introduce name to threads?
     // DONE: Allow to gracefully kill threads
     // CANCELED: Request thread status from scheduler (don't need it)
     //
-    // NOTE: Cleanup + Refactor
+    // NOTE: Cleanup
     // DONE: Use templates for queue so threads don't have to be casted down from chain
     // TODO: Only use references instead of pointers where possible
     // DONE: Unify debug output format
