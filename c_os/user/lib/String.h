@@ -29,6 +29,7 @@ namespace bse {
             for (unsigned int i = 0; i < N; ++i) {
                 buf[i] = arr[i];
             }
+            buf[N] = '\0';
         }
 
         string(const string& copy) : len(copy.len), buf(new char[len + 1]) {
@@ -46,7 +47,6 @@ namespace bse {
         }
 
         string(string&& move) noexcept : len(move.len), buf(move.buf) {
-            delete[] move.buf;
             move.len = 0;
             move.buf = nullptr;
         }
@@ -56,7 +56,6 @@ namespace bse {
                 len = move.len;
                 buf = move.buf;
 
-                delete[] move.buf;
                 move.len = 0;
                 move.buf = nullptr;
             }
@@ -79,7 +78,7 @@ namespace bse {
         char operator[](std::size_t pos) { return buf[pos]; }
         char operator[](std::size_t pos) const { return buf[pos]; }
 
-        string operator+(const string& other) {
+        string operator+(const string& other) const {
             string new_str;
             new_str.len = len + other.len;
             new_str.buf = new char[new_str.len + 1];
@@ -90,11 +89,53 @@ namespace bse {
             return new_str;
         }
 
-        bool operator==(const string& other) {
+        string operator+(const char* other) const {
+            unsigned int other_len = strlen(other);
+
+            string new_str;
+            new_str.len = len + other_len;
+            new_str.buf = new char[new_str.len + 1];
+
+            strncpy(new_str.buf, len, buf);
+            strncpy(&new_str.buf[len], other_len + 1, other);
+
+            return new_str;
+        }
+
+        string& operator+=(const string& other) {
+            unsigned int new_len = len + other.size();
+            char* new_buf = new char[new_len + 1];
+
+            strncpy(new_buf, len, buf);
+            strncpy(&new_buf[len], other.size() + 1, other.buf);
+
+            delete[] buf;
+            buf = new_buf;
+            len = new_len;
+
+            return *this;
+        }
+
+        string& operator+=(const char* other) {
+            unsigned int other_len = strlen(other);
+            unsigned int new_len = len + other_len;
+            char* new_buf = new char[new_len + 1];
+
+            strncpy(new_buf, len, buf);
+            strncpy(&new_buf[len], other_len + 1, other);
+
+            delete[] buf;
+            buf = new_buf;
+            len = new_len;
+
+            return *this;
+        }
+
+        bool operator==(const string& other) const {
             return strcmp(buf, other.buf) == 0;
         }
 
-        bool operator!=(const string& other) {
+        bool operator!=(const string& other) const {
             return strcmp(buf, other.buf) != 0;
         }
 
