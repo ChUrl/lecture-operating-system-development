@@ -2,7 +2,6 @@
 #define __ARRAY_INCLUDE_H
 
 #include "user/lib/Iterator.h"
-#include <cstddef>
 #include <utility>
 
 namespace bse {

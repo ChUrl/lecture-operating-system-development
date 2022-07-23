@@ -53,11 +53,11 @@ Allocator::Allocator() : heap_start(HEAP_START), heap_end(HEAP_START + HEAP_SIZE
  * Nachfolgend sind die Operatoren von C++, die wir hier ueberschreiben      *
  * und entsprechend 'mm_alloc' und 'mm_free' aufrufen.                       *
  *****************************************************************************/
-void* operator new(size_t size) {
+void* operator new(std::size_t size) {
     return allocator.alloc(size);
 }
 
-void* operator new[](size_t count) {
+void* operator new[](std::size_t count) {
     return allocator.alloc(count);
 }
 

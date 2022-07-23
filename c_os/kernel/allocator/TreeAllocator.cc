@@ -1,15 +1,12 @@
 #include "kernel/allocator/TreeAllocator.h"
 #include "kernel/Globals.h"
-#include <stddef.h>
-
-// NOTE: I added this file
 
 void TreeAllocator::init() {
     this->free_start = (tree_block_t*)this->heap_start;
     this->free_start->allocated = false;
-    this->free_start->left = NULL;
-    this->free_start->right = NULL;
-    this->free_start->parent = NULL;
+    this->free_start->left = nullptr;
+    this->free_start->right = nullptr;
+    this->free_start->parent = nullptr;
     this->free_start->red = false;  // The root is always black
     this->free_start->next = (list_block_t*)this->free_start;
     this->free_start->previous = (list_block_t*)this->free_start;
@@ -47,14 +44,14 @@ void* TreeAllocator::alloc(unsigned int req_size) {
 
     // Finds smallest block that is large enough
     tree_block_t* best_fit = this->rbt_search_bestfit(rreq_size);
-    if (best_fit == NULL) {
+    if (best_fit == nullptr) {
         log.error() << " - No block found" << endl;
-        return NULL;
+        return nullptr;
     }
     if (best_fit->allocated) {
         // Something went really wrong
         log.error() << " - Block already allocated :(" << endl;
-        return NULL;
+        return nullptr;
     }
     best_fit->allocated = true;
     unsigned int size = this->get_size(best_fit);

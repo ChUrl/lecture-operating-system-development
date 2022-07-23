@@ -12,7 +12,6 @@
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/Globals.h"
 #include "user/lib/Logger.h"
-#include <stddef.h>
 
 // I don't order the list by size so that the block order corresponds to the location in memory
 // Then I can easily merge adjacent free blocks by finding the previous block without looking at
@@ -52,7 +51,7 @@ void LinkedListAllocator::dump_free_memory() {
 
     kout << "Freier Speicher:" << endl;
 
-    if (this->free_start == NULL) {
+    if (this->free_start == nullptr) {
         kout << " - No free Blocks" << endl;
     } else {
         kout << " - Freelist start: " << hex << (unsigned int)this->free_start << endl;
@@ -79,10 +78,10 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
 
     log.debug() << "Requested " << hex << req_size << " Bytes" << endl;
 
-    if (this->free_start == NULL) {
+    if (this->free_start == nullptr) {
         log.error() << " - No free memory remaining :(" << endl;
         this->lock.release();
-        return NULL;
+        return nullptr;
     }
 
     // Round to word borders
@@ -130,7 +129,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 if (this->free_start == current) {
                     // No free block remaining
                     log.trace() << " - Disabled freelist" << endl;
-                    this->free_start = NULL;
+                    this->free_start = nullptr;
                 }
 
                 log.trace() << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
@@ -166,7 +165,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
 
     log.error() << " - More memory requested than available :(" << endl;
     this->lock.release();
-    return NULL;
+    return nullptr;
 }
 
 /*****************************************************************************
@@ -192,7 +191,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     // Reenable the freelist if no block was available
     // This also means that no merging can be done
-    if (this->free_start == NULL) {
+    if (this->free_start == nullptr) {
         this->free_start = block_start;
         block_start->allocated = false;
         block_start->next = block_start;
@@ -296,7 +295,6 @@ void LinkedListAllocator::free(void* ptr) {
     this->lock.release();
 }
 
-// NOTE: I added this
 free_block_t* LinkedListAllocator::find_previous_block(free_block_t* next_block) {
     // Durchlaufe die ganze freispeicherliste bis zum Block der auf next_block zeigt
     free_block_t* current = next_block;

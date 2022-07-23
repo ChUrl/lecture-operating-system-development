@@ -10,8 +10,6 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-#include <stddef.h>
-// #include "kernel/allocator/LinkedListAllocator.h"
 
 /*****************************************************************************
  * Methode:         BumpAllocator::init                                      *
@@ -55,7 +53,7 @@ void* BumpAllocator::alloc(unsigned int req_size) {
 
     if (req_size + (unsigned int)this->next > this->heap_end) {
         log.error() << " - More memory requested than available :(" << endl;
-        return NULL;
+        return nullptr;
     }
 
     void* allocated = this->next;

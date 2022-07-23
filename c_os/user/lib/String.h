@@ -2,8 +2,7 @@
 #define __String_Include_H_
 
 #include "user/lib/Array.h"
-#include <cstddef>
-#include <user/lib/Iterator.h>
+#include "user/lib/Iterator.h"
 
 namespace bse {
 

@@ -11,7 +11,6 @@
  *****************************************************************************/
 
 #include "kernel/Globals.h"
-#include "kernel/Paging.h"
 #include "user/MainMenu.h"
 
 void print_startup_message() {
@@ -90,7 +89,7 @@ int main() {
     // DONE: Array wrapper
     // DONE: Rewrite Logging with a basic logger
     // DONE: Static Logger
-    // CANCELED: String wrapper
+    // DONE: String wrapper
     // DONE: Linked List
     // DONE: Iterator support for structures
     // DONE: Implement own basic managed pointers
@@ -118,7 +117,7 @@ int main() {
     //       Or check if thread is still running
     // TODO: Delete copy constructors that weren't already deleted
     // DONE: Switch out semaphore Queue with ArrayList? Or switch back Scheduler to Queue?
-    // TODO: Add virtual destructors and make sure to call them with delete when objects are removed
+    // CANCELED: Add virtual destructors and make sure to call them with delete when objects are removed
     // TODO: Replace empty constructors/destructors with default keyword
     // DONE: Synchronize the outstream
     // DONE: Remove Iterator from List.h

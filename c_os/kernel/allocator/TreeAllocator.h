@@ -4,8 +4,7 @@
 #include "kernel/Allocator.h"
 #include "user/lib/Logger.h"
 
-// NOTE: I added this file
-// NOTE: I can't imagine that this is very fast with all the tree logic?
+// I can't imagine that this is fast with all the tree logic?
 
 typedef struct list_block {
     // Doubly linked list for every block

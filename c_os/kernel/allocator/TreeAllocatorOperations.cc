@@ -1,13 +1,11 @@
 #include "kernel/allocator/TreeAllocator.h"
 #include "kernel/Globals.h"
-#include <stddef.h>
 
-// NOTE: I added this file
-// NOTE: RBT code taken from https://github.com/Bibeknam/algorithmtutorprograms
+// RBT code taken from https://github.com/Bibeknam/algorithmtutorprograms
 
 // START copy from algorithmtutorprograms
 void TreeAllocator::rbt_transplant(tree_block_t* a, tree_block_t* b) {
-    if (a->parent == NULL) {
+    if (a->parent == nullptr) {
         this->free_start = b;
     } else if (a == a->parent->left) {
         a->parent->left = b;
@@ -21,15 +19,15 @@ void TreeAllocator::rbt_transplant(tree_block_t* a, tree_block_t* b) {
 // and fix the tree
 void TreeAllocator::rbt_insert(tree_block_t* node) {
     // Ordinary Binary Search Insertion
-    node->parent = NULL;
-    node->left = NULL;
-    node->right = NULL;
+    node->parent = nullptr;
+    node->left = nullptr;
+    node->right = nullptr;
     node->red = true;  // new node must be red
 
-    tree_block_t* y = NULL;
+    tree_block_t* y = nullptr;
     tree_block_t* x = this->free_start;
 
-    while (x != NULL) {
+    while (x != nullptr) {
         y = x;
         if (this->get_size(node) < this->get_size(x)) {
             x = x->left;
@@ -40,7 +38,7 @@ void TreeAllocator::rbt_insert(tree_block_t* node) {
 
     // y is parent of x
     node->parent = y;
-    if (y == NULL) {
+    if (y == nullptr) {
         this->free_start = node;
     } else if (this->get_size(node) < this->get_size(y)) {
         y->left = node;
@@ -49,13 +47,13 @@ void TreeAllocator::rbt_insert(tree_block_t* node) {
     }
 
     // if new node is a root node, simply return
-    if (node->parent == NULL) {
+    if (node->parent == nullptr) {
         node->red = false;
         return;
     }
 
     // if the grandparent is null, simply return
-    if (node->parent->parent == NULL) {
+    if (node->parent->parent == nullptr) {
         return;
     }
 
@@ -118,7 +116,7 @@ void TreeAllocator::rbt_fix_insert(tree_block_t* k) {
 void TreeAllocator::rbt_rot_l(tree_block_t* x) {
     tree_block_t* y = x->right;
     x->right = y->left;
-    if (y->left != NULL) {
+    if (y->left != nullptr) {
         y->left->parent = x;
     }
     y->parent = x->parent;
@@ -137,7 +135,7 @@ void TreeAllocator::rbt_rot_l(tree_block_t* x) {
 void TreeAllocator::rbt_rot_r(tree_block_t* x) {
     tree_block_t* y = x->left;
     x->left = y->right;
-    if (y->right != NULL) {
+    if (y->right != nullptr) {
         y->right->parent = x;
     }
     y->parent = x->parent;
@@ -154,7 +152,7 @@ void TreeAllocator::rbt_rot_r(tree_block_t* x) {
 
 // find the node with the minimum key
 tree_block_t* TreeAllocator::rbt_minimum(tree_block_t* node) {
-    while (node->left != NULL) {
+    while (node->left != nullptr) {
         node = node->left;
     }
     return node;
@@ -166,10 +164,10 @@ void TreeAllocator::rbt_remove(tree_block_t* z) {
 
     y = z;
     bool y_original_red = y->red;
-    if (z->left == NULL) {
+    if (z->left == nullptr) {
         x = z->right;
         this->rbt_transplant(z, z->right);
-    } else if (z->right == NULL) {
+    } else if (z->right == nullptr) {
         x = z->left;
         this->rbt_transplant(z, z->left);
     } else {
@@ -264,14 +262,14 @@ void TreeAllocator::rbt_fix_remove(tree_block_t* x) {
 }
 // END copy from algorithmtutorprograms
 
-// NOTE: This is recursive and depends on luck
+// This is recursive and depends on luck
 tree_block_t* TreeAllocator::rbt_search_bestfit(tree_block_t* node, unsigned int req_size) {
-    if (node == NULL) {
-        return NULL;
+    if (node == nullptr) {
+        return nullptr;
     }
 
     if (req_size < this->get_size(node)) {
-        if (node->left != NULL && this->get_size(node->left) >= req_size) {
+        if (node->left != nullptr && this->get_size(node->left) >= req_size) {
             return this->rbt_search_bestfit(node->left, req_size);
         }
 
@@ -279,12 +277,12 @@ tree_block_t* TreeAllocator::rbt_search_bestfit(tree_block_t* node, unsigned int
     }
 
     if (req_size > this->get_size(node)) {
-        if (node->right != NULL && this->get_size(node->right) >= req_size) {
+        if (node->right != nullptr && this->get_size(node->right) >= req_size) {
             return this->rbt_search_bestfit(node->right, req_size);
         }
 
         // Block doesn't fit
-        return NULL;
+        return nullptr;
     }
 
     // Perfect fit

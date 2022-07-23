@@ -32,7 +32,7 @@ typedef struct free_block {
 class LinkedListAllocator : Allocator {
 private:
     // freie Bloecke werden verkettet
-    struct free_block* free_start;
+    struct free_block* free_start = nullptr;
 
     LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
