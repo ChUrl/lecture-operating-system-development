@@ -19,61 +19,60 @@
 #include "lib/OutStream.h"
 #include "lib/Semaphore.h"
 
-// NOTE: I added these classes to allow for easier stream-like color changing
+// Allow for easier stream-like color changing
 class fgc {
 public:
     constexpr fgc(const CGA::color fg) : fg(fg) {}
     const CGA::color fg;
 };
 
-// NOTE: I could have used a struct to remove the public, but I like to use
-//       structs exclusively for C like memory "descriptions", although they're
-//       techinally the same to classes
 class bgc {
 public:
-    constexpr bgc(const CGA::color bg) : bg(bg) {}  // Make this into a literal type to allow macro-like usage
+    constexpr bgc(const CGA::color bg) : bg(bg) {}
     const CGA::color bg;
 };
 
-constexpr fgc white = fgc(CGA::WHITE);
-constexpr fgc black = fgc(CGA::BLACK);
-constexpr fgc green = fgc(CGA::GREEN);
-constexpr fgc red = fgc(CGA::RED);
-constexpr fgc lgrey = fgc(CGA::LIGHT_GREY);
+constexpr const fgc white = fgc(CGA::WHITE);
+constexpr const fgc black = fgc(CGA::BLACK);
+constexpr const fgc green = fgc(CGA::GREEN);
+constexpr const fgc red = fgc(CGA::RED);
+constexpr const fgc lgrey = fgc(CGA::LIGHT_GREY);
 
 class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
+    // Allow for synchronization of output text, needed when running something in parallel to
+    // the PreemptiveThreadDemo for example
+    // NOTE: Should only be used by threads (like the demos) to not deadlock the system
     Semaphore sem;
 
-public:
     CGA::color color_fg;
     CGA::color color_bg;
     bool blink;
 
+    friend class Logger;  // Give access to the color
+
+public:
     CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
         flush();
     }
 
     void lock() { sem.p(); }
     void unlock() { sem.v(); }
-    // void lock() {}
-    // void unlock() {}
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
 
     // Change stream color
     template<typename T>
-    // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const fgc& fg) {
         os.flush();
         os.color_fg = fg.fg;
         return os;
     }
+
     template<typename T>
-    // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const bgc& bg) {
         os.flush();
         os.color_fg = bg.bg;

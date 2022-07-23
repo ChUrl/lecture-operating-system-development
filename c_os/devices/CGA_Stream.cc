@@ -24,23 +24,12 @@
  *                  verwendet werden, um eine Ausgabe zu erzwingen.          *
  *****************************************************************************/
 void CGA_Stream::flush() {
-    print((char*)buffer, pos, attribute(this->color_bg, this->color_fg, this->blink));
+    print(buffer, pos, attribute(color_bg, color_fg, blink));
 
-    // TODO: Should not be reset like this
     // Flushing resets attributes
-    this->blink = false;
-    this->color_bg = CGA::BLACK;
-    this->color_fg = CGA::LIGHT_GREY;
+    blink = false;
+    color_bg = CGA::BLACK;
+    color_fg = CGA::LIGHT_GREY;
 
     pos = 0;
 }
-
-// Alternative way to write the templates which keeps definition/declaration separated
-// Usable for our case but somehow defeats the purpose of templates
-// template<typename T>
-// T& operator<<(T& os, const fgc& fg) {
-//     os.color_fg = fg.fg;
-//     return os;
-// }
-
-// template CGA_Stream& operator<<<CGA_Stream>(CGA_Stream&, const fgc&);
