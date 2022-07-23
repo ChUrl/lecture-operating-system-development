@@ -12,7 +12,6 @@
 #define __PIT_include__
 
 #include "kernel/interrupts/ISR.h"
-#include "user/lib/Logger.h"
 
 class PIT : public ISR {
 private:
@@ -32,7 +31,7 @@ public:
     }
 
     // Konfiguriertes Zeitintervall auslesen.
-    int interval() {
+    int interval() const {
         return timer_interval;
     }
 
@@ -44,7 +43,7 @@ public:
     void plugin();
 
     // Unterbrechnungsroutine des Zeitgebers.
-    void trigger();
+    void trigger() override;
 };
 
 #endif
