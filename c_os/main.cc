@@ -59,11 +59,8 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
-    // Tests
-    // run_test();
-
     // Startmeldung
-    // print_startup_message();
+    print_startup_message();
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.ready<MainMenu>();  // NOTE: A thread that manages other threads has to be added before scheduler.schedule(),
