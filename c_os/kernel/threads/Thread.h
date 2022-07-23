@@ -57,7 +57,7 @@ public:
     void start() const;
 
     // Umschalten auf Thread 'next'
-    void switchTo(Thread& next) const;
+    void switchTo(Thread& next);
 
     // Ask thread to terminate itself
     void suicide() { running = false; }

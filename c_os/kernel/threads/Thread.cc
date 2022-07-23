@@ -27,7 +27,10 @@
 // entsprechen.
 extern "C" {
     void Thread_start(unsigned int esp);
-    void Thread_switch(unsigned int esp_now, unsigned int esp_then);
+
+    // NOTE: Only when backing up the previous thread the esp get's updated,
+    //       so only esp_pre is a pointer
+    void Thread_switch(unsigned int* esp_prev, unsigned int esp_next);
 }
 
 unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preemption with 0
@@ -42,7 +45,7 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
 
     // NOTE: c++17 doesn't allow register
     // register unsigned int** sp = (unsigned int**)stack;
-    unsigned int** sp = (unsigned int**)stack;
+    // unsigned int** sp = (unsigned int**)stack;
 
     // Stack initialisieren. Es soll so aussehen, als waere soeben die
     // eine Funktion aufgerufen worden, die als Parameter den Zeiger
@@ -149,11 +152,12 @@ Thread::Thread(char* name) : stack(new unsigned int[1024]), esp(0), log(name), n
  *---------------------------------------------------------------------------*
  * Beschreibung:    Auf die nächste Koroutine umschalten.                    *
  *****************************************************************************/
-void Thread::switchTo(Thread& next) const {
+void Thread::switchTo(Thread& next) {
 
     /* hier muss Code eingefügt werden */
 
-    Thread_switch(this->esp, next.esp);
+    // log.trace() << name << ":: Has esp " << hex << esp << endl;
+    Thread_switch(&esp, next.esp);
 }
 
 /*****************************************************************************
