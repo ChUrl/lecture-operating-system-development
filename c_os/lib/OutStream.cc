@@ -22,47 +22,48 @@
 
 #include "lib/OutStream.h"
 
-// NOTE: I added this, fixed width printing
 void OutStream::put(char c) {
-    if (this->fill_width == 0) {
+    if (fill_width == 0) {
         StringBuffer::put(c);
-    } else if (this->fill_used == this->fill_width - 1) {
+    } else if (fill_used == fill_width - 1) {
         // This indicates that content has been cut
         StringBuffer::put('@');
-        this->fill_use_char();
-    } else if (this->fill_used == this->fill_width) {
+        fill_use_char();
+    } else if (fill_used == fill_width) {
         // do nothing
     } else {
         StringBuffer::put(c);
-        this->fill_use_char();
+        fill_use_char();
     }
 }
+
 void OutStream::fill_finalize() {
-    if (this->fill_width == 0 || this->fill_used == this->fill_width) {
+    if (fill_width == 0 || fill_used == fill_width) {
         // do nothing
-    } else if (this->fill_used > this->fill_width) {
+    } else if (fill_used > fill_width) {
         // should never happen
     } else {
-        for (unsigned char i = 0; i < this->fill_width - this->fill_used; ++i) {
-            StringBuffer::put(this->fill_char);
+        for (unsigned char i = 0; i < fill_width - fill_used; ++i) {
+            StringBuffer::put(fill_char);
         }
     }
 
-    this->fill_used = 0;
+    fill_used = 0;
 }
+
 void OutStream::fill_use_char() {
-    if (this->fill_width == 0) {
+    if (fill_width == 0) {
         return;
     }
-    this->fill_used++;
+    fill_used++;
 }
+
 void OutStream::flush() {
-    // TODO: Should not be reset like this
     // Flushing resets fixed width
-    this->base = 10;
-    this->fill_char = ' ';
-    this->fill_width = 0;
-    this->fill_used = 0;
+    base = 10;
+    fill_char = ' ';
+    fill_width = 0;
+    fill_used = 0;
 }
 
 //

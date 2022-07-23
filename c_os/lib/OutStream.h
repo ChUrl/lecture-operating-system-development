@@ -23,14 +23,14 @@
 #define __OutStream_include__
 
 #include "lib/StringBuffer.h"
-// #include <concepts> // NOTE: Only available in c++20
 
-// NOTE: I added this
+// Some basic width formatting
 class fillw {
 public:
-    constexpr fillw(const unsigned char w) : w(w) {}
-    const unsigned char w;
+    constexpr fillw(const unsigned int w) : w(w) {}
+    const unsigned int w;
 };
+
 class fillc {
 public:
     constexpr fillc(const char c) : c(c) {}
@@ -42,18 +42,16 @@ private:
     OutStream(const OutStream& copy) = delete;  // Verhindere Kopieren
 
     // Some stream formatting
-    unsigned char fill_used;  // indicates how many characters are already used by the text internally
-    void fill_use_char();     // recognizes that one char from the print width has been used up
-    void fill_finalize();     // does the filling after text has been written to buffer
+    unsigned char fill_used;   // indicates how many characters are already used by the text internally
+    unsigned char fill_width;  // If input is shorter than fill_width fill remaining space up with fill_char
+    char fill_char;            // fill character for fixed width
+    int base;                  // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
+
+    void fill_use_char();  // recognizes that one char from the print width has been used up
+    void fill_finalize();  // does the filling after text has been written to buffer
 
 public:
-    int base;  // Basis des Zahlensystems: z.B. 2, 8, 10 oder 16
-
-    // // Some stream formatting
-    unsigned char fill_width;
-    char fill_char;  // fill character for fixed width
-
-    OutStream() : fill_used(0), base(10), fill_width(0), fill_char(' ') {}
+    OutStream() : fill_used(0), fill_width(0), fill_char(' '), base(10) {}
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
@@ -68,31 +66,22 @@ public:
     //       This allows chaining of operator<< of different streams.
     //       Needed because I added operator<< overloads to the CGA_Stream class to change color with manipulators.
 
-    // NOTE: The templace concepts are only available in c++20.
-    //       Leaving them out makes this unsafe, but it doesn't matter as much in this case since we only
-    //       use a CGA_Stream in Globals.h anyway.
-
     // Darstellung eines Zeichens (trivial)
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, char c) {
         os.put(c);
         if (c != '\n') {
             // endl() doesn't has access to StringBuffer::put(), so ignore \n here
-            os.fill_finalize();  // NOTE: I added this
+            os.fill_finalize();
         }
         return os;
     }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, unsigned char c) {
-        return os << (char)c;
-    }
+    friend T& operator<<(T& os, unsigned char c) { return os << (char)c; }
 
     // Darstellung einer nullterminierten Zeichenkette
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, char* string) {
 
         char* pos = string;
@@ -106,31 +95,18 @@ public:
 
     // Darstellung ganzer Zahlen im Zahlensystem zur Basis base
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, short ival) {
-        return os << (long)ival;
-    }
+    friend T& operator<<(T& os, short ival) { return os << (long)ival; }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, unsigned short ival) {
-        return os << (unsigned long)ival;
-    }
+    friend T& operator<<(T& os, unsigned short ival) { return os << (unsigned long)ival; }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, int ival) {
-        return os << (long)ival;
-    }
+    friend T& operator<<(T& os, int ival) { return os << (long)ival; }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, unsigned int ival) {
-        return os << (unsigned long)ival;
-    }
+    friend T& operator<<(T& os, unsigned int ival) { return os << (unsigned long)ival; }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, long ival) {
         // Bei negativen Werten wird ein Minuszeichen ausgegeben.
         if (ival < 0) {
@@ -142,10 +118,9 @@ public:
     }
 
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, unsigned long ival) {
-        unsigned long div;
-        char digit;
+        unsigned long div = 0;
+        char digit = 0;
 
         if (os.base == 8) {
             os.put('0');  // oktale Zahlen erhalten eine fuehrende Null
@@ -168,13 +143,12 @@ public:
             }
             ival %= div;
         }
-        os.fill_finalize();  // NOTE: I added this
+        os.fill_finalize();
         return os;
     }
 
     // Darstellung eines Zeigers als hexadezimale ganze Zahl
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, void* ptr) {
         int oldbase = os.base;
         os.base = 16;
@@ -184,28 +158,30 @@ public:
     }
 
     // Aufruf einer Manipulatorfunktion
-    // NOTE: Changed the function pointer type including the manipulator functions
     template<typename T>
-    // requires std::derived_from<T, OutStream>
-    friend T& operator<<(T& os, T& (*f)(T&)) {
-        return f(os);
-    }
+    friend T& operator<<(T& os, T& (*f)(T&)) { return f(os); }
 
     // For stream formatting
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillw& w) {
         os.flush();  // Flush the buffer to not modify previous output
         os.fill_width = w.w;
         return os;
     }
+
     template<typename T>
-    // requires std::derived_from<T, OutStream>
     friend T& operator<<(T& os, const fillc& c) {
         os.flush();
         os.fill_char = c.c;
         return os;
     }
+
+    // Allow access to base member
+    template<typename T> friend T& endl(T& os);
+    template<typename T> friend T& bin(T& os);
+    template<typename T> friend T& oct(T& os);
+    template<typename T> friend T& dec(T& os);
+    template<typename T> friend T& hex(T& os);
 };
 
 //
