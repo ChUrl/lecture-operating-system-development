@@ -1,5 +1,4 @@
 #include "user/devices/SerialOut.h"
-#include "kernel/Globals.h"
 
 int SerialOut::init() const {
     // NOTE: I could add different ports for every register but this was easier as it's that way on OSDev
@@ -37,15 +36,19 @@ char SerialOut::read() {
     return com1.inb();
 }
 
-void SerialOut::write(char a) {
+void SerialOut::write(const char a) {
     while (is_transmit_empty() == 0) {}
     com1.outb(a);
 }
 
-void SerialOut::write(char* a) {
-    char* current = a;
+void SerialOut::write(const char* a) {
+    const char* current = a;
     do {
         this->write(*current);
         current = current + 1;
     } while (*current != '\0');
+}
+
+void SerialOut::write(const bse::string& a) {
+    write((const char*)a);
 }

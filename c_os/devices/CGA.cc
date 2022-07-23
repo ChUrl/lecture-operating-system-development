@@ -95,7 +95,7 @@ void CGA::show(unsigned int x, unsigned int y, char character, unsigned char att
  *      n           Laenger der Zeichenkette                                 *
  *      attrib      Attributbyte fuer alle Zeichen der Zeichenkette          *
  *****************************************************************************/
-void CGA::print(char* string, unsigned int n, unsigned char attrib) {
+void CGA::print(const char* string, unsigned int n, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -140,6 +140,10 @@ void CGA::print(char* string, unsigned int n, unsigned char attrib) {
     }
 
     setpos(cursor_x, cursor_y);
+}
+
+void CGA::print(const bse::string& string, unsigned int n, unsigned char attrib) {
+    print((const char*)string, n, attrib);
 }
 
 /*****************************************************************************

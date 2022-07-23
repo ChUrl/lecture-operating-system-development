@@ -1,8 +1,8 @@
 #ifndef __SerialOut_Include_H_
 #define __SerialOut_Include_H_
 
-#include "kernel/interrupts/ISR.h"
 #include "kernel/IOport.h"
+#include "user/lib/String.h"
 
 // NOTE: I took this code from https://wiki.osdev.org/Serial_Ports
 
@@ -24,7 +24,8 @@ public:
 
     char read();
     void write(char a);
-    void write(char* a);
+    void write(const char* a);
+    void write(const bse::string& a);
 };
 
 #endif

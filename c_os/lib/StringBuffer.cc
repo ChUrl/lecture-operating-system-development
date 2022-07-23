@@ -31,7 +31,7 @@
 void StringBuffer::put(char c) {
     buffer[pos] = c;
     pos++;
-    if (pos == sizeof(buffer)) {
+    if (pos == buffer.size()) {
         flush();
     }
 }

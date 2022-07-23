@@ -23,6 +23,7 @@
 #define __OutStream_include__
 
 #include "lib/StringBuffer.h"
+#include "user/lib/String.h"
 
 // Some basic width formatting
 class fillw {
@@ -82,14 +83,21 @@ public:
 
     // Darstellung einer nullterminierten Zeichenkette
     template<typename T>
-    friend T& operator<<(T& os, char* string) {
-
-        char* pos = string;
+    friend T& operator<<(T& os, const char* string) {
+        const char* pos = string;
         while (*pos) {
             os.put(*pos);
             pos++;
         }
-        os.fill_finalize();  // NOTE: I added this
+
+        os.fill_finalize();
+        return os;
+    }
+
+    // Can not use this exclusively for strings as these are heap allocated
+    template<typename T>
+    friend T& operator<<(T& os, const bse::string& string) {
+        os << (const char*)string;
         return os;
     }
 

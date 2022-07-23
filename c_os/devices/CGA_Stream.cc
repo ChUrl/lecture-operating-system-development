@@ -24,7 +24,7 @@
  *                  verwendet werden, um eine Ausgabe zu erzwingen.          *
  *****************************************************************************/
 void CGA_Stream::flush() {
-    print(buffer, pos, attribute(color_bg, color_fg, blink));
+    print(&buffer, pos, attribute(color_bg, color_fg, blink));
 
     // Flushing resets attributes
     blink = false;

@@ -16,6 +16,7 @@
 
 #include "kernel/IOport.h"
 #include "user/lib/Array.h"
+#include "user/lib/String.h"
 
 class CGA {
 private:
@@ -61,19 +62,19 @@ public:
            COLUMNS = 80 };
 
     // Easier access to memory (also easier copying of lines/pages etc)
-    typedef struct {
+    struct cga_char_t {
         char cga_char;
         unsigned char cga_attribute;
-    } cga_char_t;
+    };
 
-    typedef struct {
+    struct cga_line_t {
         // Can use these arrays since they don't have memory overhead (except for the methods that are elsewhere)
         bse::array<cga_char_t, COLUMNS> cga_line;
-    } cga_line_t;
+    };
 
-    typedef struct {
+    struct cga_page_t {
         bse::array<cga_line_t, ROWS> cga_page;
-    } cga_page_t;
+    };
 
     // Setzen des Cursors in Spalte x und Zeile y.
     void setpos(unsigned int x, unsigned int y);
@@ -85,7 +86,8 @@ public:
     static void show(unsigned int x, unsigned int y, char character, unsigned char attrib = STD_ATTR);
 
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
-    virtual void print(char* string, unsigned int n, unsigned char attrib = STD_ATTR);
+    void print(const char* string, unsigned int n, unsigned char attrib = STD_ATTR);
+    void print(const bse::string& string, unsigned int n, unsigned char attrib = STD_ATTR);
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen

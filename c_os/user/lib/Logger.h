@@ -4,6 +4,7 @@
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
 #include "lib/SpinLock.h"
+#include "user/lib/String.h"
 
 class Logger : public OutStream {
 public:
@@ -20,12 +21,14 @@ private:
     static bool kout_enabled;
     static bool serial_enabled;
 
-    void log(char* message, CGA::color col) const;
+    void log(const char* message, CGA::color col) const;
 
     friend class NamedLogger;  // Allow NamedLogger to lock/unlock
     static SpinLock sem;
     static void lock() { Logger::sem.acquire(); }
     static void unlock() { Logger::sem.release(); }
+    // static void lock() {}
+    // static void unlock() {}
 
 public:
     enum LogLevel {
@@ -39,10 +42,14 @@ public:
 
     void flush() override;
 
-    void trace(char* message) const;
-    void debug(char* message) const;
-    void error(char* message) const;
-    void info(char* message) const;
+    void trace(const char* message) const;
+    void trace(const bse::string& message) const;
+    void debug(const char* message) const;
+    void debug(const bse::string& message) const;
+    void error(const char* message) const;
+    void error(const bse::string& message) const;
+    void info(const char* message) const;
+    void info(const bse::string& message) const;
 
     // TODO: Make level change accessible over menu
     static void set_level(LogLevel level) {
@@ -84,10 +91,10 @@ Logger& INFO(Logger& log);
 
 class NamedLogger {
 private:
-    char* name;
+    const char* name;
 
 public:
-    NamedLogger(char* name) : name(name) {}
+    NamedLogger(const char* name) : name(name) {}
 
     Logger& trace() {
         Logger::lock();

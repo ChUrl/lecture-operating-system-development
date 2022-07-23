@@ -18,8 +18,9 @@
 #ifndef __StringBuffer_include__
 #define __StringBuffer_include__
 
-class StringBuffer {
+#include "user/lib/Array.h"
 
+class StringBuffer {
 private:
     StringBuffer(const StringBuffer& copy);  // Verhindere Kopieren
 
@@ -30,13 +31,12 @@ private:
     // werden und kann dann auch public werden.
 
 protected:
-    char buffer[80];
+    bse::array<char, 80> buffer;
     int pos;
 
     // StringBuffer: Im Konstruktor wird der Puffer als leer markiert.
     StringBuffer() : pos(0) {}
 
-    // NOTE: I changed this
     // Fuegt ein Zeichen in den Puffer ein. Wenn der Puffer
     virtual void put(char c);
 
