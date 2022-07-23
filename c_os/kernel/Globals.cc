@@ -22,8 +22,8 @@ Keyboard kb;  // Tastatur
 PCSPK pcspk;  // PC-Lautsprecher
 
 // BumpAllocator         allocator;
-// LinkedListAllocator allocator;
-TreeAllocator allocator;
+LinkedListAllocator allocator;
+// TreeAllocator allocator;
 Scheduler scheduler;
 
 unsigned int total_mem;  // RAM total

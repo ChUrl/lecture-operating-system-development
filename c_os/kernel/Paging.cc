@@ -67,12 +67,6 @@
 #define FST_ALLOCABLE_PAGE 0x202000
 #define LST_ALLOCABLE_PAGE 0x2FF000
 
-// Externe Funktionen in startup.asm
-extern "C" {
-    void paging_on(unsigned int* p_pdir);          // Paging einschalten
-    void invalidate_tlb_entry(unsigned int* ptr);  // Page in TLB invalid.
-}
-
 /*****************************************************************************
  * Funktion:        pg_alloc_page                                            *
  *---------------------------------------------------------------------------*

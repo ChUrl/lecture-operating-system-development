@@ -13,10 +13,17 @@
 #include "kernel/Globals.h"
 #include "kernel/Paging.h"
 #include "kernel/threads/IdleThread.h"
+#include "lib/Input.h"
+#include "user/BlueScreenDemo.h"
 #include "user/CoopThreadDemo.h"
+#include "user/HeapDemo.h"
 #include "user/HelloWorldThread.h"
+#include "user/KeyboardDemo.h"
+#include "user/KeyIRQDemo.h"
 #include "user/PCSPKdemo.h"
 #include "user/PreemptiveThreadDemo.h"
+#include "user/SoundDemo.h"
+#include "user/TextDemo.h"
 #include "user/VBEdemo.h"
 
 int main() {
@@ -54,38 +61,44 @@ int main() {
     // This has to happen after the allocator is initialized but before the scheduler is started
     pg_init();
 
-    // TODO: Move this to demo
-    // Trigger Bluescreen
-    // kout << "Trigger Bluescreen, if you can read this it didn't work" << endl;
+    kout << "Demos:\n"
+         << "1 - VBEdemo\n"
+         << "2 - PCSPKdemo\n"
+         << "3 - PreemptiveThreadDemo\n"
+         << "4 - BlueScreenDemo\n"
+         << "5 - HeapDemo\n"
+         << "6 - KeyboardDemo\n"
+         << "7 - TextDemo" << endl;
 
-    // BlueScreen 1
-    // asm("int $3");
-
-    // BlueScreen 2
-    // unsigned int* page = pg_alloc_page();
-    // *page = 42;
-    // pg_write_protect_page(page);
-    // invalidate_tlb_entry(page); // If we don't invalidate after first access the write protection
-    //                             // won't work as no lookup is performed (address in tlb)
-    // *page = 42; // We map logical to physical 1:1 so no need to do any lookup
-    //             // If tlb is invalidated this access produces a pagefault
-
-    // TODO: Make menu for demos
-    // Demo threads anlegen
+    char input = getch();
+    switch (input) {
+    case '1':
+        scheduler.ready(new VBEdemo());  // Switch to VESA graphics mode
+        break;
+    case '2':
+        scheduler.ready(new PCSPKdemo());
+        break;
+    case '3':
+        scheduler.ready(new PreemptiveThreadDemo());
+        break;
+    case '4':
+        bluescreen_demo();
+        break;
+    case '5':
+        heap_demo();
+        break;
+    case '6':
+        keyboard_demo();
+        break;
+    case '7':
+        text_demo();
+        break;
+    }
     // scheduler.ready(new HelloWorldThread());
     // scheduler.ready(new CoopThreadDemo());
-    // scheduler.ready(new VBEdemo()); // Switch to VESA graphics mode
-    // scheduler.ready(new PCSPKdemo());
-    scheduler.ready(new PreemptiveThreadDemo());
 
     // Scheduler starten (schedule() erzeugt den Idle-Thread)
     scheduler.schedule();
-
-    // TODO: Use templates for queue so threads don't have to be casted down from chain
-    // TODO: Change scheduler to only use references instead of pointers
-    // TODO: Rewrite all demos to threads
-    // TODO: Unify debug output format
-    // TODO: Serial output, output graphviz dot data for memory etc.
 
     // Scheduler doesn't return
     return 0;
