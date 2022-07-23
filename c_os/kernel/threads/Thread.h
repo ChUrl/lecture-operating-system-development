@@ -28,7 +28,6 @@
 #ifndef __Thread_include__
 #define __Thread_include__
 
-#include "kernel/threads/ThreadState.h"
 #include "user/lib/Logger.h"
 
 class Thread {
@@ -55,10 +54,10 @@ public:
     }
 
     // Thread aktivieren
-    void start();
+    void start() const;
 
     // Umschalten auf Thread 'next'
-    void switchTo(Thread& next);
+    void switchTo(Thread& next) const;
 
     // Ask thread to terminate itself
     void suicide() { running = false; }

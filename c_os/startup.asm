@@ -16,9 +16,6 @@
 ;*                  Michael Schoettner, HHU, 3.7.2022                        *
 ;******************************************************************************
 
-; fuer preemptives Umschalten zwischen Threads
-%include "kernel/threads/Thread.inc"
-
 
 ; Multiboot-Konstanten
 MULTIBOOT_PAGE_ALIGN	equ	1<<0
