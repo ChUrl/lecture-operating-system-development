@@ -86,7 +86,7 @@ void SmartPointerDemo::run() {
 
     {
         log.info() << "Stackallocating Array<bse::unique_ptr<int>, 10>..." << endl;
-        bse::Array<bse::unique_ptr<int>, 10> arr;
+        bse::array<bse::unique_ptr<int>, 10> arr;
         log.info() << "Populating slot 0..." << endl;
         arr[0] = bse::make_unique<int>(1);
         log.info() << "Moving slot 0 to slot 1..." << endl;
@@ -97,7 +97,7 @@ void SmartPointerDemo::run() {
 
     {
         log.info() << "Heapallocating Array<bse::unique_ptr<int>, 10>..." << endl;
-        bse::Array<bse::unique_ptr<int>, 10>* arr = new bse::Array<bse::unique_ptr<int>, 10>;
+        bse::array<bse::unique_ptr<int>, 10>* arr = new bse::array<bse::unique_ptr<int>, 10>;
         log.info() << "Populating slot 0..." << endl;
         (*arr)[0] = bse::make_unique<int>(1);
         log.info() << "Moving slot 0 to slot 1..." << endl;
