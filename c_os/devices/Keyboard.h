@@ -16,7 +16,6 @@
 #include "kernel/IOport.h"
 
 class Keyboard : public ISR {
-
 private:
     Keyboard(const Keyboard& copy) = delete;  // Verhindere Kopieren
 
