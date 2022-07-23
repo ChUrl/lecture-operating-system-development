@@ -5,9 +5,9 @@
 //       Also I wanted to template the Queue (for the scheduler) but with this I can just replace the Queue and use the
 //       ArrayList instead
 
-#include "user/lib/Iterator.h"
-#include "user/lib/Logger.h"
-#include "user/lib/Utility.h"
+#include "Iterator.h"
+#include "Logger.h"
+#include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
 namespace bse {
@@ -18,20 +18,20 @@ namespace bse {
         using Iterator = ContinuousIterator<T>;
 
     private:
-        static constexpr const unsigned int default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
-        static constexpr const unsigned int min_cap = 5;       // Slots to allocate extra when array full
+        static constexpr const std::size_t default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
+        static constexpr const std::size_t min_cap = 5;       // Slots to allocate extra when array full
 
         T* buf = nullptr;  // Heap allocated as size needs to change during runtime
                            // Can't use Array for the same reason so we use a C Style array
-        unsigned int buf_pos = 0;
-        unsigned int buf_cap = 0;
+        std::size_t buf_pos = 0;
+        std::size_t buf_cap = 0;
 
         void init() {
             buf = new T[Vector::default_cap];
             buf_cap = Vector::default_cap;
         }
 
-        unsigned int get_rem_cap() const {
+        std::size_t get_rem_cap() const {
             return buf_cap - size();
         }
 
@@ -53,13 +53,13 @@ namespace bse {
         // 2. Moves stuff to new buffer
         // 3. Deletes old buffer
         // 4. Sets new pos/cap
-        void switch_buf(unsigned int cap) {
+        void switch_buf(std::size_t cap) {
             // Alloc new array
             T* new_buf = new T[cap];
 
             // Swap current elements to new array
-            for (unsigned int i = 0; i < size(); ++i) {
-                new_buf[i] = bse::move(buf[i]);
+            for (std::size_t i = 0; i < size(); ++i) {
+                new_buf[i] = std::move(buf[i]);
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
 
@@ -70,36 +70,36 @@ namespace bse {
         }
 
         // Index is location where space should be made
-        void copy_right(unsigned int i) {
+        void copy_right(std::size_t i) {
             if (i >= size()) {
                 // We don't need to copy anything as space is already there
                 return;
             }
 
-            for (unsigned int idx = size(); idx > i; --idx) {
+            for (std::size_t idx = size(); idx > i; --idx) {
                 buf[idx].~T();                       // Delete previously contained element that will be overridden
-                buf[idx] = bse::move(buf[idx - 1]);  // This leaves a "shell" of the old object that has to be deleted
+                buf[idx] = std::move(buf[idx - 1]);  // This leaves a "shell" of the old object that has to be deleted
                 buf[idx - 1].~T();                   // Delete element in moved-out state
             }
         }
 
         // Index is the location that will be removed
-        void copy_left(unsigned int i) {
+        void copy_left(std::size_t i) {
             if (i >= size()) {
                 // We don't need to copy anything as nothing will be overridden
                 return;
             }
 
-            for (unsigned int idx = i; idx < size(); ++idx) {
+            for (std::size_t idx = i; idx < size(); ++idx) {
                 buf[idx].~T();  // Delete the element that will be overwritten
-                buf[idx] = bse::move(buf[idx + 1]);
+                buf[idx] = std::move(buf[idx + 1]);
                 buf[idx + 1].~T();
             }
         }
 
     public:
         ~Vector() {
-            for (unsigned int i; i < size(); ++i) {
+            for (std::size_t i; i < size(); ++i) {
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
             delete[] buf;
@@ -148,7 +148,7 @@ namespace bse {
                 init();
             }
 
-            buf[size()] = bse::move(move);
+            buf[size()] = std::move(move);
             ++buf_pos;
             min_expand();
         }
@@ -156,8 +156,8 @@ namespace bse {
         // https://en.cppreference.com/w/cpp/container/vector/insert
         // The element will be inserted before the pos iterator, pos can be the end() iterator
         Iterator insert(Iterator pos, const T& copy) {
-            unsigned int idx = distance(begin(), pos);  // begin() does init if necessary
-            copy_right(idx);                            // nothing will be done if pos == end()
+            std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
+            copy_right(idx);                           // nothing will be done if pos == end()
             buf[idx] = copy;
             ++buf_pos;
             min_expand();
@@ -165,9 +165,9 @@ namespace bse {
         }
 
         Iterator insert(Iterator pos, T&& move) {
-            unsigned int idx = distance(begin(), pos);  // begin() does init if necessary
+            std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
             copy_right(idx);
-            buf[idx] = bse::move(move);
+            buf[idx] = std::move(move);
             ++buf_pos;
             min_expand();
             return Iterator(&buf[idx]);
@@ -177,7 +177,7 @@ namespace bse {
         // https://en.cppreference.com/w/cpp/container/vector/erase
         // Returns the iterator after the removed element, pos can't be end() iterator
         Iterator erase(Iterator pos) {
-            unsigned int idx = distance(begin(), pos);
+            std::size_t idx = distance(begin(), pos);
             copy_left(idx);
             --buf_pos;
             // shrink();
@@ -201,11 +201,11 @@ namespace bse {
             return buf[size() - 1];
         }
 
-        T& operator[](unsigned int pos) {
+        T& operator[](std::size_t pos) {
             return buf[pos];
         }
 
-        const T& operator[](unsigned int pos) const {
+        const T& operator[](std::size_t pos) const {
             return buf[pos];
         }
 
@@ -214,7 +214,7 @@ namespace bse {
             return !size();
         }
 
-        unsigned int size() const {
+        std::size_t size() const {
             return buf_pos;
         }
 
@@ -225,7 +225,7 @@ namespace bse {
             }
         }
 
-        void reserve(unsigned int cap) {
+        void reserve(std::size_t cap) {
             if (buf == nullptr) {
                 init();
             }
@@ -237,8 +237,8 @@ namespace bse {
     // NOTE: pred is no real predicate as one would need closures for this, but we don't have <functional> available
     //       This means the result has to be passed separately and the function differs from the c++20 std::erase_if
     template<typename T, typename arg>
-    unsigned int erase_if(Vector<T>& vec, arg (*pred)(const T&), arg result) {
-        unsigned int erased_els = 0;
+    std::size_t erase_if(Vector<T>& vec, arg (*pred)(const T&), arg result) {
+        std::size_t erased_els = 0;
         for (typename Vector<T>::Iterator it = vec.begin(); it != vec.end(); /*Do nothing*/) {
             if (pred(*it) == result) {
                 it = vec.erase(it);  // erase returns the iterator to the next element

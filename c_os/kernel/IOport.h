@@ -37,7 +37,7 @@ public:
     void outb(unsigned char offset, unsigned char val) const {
         asm volatile("outb %0, %1"
                      :
-                     : "a"(val), "Nd"((unsigned short)(address + offset)));
+                     : "a"(val), "Nd"(address + offset));
     }
 
     // Wortweise Ausgabe eines Wertes ueber einen I/O-Port.
@@ -70,7 +70,7 @@ public:
 
         asm volatile("inb %1, %0"
                      : "=a"(ret)
-                     : "Nd"((unsigned short)(address + offset)));
+                     : "Nd"(address + offset));
         return ret;
     }
 
