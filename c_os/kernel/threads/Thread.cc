@@ -42,6 +42,7 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
 
     // NOTE: c++17 doesn't allow register
     // register unsigned int** sp = (unsigned int**)stack;
+    unsigned int** sp = (unsigned int**)stack;
 
     // Stack initialisieren. Es soll so aussehen, als waere soeben die
     // eine Funktion aufgerufen worden, die als Parameter den Zeiger

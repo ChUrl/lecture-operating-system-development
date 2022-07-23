@@ -12,7 +12,7 @@
  *                  Aenderungen von Michael Schoettner, HHU, 21.8.2016       *
  *****************************************************************************/
 #include "devices/CGA.h"
-#include "user/lib/MyLib.h"
+#include "user/lib/Memory.h"
 
 /*****************************************************************************
  * Methode:         CGA::setpos                                              *
