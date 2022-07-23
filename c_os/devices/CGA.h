@@ -88,6 +88,7 @@ public:
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
     void print(const char* string, unsigned int n, unsigned char attrib = STD_ATTR);
     void print(const bse::string& string, unsigned int n, unsigned char attrib = STD_ATTR);
+    void print(const bse::string& string, unsigned char attrib = STD_ATTR);
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen
