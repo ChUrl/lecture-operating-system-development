@@ -7,7 +7,6 @@
 
 #include "Iterator.h"
 #include "Logger.h"
-#include <cstddef>
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
