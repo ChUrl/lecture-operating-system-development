@@ -41,7 +41,7 @@ unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preempt
 void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*), void* object) {
 
     // NOTE: c++17 doesn't allow register
-    register unsigned int** sp = (unsigned int**)stack;
+    // register unsigned int** sp = (unsigned int**)stack;
 
     // Stack initialisieren. Es soll so aussehen, als waere soeben die
     // eine Funktion aufgerufen worden, die als Parameter den Zeiger
@@ -140,7 +140,7 @@ void kickoff(Thread* object) {
  *****************************************************************************/
 Thread::Thread(char* name) : stack(new unsigned int[1024]), log(name), name(name), tid(ThreadCnt++) {
     log.info() << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
-    Thread_init(&esp, stack + 1024, kickoff, this);  // Stack grows from top to bottom
+    Thread_init(&esp, &stack[1024], kickoff, this);  // Stack grows from top to bottom
 }
 
 /*****************************************************************************
