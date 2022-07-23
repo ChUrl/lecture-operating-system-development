@@ -15,11 +15,9 @@
 #ifndef __CGA_Stream_include__
 #define __CGA_Stream_include__
 
-// #include "devices/BufferedCGA.h"
-#include "devices/BufferedCGA.h"
+#include "devices/CGA.h"
 #include "lib/OutStream.h"
 
-// NOTE: I added this
 class fgc {
 public:
     fgc() : fg(CGA::LIGHT_GREY) {}
@@ -33,8 +31,7 @@ public:
     CGA::color bg;
 };
 
-// NOTE: I added this (changed this) to use BufferedCGA
-class CGA_Stream : public OutStream, public BufferedCGA {
+class CGA_Stream : public OutStream, public CGA {
 private:
     CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
 
@@ -50,7 +47,6 @@ public:
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
 
-    // NOTE: I added this
     template<typename T>
     // requires std::derived_from<T, CGA_Stream>
     friend T& operator<<(T& os, const fgc& fg) {

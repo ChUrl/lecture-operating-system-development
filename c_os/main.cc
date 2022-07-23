@@ -25,9 +25,6 @@ int main() {
     // Speicherverwaltung initialisieren
     allocator.init();
 
-    // Initialize scrollback buffer after allocator.init()
-    kout.init(5);
-
     // Startmeldung
     kout << "HHUos 0.10\n"
          << "=========\n"
