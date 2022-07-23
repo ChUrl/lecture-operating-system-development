@@ -28,15 +28,15 @@ private:
 
     // NOTE: It makes sense to keep track of the active thread through this as it makes handling the
     //       unique_ptr easier and reduces the copying in the vector when cycling through the threads
-    bse::vector<bse::unique_ptr<Thread>>::Iterator active = nullptr;
+    bse::vector<bse::unique_ptr<Thread>>::iterator active = nullptr;
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
     unsigned int idle_tid = 0U;
 
     // Roughly the old dispatcher functionality
-    void start(bse::vector<bse::unique_ptr<Thread>>::Iterator next);                        // Start next without prev
-    void switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::Iterator next);  // Switch from prev to next
+    void start(bse::vector<bse::unique_ptr<Thread>>::iterator next);                        // Start next without prev
+    void switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::iterator next);  // Switch from prev to next
 
     // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }

@@ -5,8 +5,8 @@
 //       Also I wanted to template the Queue (for the scheduler) but with this I can just replace the Queue and use the
 //       ArrayList instead
 
-#include "Iterator.h"
-#include "Logger.h"
+#include "user/lib/Iterator.h"
+#include "user/lib/Logger.h"
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
@@ -15,7 +15,7 @@ namespace bse {
     template<typename T>
     class vector {
     public:
-        using Iterator = ContinuousIterator<T>;
+        using iterator = ContinuousIterator<T>;
 
     private:
         static constexpr const std::size_t default_cap = 10;  // Arbitrary but very small because this isn't a real OS :(
@@ -106,29 +106,29 @@ namespace bse {
         }
 
         // Iterator
-        Iterator begin() {
+        iterator begin() {
             if (buf == nullptr) {
                 init();
             }
-            return Iterator(&buf[0]);
+            return iterator(&buf[0]);
         }
-        Iterator begin() const {
+        iterator begin() const {
             if (buf == nullptr) {
                 init();
             }
-            return Iterator(&buf[0]);
+            return iterator(&buf[0]);
         }
-        Iterator end() {
+        iterator end() {
             if (buf == nullptr) {
                 init();
             }
-            return Iterator(&buf[size()]);
+            return iterator(&buf[size()]);
         }
-        Iterator end() const {
+        iterator end() const {
             if (buf == nullptr) {
                 init();
             }
-            return Iterator(&buf[size()]);
+            return iterator(&buf[size()]);
         }
 
         // Add elements
@@ -155,33 +155,33 @@ namespace bse {
 
         // https://en.cppreference.com/w/cpp/container/vector/insert
         // The element will be inserted before the pos iterator, pos can be the end() iterator
-        Iterator insert(Iterator pos, const T& copy) {
+        iterator insert(iterator pos, const T& copy) {
             std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
             copy_right(idx);                           // nothing will be done if pos == end()
             buf[idx] = copy;
             ++buf_pos;
             min_expand();
-            return Iterator(&buf[idx]);
+            return iterator(&buf[idx]);
         }
 
-        Iterator insert(Iterator pos, T&& move) {
+        iterator insert(iterator pos, T&& move) {
             std::size_t idx = distance(begin(), pos);  // begin() does init if necessary
             copy_right(idx);
             buf[idx] = std::move(move);
             ++buf_pos;
             min_expand();
-            return Iterator(&buf[idx]);
+            return iterator(&buf[idx]);
         }
 
         // Remove elements
         // https://en.cppreference.com/w/cpp/container/vector/erase
         // Returns the iterator after the removed element, pos can't be end() iterator
-        Iterator erase(Iterator pos) {
+        iterator erase(iterator pos) {
             std::size_t idx = distance(begin(), pos);
             copy_left(idx);
             --buf_pos;
             // shrink();
-            return Iterator(&buf[idx]);
+            return iterator(&buf[idx]);
         }
 
         // Access

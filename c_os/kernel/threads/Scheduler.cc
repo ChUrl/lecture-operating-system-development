@@ -35,7 +35,7 @@ constexpr const bool INSANE_TRACE = false;
  * Parameter:                                                                *
  *      next        Thread der die CPU erhalten soll.                        *
  *****************************************************************************/
-void Scheduler::start(bse::vector<bse::unique_ptr<Thread>>::Iterator next) {
+void Scheduler::start(bse::vector<bse::unique_ptr<Thread>>::iterator next) {
     active = next;
     if (active >= ready_queue.end()) {
         active = ready_queue.begin();
@@ -47,7 +47,7 @@ void Scheduler::start(bse::vector<bse::unique_ptr<Thread>>::Iterator next) {
     (*active)->start();  // First dereference the Iterator, then the unique_ptr to get Thread
 }
 
-void Scheduler::switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::Iterator next) {
+void Scheduler::switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::iterator next) {
     active = next;
     if (active >= ready_queue.end()) {
         active = ready_queue.begin();
@@ -137,7 +137,7 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     unsigned int prev_tid = (*active)->tid;
 
     // Block queue, can always kill
-    for (bse::vector<bse::unique_ptr<Thread>>::Iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
+    for (bse::vector<bse::unique_ptr<Thread>>::iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
         if ((*it)->tid == tid) {
             // Found thread to kill
 
@@ -163,7 +163,7 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
         return;
     }
 
-    for (bse::vector<bse::unique_ptr<Thread>>::Iterator it = ready_queue.begin(); it != ready_queue.end(); ++it) {
+    for (bse::vector<bse::unique_ptr<Thread>>::iterator it = ready_queue.begin(); it != ready_queue.end(); ++it) {
         if ((*it)->tid == tid) {
             // Found thread to kill
 
@@ -318,7 +318,7 @@ void Scheduler::deblock(unsigned int tid) {
 
     cpu.disable_int();
 
-    for (bse::vector<bse::unique_ptr<Thread>>::Iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
+    for (bse::vector<bse::unique_ptr<Thread>>::iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
         if ((*it)->tid == tid) {
             // Found thread with correct tid
 

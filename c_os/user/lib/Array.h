@@ -10,14 +10,14 @@ namespace bse {
     template<typename T, const std::size_t N>
     class array {
     public:
-        using Iterator = ContinuousIterator<T>;
+        using iterator = ContinuousIterator<T>;
 
     private:
         T buf[N];
 
     public:
-        Iterator begin() { return Iterator(&buf[0]); }
-        Iterator end() { return Iterator(&buf[N]); }
+        iterator begin() { return iterator(&buf[0]); }
+        iterator end() { return iterator(&buf[N]); }
 
         T& operator[](std::size_t i) {
             return this->buf[i];
