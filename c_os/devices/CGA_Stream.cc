@@ -24,7 +24,12 @@
  *                  verwendet werden, um eine Ausgabe zu erzwingen.          *
  *****************************************************************************/
 void CGA_Stream::flush() {
-    print(&buffer, pos, attribute(color_bg, color_fg, blink));
+    print(&buffer, pos, attribute(color_bg, color_fg, blink));  // print(buffer...) would work syntactically
+                                                                // but the system wouldn't start, as the bse::array
+                                                                // would be implicitly converted to bse::string and
+                                                                // that is dynamically allocated.
+                                                                // print(&buffer...) just uses the stack location of
+                                                                // the internal buffer of bse::array
 
     // Flushing resets attributes
     blink = false;
