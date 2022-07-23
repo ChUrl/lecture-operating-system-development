@@ -14,7 +14,7 @@ private:
 
     NamedLogger log;
 
-    bse::Vector<KeyEventListener*> listeners;
+    bse::vector<KeyEventListener*> listeners;
 
 public:
     KeyEventManager() : log("KEvMan") {}

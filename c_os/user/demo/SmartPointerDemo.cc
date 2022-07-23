@@ -110,7 +110,7 @@ void SmartPointerDemo::run() {
 
     {
         log.info() << "ArrayList<bse::unique_ptr<int>>..." << endl;
-        bse::Vector<bse::unique_ptr<int>> vec;
+        bse::vector<bse::unique_ptr<int>> vec;
         log.info() << "2x insertion" << endl;
         vec.push_back(bse::make_unique<int>(1));
         vec.push_back(bse::make_unique<int>(2));

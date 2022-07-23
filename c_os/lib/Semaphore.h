@@ -14,13 +14,14 @@
 #include "kernel/threads/Thread.h"
 #include "lib/SpinLock.h"
 #include "user/lib/Vector.h"
+#include <vector>
 
 class Semaphore {
 private:
     Semaphore(const Semaphore& copy) = delete;  // Verhindere Kopieren
 
     // Queue fuer wartende Threads.
-    bse::Vector<unsigned int> wait_queue;
+    bse::vector<unsigned int> wait_queue;
     SpinLock lock;
 
     int counter;

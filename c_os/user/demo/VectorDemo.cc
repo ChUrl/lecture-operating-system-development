@@ -1,6 +1,6 @@
 #include "user/demo/VectorDemo.h"
 
-void print(bse::Vector<int> list) {
+void print(bse::vector<int> list) {
     kout << "Printing List: ";
     for (int i : list) {
         kout << i << " ";
@@ -9,7 +9,7 @@ void print(bse::Vector<int> list) {
 }
 
 void VectorDemo::run() {
-    bse::Vector<int> list;
+    bse::vector<int> list;
 
     kout.lock();
     kout.clear();

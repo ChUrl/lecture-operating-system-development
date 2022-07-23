@@ -23,25 +23,20 @@ private:
 
     NamedLogger log;
 
-    // NOTE: Using this instead of the Queue is a side effect, I added the ArrayList for different reasons
-    //       but my Queue was shit so I replaced it
-    //       I want to use the queue again to get rid of the Vector overhead (copy + dynamic memory) but
-    //       this is problematic with the unique_ptr, I guess I would have to wrap the threads in the "Chain"
-    //       elements instead of a thread being a "Chain"
-    bse::Vector<bse::unique_ptr<Thread>> ready_queue;
-    bse::Vector<bse::unique_ptr<Thread>> block_queue;
+    bse::vector<bse::unique_ptr<Thread>> ready_queue;
+    bse::vector<bse::unique_ptr<Thread>> block_queue;
 
     // NOTE: It makes sense to keep track of the active thread through this as it makes handling the
     //       unique_ptr easier and reduces the copying in the vector when cycling through the threads
-    bse::Vector<bse::unique_ptr<Thread>>::Iterator active = nullptr;
+    bse::vector<bse::unique_ptr<Thread>>::Iterator active = nullptr;
 
     // Scheduler wird evt. von einer Unterbrechung vom Zeitgeber gerufen,
     // bevor er initialisiert wurde
     unsigned int idle_tid = 0U;
 
     // Roughly the old dispatcher functionality
-    void start(bse::Vector<bse::unique_ptr<Thread>>::Iterator next);                        // Start next without prev
-    void switch_to(Thread* prev_raw, bse::Vector<bse::unique_ptr<Thread>>::Iterator next);  // Switch from prev to next
+    void start(bse::vector<bse::unique_ptr<Thread>>::Iterator next);                        // Start next without prev
+    void switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::Iterator next);  // Switch from prev to next
 
     // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }

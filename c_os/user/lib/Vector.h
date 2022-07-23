@@ -13,7 +13,7 @@
 namespace bse {
 
     template<typename T>
-    class Vector {
+    class vector {
     public:
         using Iterator = ContinuousIterator<T>;
 
@@ -27,8 +27,8 @@ namespace bse {
         std::size_t buf_cap = 0;
 
         void init() {
-            buf = new T[Vector::default_cap];
-            buf_cap = Vector::default_cap;
+            buf = new T[vector::default_cap];
+            buf_cap = vector::default_cap;
         }
 
         std::size_t get_rem_cap() const {
@@ -98,7 +98,7 @@ namespace bse {
         }
 
     public:
-        ~Vector() {
+        ~vector() {
             for (std::size_t i; i < size(); ++i) {
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
@@ -237,9 +237,9 @@ namespace bse {
     // NOTE: pred is no real predicate as one would need closures for this, but we don't have <functional> available
     //       This means the result has to be passed separately and the function differs from the c++20 std::erase_if
     template<typename T, typename arg>
-    std::size_t erase_if(Vector<T>& vec, arg (*pred)(const T&), arg result) {
+    std::size_t erase_if(vector<T>& vec, arg (*pred)(const T&), arg result) {
         std::size_t erased_els = 0;
-        for (typename Vector<T>::Iterator it = vec.begin(); it != vec.end(); /*Do nothing*/) {
+        for (typename vector<T>::Iterator it = vec.begin(); it != vec.end(); /*Do nothing*/) {
             if (pred(*it) == result) {
                 it = vec.erase(it);  // erase returns the iterator to the next element
                 ++erased_els;

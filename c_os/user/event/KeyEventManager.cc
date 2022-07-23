@@ -8,7 +8,7 @@ void KeyEventManager::subscribe(KeyEventListener& sub) {
 
 void KeyEventManager::unsubscribe(KeyEventListener& unsub) {
     log.debug() << "Unsubscribe, Thread ID: " << dec << unsub.tid << endl;
-    for (bse::Vector<KeyEventListener*>::Iterator it = listeners.begin(); it != listeners.end(); ++it) {
+    for (bse::vector<KeyEventListener*>::Iterator it = listeners.begin(); it != listeners.end(); ++it) {
         if ((*it)->tid == unsub.tid) {
             this->listeners.erase(it);
             return;
