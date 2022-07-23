@@ -40,7 +40,8 @@ unsigned int ThreadCnt = 1;  // Skip tid 0 as the scheduler indicates no preempt
  *****************************************************************************/
 void Thread_init(struct ThreadState* regs, unsigned int* stack, void (*kickoff)(Thread*), void* object) {
 
-    register unsigned int** sp = (unsigned int**)stack;
+    // NOTE: register not allowed in c++17
+    unsigned int** sp = (unsigned int**)stack;
 
     // Stack initialisieren. Es soll so aussehen, als waere soeben die
     // eine Funktion aufgerufen worden, die als Parameter den Zeiger
