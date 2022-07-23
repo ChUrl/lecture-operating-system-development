@@ -24,9 +24,9 @@ private:
     void log(const char* message, CGA::color col) const;
 
     friend class NamedLogger;  // Allow NamedLogger to lock/unlock
-    static SpinLock sem;
-    static void lock() { Logger::sem.acquire(); }
-    static void unlock() { Logger::sem.release(); }
+    SpinLock sem;              // Semaphore would be a cyclic include
+    static void lock() { Logger::instance().sem.acquire(); }
+    static void unlock() { Logger::instance().sem.release(); }
     // static void lock() {}
     // static void unlock() {}
 

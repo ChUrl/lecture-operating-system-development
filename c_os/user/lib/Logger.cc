@@ -1,7 +1,6 @@
 #include "user/lib/Logger.h"
 #include "kernel/Globals.h"
 
-SpinLock Logger::sem;
 bool Logger::kout_enabled = true;
 bool Logger::serial_enabled = true;
 

@@ -14,7 +14,6 @@
 #include "kernel/threads/Thread.h"
 #include "lib/SpinLock.h"
 #include "user/lib/Vector.h"
-#include <vector>
 
 class Semaphore {
 private:
