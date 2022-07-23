@@ -2,6 +2,7 @@
 #define __MYSTDLIB_INCLUDE_H_
 
 namespace bse {
+
     template<typename T>
     void memcpy(T* destination, T* source, unsigned int count = 1) {
         for (unsigned int i = 0; i < count; ++i) {
