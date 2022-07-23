@@ -1,8 +1,6 @@
 #ifndef __Iterator_Include_H_
 #define __Iterator_Include_H_
 
-#include <cstddef>
-
 namespace bse {
 
     // This iterator works for structures where the elements are adjacent in memory.
@@ -30,11 +28,11 @@ namespace bse {
             return *this;
         }
 
-        ContinuousIterator operator+(std::size_t add) {
+        ContinuousIterator operator+(unsigned int add) {
             return ContinuousIterator(this->ptr + add);
         }
 
-        ContinuousIterator operator-(std::size_t sub) {
+        ContinuousIterator operator-(unsigned int sub) {
             return ContinuousIterator(this->ptr - sub);
         }
 
@@ -52,11 +50,11 @@ namespace bse {
         bool operator!=(const ContinuousIterator& other) const { return this->ptr != other.ptr; }
 
         template<typename t>
-        friend std::size_t distance(const ContinuousIterator<t>& first, const ContinuousIterator<t>& last);
+        friend unsigned int distance(const ContinuousIterator<t>& first, const ContinuousIterator<t>& last);
     };
 
     template<typename T>
-    std::size_t distance(const ContinuousIterator<T>& first, const ContinuousIterator<T>& last) {
+    unsigned int distance(const ContinuousIterator<T>& first, const ContinuousIterator<T>& last) {
         return last.ptr - first.ptr;
     }
 
