@@ -123,6 +123,7 @@ int main() {
     // DONE: Remove Iterator from List.h
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // DONE: Remove the Input.h file and replace functionality with kevman
+    // TODO: Replace C style casts with C++ casts
 
     // Scheduler doesn't return
     return 0;
