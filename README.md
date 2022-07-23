@@ -3,6 +3,7 @@ Makefile
 - Added the -std=c++17 flag to enable better constexpr support.
 - Removed optimizations as the system would crash with them.
   The BlueScreen would show an empty callstack on crashes with -O2 so I guess the problem is the missing ebp or something like that.
+- Added qemu-stdio target for easy access to the serial output
   
 Changes
 ======================================
@@ -31,5 +32,7 @@ Additions
 Bugs
 ======================================
 - Can't exit the PCSPKdemo (bluescreen)
+- After exiting the VBEdemo the paging isn't reactivated (so the pagefault bluescreen no longer works)
+- The PreemptiveThreadDemo LoopThreads can't be exited, the demo can't be launched multiple times
 - Random bluescreens that are hard to pinpoint
 - Tree Allocator (uses a red black tree to find best-fit blocks) crashes when freelist root is removed
