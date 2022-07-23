@@ -37,7 +37,7 @@ public:
     Key() : asc(0), scan(0), modi(0) {}
 
     // VALID: mit Scancode = 0 werden ungueltige Tasten gekennzeichnet.
-    bool valid() { return scan != 0; }
+    bool valid() const { return scan != 0; }
 
     // INVALIDATE: setzt den Scancode auf Null und sorgt somit fuer einen
     //             ungueltigen Tastencode.
@@ -46,8 +46,8 @@ public:
     // ASCII, SCANCODE: Setzen und Abfragen von Ascii und Scancode
     void ascii(unsigned char a) { asc = a; }
     void scancode(unsigned char s) { scan = s; }
-    unsigned char ascii() { return asc; }
-    unsigned char scancode() { return scan; }
+    unsigned char ascii() const { return asc; }
+    unsigned char scancode() const { return scan; }
 
     //
     // Funktionen zum Setzen und Loeschen von SHIFT, ALT, CTRL usw.
@@ -87,18 +87,18 @@ public:
     //
     // Funktionen zum Abfragen von SHIFT, ALT, CTRL usw.
     //
-    bool shift() { return modi & mbit::shift; }
-    bool alt_left() { return modi & mbit::alt_left; }
-    bool alt_right() { return modi & mbit::alt_right; }
-    bool ctrl_left() { return modi & mbit::ctrl_left; }
-    bool ctrl_right() { return modi & mbit::ctrl_right; }
-    bool caps_lock() { return modi & mbit::caps_lock; }
-    bool num_lock() { return modi & mbit::num_lock; }
-    bool scroll_lock() { return modi & mbit::scroll_lock; }
-    bool alt() { return alt_left() | alt_right(); }
-    bool ctrl() { return ctrl_left() | ctrl_right(); }
+    bool shift() const { return (modi & mbit::shift) != 0; }
+    bool alt_left() const { return (modi & mbit::alt_left) != 0; }
+    bool alt_right() const { return (modi & mbit::alt_right) != 0; }
+    bool ctrl_left() const { return (modi & mbit::ctrl_left) != 0; }
+    bool ctrl_right() const { return (modi & mbit::ctrl_right) != 0; }
+    bool caps_lock() const { return (modi & mbit::caps_lock) != 0; }
+    bool num_lock() const { return (modi & mbit::num_lock) != 0; }
+    bool scroll_lock() const { return (modi & mbit::scroll_lock) != 0; }
+    bool alt() const { return alt_left() || alt_right(); }
+    bool ctrl() const { return ctrl_left() || ctrl_right(); }
 
-    operator char() { return (char)asc; }
+    operator char() const { return (char)asc; }
 
     // Scan-Codes einiger spezieller Tasten
     struct scan {
