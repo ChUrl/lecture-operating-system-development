@@ -28,6 +28,7 @@ Additions
 - Basic vector and iterator
 - Basic unique_ptr
 - Basic fixed size array (just a wrapper for C-style arrays)
+- Basic dynamic string (heap allocated)
 
 Bugs
 ======================================
@@ -37,3 +38,8 @@ Bugs
 - Tree Allocator (uses a red black tree to find best-fit blocks) crashes when freelist root is removed
 - Can't restart the OS (bluescreen)
 - Random bluescreens that are hard to pinpoint
+
+Findings
+======================================
+- Singleton can't have a destructor, as C++ doesn't know how to deinitialize them after program exit.
+  This happens because we compile with very limited libraries so "atexit" to register destructors is missing.
