@@ -98,6 +98,54 @@ namespace bse {
         }
 
     public:
+        vector() = default;
+
+        vector(const vector& copy) {
+            buf_cap = copy.buf_cap;
+            buf_pos = copy.buf_pos;
+            buf = new T[buf_cap];
+            for (unsigned int i = 0; i < buf_pos; ++i) {
+                buf[i] = copy[i];  // Does a copy since copy is marked const reference
+            }
+        }
+
+        vector& operator=(const vector& copy) {
+            if (this != &copy) {
+                ~vector();
+
+                buf_cap = copy.buf_cap;
+                buf_pos = copy.buf_pos;
+                buf = new T[buf_cap];
+                for (unsigned int i = 0; i < buf_pos; ++i) {
+                    buf[i] = copy[i];
+                }
+            }
+            return *this;
+        }
+
+        vector(vector&& move) noexcept {
+            buf_cap = move.buf_cap;
+            buf_pos = move.buf_pos;
+            buf = move.buf;
+
+            move.buf_cap = 0;
+            move.buf_pos = 0;
+            move.buf = nullptr;
+        }
+
+        vector& operator=(vector&& move) noexcept {
+            if (this != &move) {
+                buf_cap = move.buf_cap;
+                buf_pos = move.buf_pos;
+                buf = move.buf;
+
+                move.buf_cap = 0;
+                move.buf_pos = 0;
+                move.buf = nullptr;
+            }
+            return *this;
+        }
+
         ~vector() {
             for (std::size_t i; i < size(); ++i) {
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
