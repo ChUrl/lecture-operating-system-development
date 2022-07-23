@@ -4,7 +4,7 @@
 namespace bse {
 
     template<typename T>
-    void memcpy(T* destination, T* source, unsigned int count = 1) {
+    void memcpy(T* destination, const T* source, const unsigned int count = 1) {
         for (unsigned int i = 0; i < count; ++i) {
             *(destination + i) = *(source + i);
         }
