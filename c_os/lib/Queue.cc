@@ -1,6 +1,4 @@
 #include "Queue.h"
-#include <cstddef>
-// #include <iostream>
 
 void Queue::enqueue(Chain* item) {
     // std::cout << "Enqueue " << item->val << std::endl;
@@ -13,7 +11,7 @@ Chain* Queue::dequeue() {
     if (this->isEmpty()) {
         // This should not ever happen as the idle thread exists always
         // std::cout << "Dequeue called on empty queue." << std::endl;
-        return NULL;
+        return nullptr;
     }
 
     Chain* item = this->head;
@@ -38,7 +36,7 @@ void Queue::remove(Chain* item) {
     }
 
     Chain* current = this->head;
-    Chain* lastnext = NULL;
+    Chain* lastnext = nullptr;
     while (current != item) {
         if (current->next == *this->tail) {
             // std::cout << "Element not in queue." << std::endl;
