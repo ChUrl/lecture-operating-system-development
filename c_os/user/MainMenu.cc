@@ -6,6 +6,7 @@
 #include "user/demo/PCSPKdemo.h"
 #include "user/demo/PreemptiveThreadDemo.h"
 #include "user/demo/SmartPointerDemo.h"
+#include "user/demo/StringDemo.h"
 #include "user/demo/TextDemo.h"
 #include "user/demo/VBEdemo.h"
 #include "user/demo/VectorDemo.h"
@@ -33,7 +34,7 @@ void MainMenu::run() {
     while (running) {
         input = this->listener.waitForKeyEvent();
 
-        if (input >= '0' && input <= '9') {
+        if ((input >= '0' && input <= '9') || input == '!') {
             switch (input) {
             case '1':
                 running_demo = scheduler.ready<TextDemo>();
@@ -65,6 +66,9 @@ void MainMenu::run() {
                 break;
             case '0':
                 running_demo = scheduler.ready<SmartPointerDemo>();
+                break;
+            case '!':
+                running_demo = scheduler.ready<StringDemo>();
                 break;
             }
         } else if (input == 'k') {
