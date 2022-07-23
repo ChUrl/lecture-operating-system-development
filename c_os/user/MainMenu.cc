@@ -22,6 +22,11 @@ void print_demo_menu() {
          << "5 - VBE Demo\n"
          << "6 - Bluescreen Demo\n"
          << "7 - Preemption Demo\n"
+         << "Extra demos:\n"
+         << "8 - bse::vector demo\n"
+         << "9 - bse::array demo\n"
+         << "0 - bse::unique_ptr demo\n"
+         << "! - bse::string demo\n"
          << endl;
     kout.unlock();
 }
