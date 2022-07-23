@@ -8,7 +8,7 @@
  *                                                                           *
  *                  Der Scheduler wird mit 'schedule' gestartet. Neue Threads*
  *                  können mit 'ready' hinzugefügt werden. Ein Thread muss   *
- *                  die CPU freiwillig mit 'yield' abgeben, damit andere auch*
+ *                  die CPU::freiwillig mit 'yield' abgeben, damit andere auch*
  *                  rechnen koennen. Ein Thread kann sich selbst mit 'exit'  *
  *                  terminieren. Ein Thread kann einen anderen Thread mit    *
  *                  'kill' beenden. Ein erzwungener Threadwechsel erfolgt    *
@@ -33,7 +33,7 @@ constexpr const bool INSANE_TRACE = false;
  * Beschreibung:    Auf den active thread wechseln.                          *
  *                                                                           *
  * Parameter:                                                                *
- *      next        Thread der die CPU erhalten soll.                        *
+ *      next        Thread der die CPU::erhalten soll.                        *
  *****************************************************************************/
 void Scheduler::start(bse::vector<bse::unique_ptr<Thread>>::iterator next) {
     active = next;
@@ -84,10 +84,10 @@ void Scheduler::schedule() {
  * Beschreibung:    Thread in readyQueue eintragen.                          *
  *****************************************************************************/
 void Scheduler::ready(bse::unique_ptr<Thread>&& thread) {
-    cpu.disable_int();
+    CPU::disable_int();
     log.debug() << "Adding to ready_queue, ID: " << dec << thread->tid << endl;
     ready_queue.push_back(std::move(thread));
-    cpu.enable_int();
+    CPU::enable_int();
 }
 
 /*****************************************************************************
@@ -103,11 +103,11 @@ void Scheduler::exit() {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
+    CPU::disable_int();
 
     if (ready_queue.size() == 1) {
         log.error() << "Can't exit last thread, active ID: " << dec << (*active)->tid << endl;
-        cpu.enable_int();
+        CPU::enable_int();
         return;
     }
 
@@ -132,7 +132,7 @@ void Scheduler::exit() {
  *      that        Zu terminierender Thread                                 *
  *****************************************************************************/
 void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
-    cpu.disable_int();
+    CPU::disable_int();
 
     unsigned int prev_tid = (*active)->tid;
 
@@ -151,7 +151,7 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
             block_queue.erase(it);
             log.info() << "Killed thread from block_queue with id: " << tid << endl;
 
-            cpu.enable_int();
+            CPU::enable_int();
             return;
         }
     }
@@ -159,7 +159,7 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     // Ready queue, can't kill last one
     if (ready_queue.size() == 1) {
         log.error() << "Kill: Can't kill last thread in ready_queue with id: " << tid << endl;
-        cpu.enable_int();
+        CPU::enable_int();
         return;
     }
 
@@ -185,26 +185,26 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
             ready_queue.erase(it);
             log.info() << "Killed thread from ready_queue with id: " << tid << endl;
 
-            cpu.enable_int();
+            CPU::enable_int();
             return;
         }
     }
 
     log.error() << "Kill: Couldn't find thread with id: " << tid << " in ready- or block-queue" << endl;
-    cpu.enable_int();
+    CPU::enable_int();
 }
 
 // TODO: Can't retrive the thread right now because it's not clear when it's finished,
 //       maybe introduce a exited_queue and get it from there
 void Scheduler::nice_kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
-    cpu.disable_int();
+    CPU::disable_int();
 
     for (bse::unique_ptr<Thread>& thread : block_queue) {
         if (thread->tid == tid) {
             thread->suicide();
             log.info() << "Nice killed thread in block_queue with id: " << tid << endl;
             deblock(tid);
-            cpu.enable_int();
+            CPU::enable_int();
             return;
         }
     }
@@ -213,19 +213,19 @@ void Scheduler::nice_kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
         if (thread->tid == tid) {
             thread->suicide();
             log.info() << "Nice killed thread in ready_queue with id: " << tid << endl;
-            cpu.enable_int();
+            CPU::enable_int();
             return;
         }
     }
 
     log.error() << "Can't nice kill thread (not found) with id: " << tid << endl;
-    cpu.enable_int();
+    CPU::enable_int();
 }
 
 /*****************************************************************************
  * Methode:         Scheduler::yield                                         *
  *---------------------------------------------------------------------------*
- * Beschreibung:    CPU freiwillig abgeben und Auswahl des naechsten Threads.*
+ * Beschreibung:    CPU::freiwillig abgeben und Auswahl des naechsten Threads.*
  *                  Naechsten Thread aus der readyQueue holen, den aktuellen *
  *                  in die readyQueue wieder eintragen. Das Umschalten soll  *
  *                  mithilfe des Dispatchers erfolgen.                       *
@@ -238,13 +238,13 @@ void Scheduler::yield() {
     /* hier muss Code eingefuegt werden */
 
     // Thread-Wechsel durch PIT verhindern
-    cpu.disable_int();
+    CPU::disable_int();
 
     if (ready_queue.size() == 1) {
         if constexpr (INSANE_TRACE) {
             log.trace() << "Skipping yield as no thread is waiting, active ID: " << dec << (*active)->tid << endl;
         }
-        cpu.enable_int();
+        CPU::enable_int();
         return;
     }
     if constexpr (INSANE_TRACE) {
@@ -264,7 +264,7 @@ void Scheduler::preempt() {
 
     /* Hier muss Code eingefuegt werden */
 
-    cpu.disable_int();
+    CPU::disable_int();
     yield();
 }
 
@@ -282,11 +282,11 @@ void Scheduler::block() {
 
     /* hier muss Code eingefuegt werden */
 
-    cpu.disable_int();
+    CPU::disable_int();
 
     if (ready_queue.size() == 1) {
         log.error() << "Can't block last thread, active ID: " << dec << (*active)->tid << endl;
-        cpu.enable_int();
+        CPU::enable_int();
         return;
     }
 
@@ -316,7 +316,7 @@ void Scheduler::deblock(unsigned int tid) {
 
     /* hier muss Code eingefuegt werden */
 
-    cpu.disable_int();
+    CPU::disable_int();
 
     for (bse::vector<bse::unique_ptr<Thread>>::iterator it = block_queue.begin(); it != block_queue.end(); ++it) {
         if ((*it)->tid == tid) {
@@ -329,11 +329,11 @@ void Scheduler::deblock(unsigned int tid) {
             if constexpr (INSANE_TRACE) {
                 log.trace() << "Deblocked thread with id: " << tid << endl;
             }
-            cpu.enable_int();
+            CPU::enable_int();
             return;
         }
     }
 
     log.error() << "Couldn't deblock thread with id: " << tid << endl;
-    cpu.enable_int();
+    CPU::enable_int();
 }

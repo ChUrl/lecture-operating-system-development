@@ -35,13 +35,13 @@ void int_disp(unsigned int vector) {
 
     if (vector < 32) {
         bs_dump(vector);
-        cpu.halt();
+        CPU::halt();
     }
 
     if (intdis.report(vector) < 0) {
         kout << "Panic: unexpected interrupt " << vector;
         kout << " - processor halted." << endl;
-        cpu.halt();
+        CPU::halt();
     }
 }
 

@@ -13,7 +13,6 @@
 #define __SpinLock_include__
 
 class SpinLock {
-
 private:
     SpinLock(const SpinLock& copy) = delete;  // Verhindere Kopieren
 

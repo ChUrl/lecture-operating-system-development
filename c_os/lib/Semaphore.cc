@@ -13,7 +13,7 @@ void Semaphore::p() {
         // Block and manage thread in semaphore queue until it's woken up by v() again
         this->wait_queue.push_back(scheduler.get_active());
 
-        cpu.disable_int();  // Make sure the block() comes through after releasing the lock
+        CPU::disable_int();  // Make sure the block() comes through after releasing the lock
         this->lock.release();
         scheduler.block();  // Moves to next thread, enables int
     }
@@ -27,7 +27,7 @@ void Semaphore::v() {
         unsigned int tid = this->wait_queue.front();
         this->wait_queue.erase(wait_queue.begin());
 
-        cpu.disable_int();  // Make sure the deblock() comes through after releasing the lock
+        CPU::disable_int();  // Make sure the deblock() comes through after releasing the lock
         this->lock.release();
         scheduler.deblock(tid);  // Enables int
     } else {

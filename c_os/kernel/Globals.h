@@ -22,13 +22,13 @@
 #include "kernel/CPU.h"
 #include "kernel/interrupts/IntDispatcher.h"
 #include "kernel/interrupts/PIC.h"
+#include "kernel/Paging.h"
 #include "kernel/threads/Scheduler.h"
 #include "user/devices/SerialOut.h"
 #include "user/event/KeyEventManager.h"
 
 // I wanted to make more of these singletons but there were problems with atexit missing because of nostdlib I guess
 
-extern CPU cpu;          // CPU-spezifische Funktionen
 extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
 extern BIOS bios;        // Schnittstelle zum 16-Bit BIOS
 extern VESA vesa;        // VESA-Treiber

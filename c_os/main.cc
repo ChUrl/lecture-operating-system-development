@@ -53,7 +53,7 @@ int main() {
     pit.plugin();
 
     // Interrupts erlauben (Tastatur, PIT)
-    cpu.enable_int();
+    CPU::enable_int();
 
     // Activate paging
     // This has to happen after the allocator is initialized but before the scheduler is started

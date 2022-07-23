@@ -10,7 +10,6 @@
 
 #include "kernel/Globals.h"
 
-CPU cpu;          // CPU-spezifische Funktionen
 CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
 BIOS bios;        // Schnittstelle zum 16-Bit BIOS
 VESA vesa;        // VESA-Treiber

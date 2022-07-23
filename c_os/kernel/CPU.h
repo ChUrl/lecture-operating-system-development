@@ -13,7 +13,6 @@
 #define __CPU_include__
 
 class CPU {
-
 private:
     CPU(const CPU& copy);  // Verhindere Kopieren
 
@@ -21,29 +20,29 @@ public:
     CPU() {}
 
     // Erlauben von (Hardware-)Interrupts
-    inline void enable_int() {
+    static inline void enable_int() {
         asm volatile("sti");
     }
 
     // Interrupts werden ignoriert/verboten
-    inline void disable_int() {
+    static inline void disable_int() {
         asm volatile("cli");
     }
 
     // Prozessor bis zum naechsten Interrupt anhalten
-    inline void idle() {
+    static inline void idle() {
         asm volatile("sti;"
                      "hlt");
     }
 
     // Prozessor anhalten
-    inline void halt() {
+    static inline void halt() {
         asm volatile("cli;"
                      "hlt");
     }
 
     // Time-Stamp-Counter auslesen
-    inline unsigned long long int rdtsc() {
+    static inline unsigned long long int rdtsc() {
         unsigned long long int ret;
         asm volatile("rdtsc"
                      : "=A"(ret));

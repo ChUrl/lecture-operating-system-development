@@ -319,7 +319,7 @@ void BIOS::Int(int inter) {
     // Interrupt-Nummer in 16-Bit Code-Segment schreiben (unschoen, aber ...)
     *(ptr + 48) = (unsigned char)inter;
 
-    cpu.disable_int();  // Interrupts abschalten
+    CPU::disable_int();  // Interrupts abschalten
     bios_call();
-    cpu.enable_int();
+    CPU::enable_int();
 }
