@@ -159,7 +159,7 @@ namespace bse {
                 return;
             }
 
-            for (std::size_t i; i < size(); ++i) {
+            for (std::size_t i = 0; i < size(); ++i) {
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
             delete[] buf;
