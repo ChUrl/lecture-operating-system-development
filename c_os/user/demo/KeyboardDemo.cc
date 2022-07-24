@@ -21,7 +21,7 @@ void KeyboardDemo::run() {
     kout << "Info: Die Keyboard Demo sperrt den Output Stream:\n"
          << "      Wenn die Preemption Demo laeuft wird diese also erst\n"
          << "      fortfahren wenn die Keyboard Demo wieder beendet ist." << endl;
-    kout << "\nInput: ";
+    kout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput: ";
     kout.flush();
 
     while (running) {
