@@ -18,14 +18,14 @@
 
 class IntDispatcher {
 private:
-    IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren
-
     NamedLogger log;
 
     enum { size = 256 };
     ISR* map[size];
 
 public:
+    IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren
+
     // Vektor-Nummern
     enum {
         timer = 32,
@@ -35,8 +35,8 @@ public:
 
     // Initialisierung der ISR map mit einer Default-ISR.
     IntDispatcher() : log("IntDis") {
-        for (unsigned int slot = 0; slot < size; slot++) {
-            map[slot] = 0;
+        for (ISR*& slot : map) {
+            slot = nullptr;
         }
     }
 
