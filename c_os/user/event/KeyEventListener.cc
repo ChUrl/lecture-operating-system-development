@@ -6,7 +6,7 @@ void KeyEventListener::trigger(char c) {
 }
 
 char KeyEventListener::waitForKeyEvent() const {
-    logger << DEBUG << "KEvLis:: Thread with id: " << tid << " waiting for key event" << endl;
+    Logger::instance() << DEBUG << "KEvLis:: Thread with id: " << tid << " waiting for key event" << endl;
     scheduler.block();
     return this->lastChar;  // This is only executed after thread is woken up by manager
 }

@@ -47,7 +47,6 @@ extern Scheduler scheduler;
 
 extern KeyEventManager kevman;
 extern SerialOut serial;
-extern Logger& logger;
 
 extern unsigned int total_mem;  // RAM total
 extern unsigned long systime;   // wird all 10ms hochgezaehlt
