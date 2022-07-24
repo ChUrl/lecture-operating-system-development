@@ -37,10 +37,9 @@ constexpr unsigned int BASIC_ALIGN = 4;                // 32 Bit so 4 Bytes?
 constexpr unsigned int HEAP_MIN_FREE_BLOCK_SIZE = 64;  // min. Groesse eines freien Blocks
 
 class Allocator {
-private:
+public:
     Allocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
-public:
     unsigned int heap_start;
     unsigned int heap_end;
     unsigned int heap_size;
