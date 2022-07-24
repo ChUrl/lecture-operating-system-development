@@ -77,7 +77,7 @@ void Logger::trace(const char* message) const {
     }
 }
 void Logger::trace(const bse::string& message) const {
-    trace((const char*)message);
+    trace(static_cast<const char*>(message));
 }
 
 void Logger::debug(const char* message) const {
@@ -86,7 +86,7 @@ void Logger::debug(const char* message) const {
     }
 }
 void Logger::debug(const bse::string& message) const {
-    debug((const char*)message);
+    debug(static_cast<const char*>(message));
 }
 
 void Logger::error(const char* message) const {
@@ -95,7 +95,7 @@ void Logger::error(const char* message) const {
     }
 }
 void Logger::error(const bse::string& message) const {
-    error((const char*)message);
+    error(static_cast<const char*>(message));
 }
 
 void Logger::info(const char* message) const {
@@ -104,7 +104,7 @@ void Logger::info(const char* message) const {
     }
 }
 void Logger::info(const bse::string& message) const {
-    info((const char*)message);
+    info(static_cast<const char*>(message));
 }
 
 // Manipulatoren
