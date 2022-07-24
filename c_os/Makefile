@@ -85,6 +85,7 @@ endif
 
 
 # NOTE: Need -O0 to allow paging/bluescreen to work (We need the ebp on the stack)
+#       Fortify source needs -O2, at least O1
 CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 $(GCCFLAGS)
 
 # NOTE: -std=c++17 for if constexpr and probably some other stuff
