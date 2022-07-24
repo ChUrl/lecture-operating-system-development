@@ -58,6 +58,8 @@ public:
         pos = 0;
     }
 
+    // CAn't make singleton because atexit
+
 //    ~CGA_Stream() override = default;
 
     void lock() { sem.p(); }

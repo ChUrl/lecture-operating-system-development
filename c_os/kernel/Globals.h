@@ -30,7 +30,7 @@
 // I wanted to make more of these singletons but there were problems with atexit missing because of nostdlib I guess
 
 extern CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
-extern BIOS bios;        // Schnittstelle zum 16-Bit BIOS
+extern const BIOS& bios;        // Schnittstelle zum 16-Bit BIOS
 extern VESA vesa;        // VESA-Treiber
 
 extern PIC pic;               // Interrupt-Controller

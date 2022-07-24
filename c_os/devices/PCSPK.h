@@ -73,9 +73,11 @@ public:
     // Konstruktor. Initialisieren der Ports.
     PCSPK() = default;
 
+    // Can't make singleton because atexit
+
     // Demo Sounds
-    void tetris();
-    void aerodynamic();
+    static void tetris();
+    static void aerodynamic();
 
     // Ton abspielen
     static void play(float f, int len);

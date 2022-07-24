@@ -32,6 +32,8 @@ public:
 
     VESA() : log("VESA") {}
 
+    // Can't make singleton because atexit
+
     // Bestimmten Grafikmodus einschalten
     bool initGraphicMode(unsigned short mode);
     static void initTextMode();

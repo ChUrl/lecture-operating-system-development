@@ -29,6 +29,8 @@ public:
 
     PIC() = default;
 
+    // Can't make static because atexit
+
     // IRQ-Nummern von Geraeten
     enum {
         timer = 0,     // Programmable Interrupt Timer (PIT)

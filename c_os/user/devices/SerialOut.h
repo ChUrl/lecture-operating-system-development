@@ -14,8 +14,10 @@ private:
     static int is_transmit_empty();
 
 public:
-    SerialOut(const SerialOut& copy) = delete;
     SerialOut();
+    SerialOut(const SerialOut& copy) = delete;
+
+    // Can't make singleton because atexit
 
     static char read();
     static void write(char a);

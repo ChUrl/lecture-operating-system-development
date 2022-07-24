@@ -34,11 +34,17 @@ struct BIOScall_params {
 extern  BIOScall_params* BC_params;
 
 class BIOS {
+private:
+    // Initialisierung: manuelles Anlegen einer Funktion
+    BIOS();
+
 public:
     BIOS(const BIOS& copy) = delete;  // Verhindere Kopieren
 
-    // Initialisierung: manuelles Anlegen einer Funktion
-    BIOS();
+    static BIOS& instance() {
+        static BIOS bios;
+        return bios;
+    }
 
     // BIOS-Aufruf, per Software-Interrupt
     static void Int(int inter);

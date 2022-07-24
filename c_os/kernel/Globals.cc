@@ -11,7 +11,7 @@
 #include "kernel/Globals.h"
 
 CGA_Stream kout;  // Ausgabe-Strom fuer Kernel
-BIOS bios;        // Schnittstelle zum 16-Bit BIOS
+const BIOS& bios = BIOS::instance();        // Schnittstelle zum 16-Bit BIOS
 VESA vesa;        // VESA-Treiber
 
 PIC pic;               // Interrupt-Controller
