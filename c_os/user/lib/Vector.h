@@ -6,7 +6,7 @@
 //       ArrayList instead
 
 #include "user/lib/Iterator.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 #include <utility>
 
 // https://en.cppreference.com/w/cpp/container/vector
@@ -108,8 +108,17 @@ namespace bse {
             }
         };
 
-        vector(const vector& copy) : buf_pos(copy.buf_pos), buf_cap(copy.buf_cap) {
-            buf = new T[buf_cap];
+        // Initialize like this: bse::vector<int> vec {1, 2, 3, 4, 5};
+        vector(std::initializer_list<T> list) : buf_cap(list.size()), buf(new T[buf_cap]) {
+            typename std::initializer_list<T>::iterator it = list.begin();
+            for (unsigned int i = 0; i < buf_pos; ++i) {
+                buf[i] = *it;
+                ++it;
+            }
+        }
+
+
+        vector(const vector& copy) : buf_pos(copy.buf_pos), buf_cap(copy.buf_cap), buf(new T[buf_cap]) {
             for (unsigned int i = 0; i < buf_pos; ++i) {
                 buf[i] = copy[i];  // Does a copy since copy is marked const reference
             }
