@@ -6,7 +6,12 @@
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system};
+      let
+        # pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          config = { allowUnfree = true; };
+        }; 
       in {
 
         devShell = pkgs.mkShell {
@@ -16,7 +21,7 @@
             glibc_multi # Needed for lsp to find some headers (can cause compilation errors when trying to
                         # compile some file standalone)
             nasm
-            binutils
+            # binutils # Should be included in gcc
 
             gnumake
             bear # To generate compilation database
@@ -27,6 +32,8 @@
                            # don't function correctly somehow (don't find headers, probably some conflict between
                            # nix clang and gcc environments)
             clang_14 # To view template generation, also alternative error messages
+
+            jetbrains.clion
 
             # TODO: Figure out what is needed to make cling work
             # llvmPackages_14.llvm
