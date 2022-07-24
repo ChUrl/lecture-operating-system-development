@@ -46,6 +46,8 @@ int main() {
 
     // Speicherverwaltung initialisieren
     allocator.init();
+    scheduler.init();
+    kevman.init();
 
     // Tastatur-Unterbrechungsroutine 'einstoepseln'
     kb.plugin();
@@ -124,6 +126,7 @@ int main() {
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // DONE: Remove the Input.h file and replace functionality with kevman
     // TODO: Replace C style casts with C++ casts
+    // TODO: Add Move/Copy/Assignment stuff to vector, array etc (all where it's missing)
 
     // Scheduler doesn't return
     return 0;

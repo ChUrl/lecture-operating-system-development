@@ -17,7 +17,11 @@ private:
     bse::vector<KeyEventListener*> listeners;
 
 public:
-    KeyEventManager() : log("KEvMan") {}
+    KeyEventManager() : log("KEvMan"), listeners(true) {}
+
+    void init() {
+        listeners.reserve();
+    }
 
     void subscribe(KeyEventListener& sub);
     void unsubscribe(KeyEventListener& unsub);

@@ -27,7 +27,7 @@ private:
 
 public:
     // Konstruktor: Initialisieren des Semaphorzaehlers
-    Semaphore(int c) : counter(c) {}
+    Semaphore(int c) : wait_queue(true), counter(c) {}
 
     // 'Passieren': Warten auf das Freiwerden eines kritischen Abschnitts.
     void p();

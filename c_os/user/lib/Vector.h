@@ -26,9 +26,12 @@ namespace bse {
         std::size_t buf_pos = 0;
         std::size_t buf_cap = 0;
 
-        void init() {
-            buf = new T[vector::default_cap];
-            buf_cap = vector::default_cap;
+        void init(std::size_t cap = vector::default_cap) {
+            if (buf != nullptr) {
+                return;
+            }
+            buf = new T[cap];
+            buf_cap = cap;
         }
 
         std::size_t get_rem_cap() const {
@@ -98,7 +101,12 @@ namespace bse {
         }
 
     public:
-        vector() = default;
+        vector(bool lazy = false) {
+            if (!lazy) {  // I added this as a work around, the scheduler can't initialize the queues right
+                          // away because when the scheduler is started the allocator is not ready.
+                init();
+            }
+        };
 
         vector(const vector& copy) {
             buf_cap = copy.buf_cap;
@@ -147,6 +155,10 @@ namespace bse {
         }
 
         ~vector() {
+            if (buf == nullptr) {
+                return;
+            }
+
             for (std::size_t i; i < size(); ++i) {
                 buf[i].~T();  // TODO: I think delete[] buf calls these, verify that
             }
@@ -154,48 +166,20 @@ namespace bse {
         }
 
         // Iterator
-        iterator begin() {
-            if (buf == nullptr) {
-                init();
-            }
-            return iterator(&buf[0]);
-        }
-        iterator begin() const {
-            if (buf == nullptr) {
-                init();
-            }
-            return iterator(&buf[0]);
-        }
-        iterator end() {
-            if (buf == nullptr) {
-                init();
-            }
-            return iterator(&buf[size()]);
-        }
-        iterator end() const {
-            if (buf == nullptr) {
-                init();
-            }
-            return iterator(&buf[size()]);
-        }
+        iterator begin() { return iterator(&buf[0]); }
+        iterator begin() const { return iterator(&buf[0]); }
+        iterator end() { return iterator(&buf[size()]); }
+        iterator end() const { return iterator(&buf[size()]); }
 
         // Add elements
         // https://en.cppreference.com/w/cpp/container/vector/push_back
         void push_back(const T& copy) {
-            if (buf == nullptr) {
-                init();
-            }
-
             buf[size()] = copy;
             ++buf_pos;
             min_expand();
         }
 
         void push_back(T&& move) {
-            if (buf == nullptr) {
-                init();
-            }
-
             buf[size()] = std::move(move);
             ++buf_pos;
             min_expand();
@@ -273,11 +257,24 @@ namespace bse {
             }
         }
 
-        void reserve(std::size_t cap) {
+        void reserve(std::size_t cap = vector::default_cap) {
+            // The first reserve could allocate double if cap != default_cap
             if (buf == nullptr) {
-                init();
+                // Directly init with correct size
+                init(cap);
+                return;
             }
+
+            if (cap == buf_cap) {
+                // Would change nothing
+                return;
+            }
+
             switch_buf(cap);
+        }
+
+        bool initialized() const {
+            return buf != nullptr;
         }
     };
 

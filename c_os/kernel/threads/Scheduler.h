@@ -45,7 +45,13 @@ private:
     void ready(bse::unique_ptr<Thread>&& thread);
 
 public:
-    Scheduler() : log("SCHED") {}
+    Scheduler() : log("SCHED"), ready_queue(true), block_queue(true) {}  // lazy queues, wait for allocator
+
+    // The scheduler has to init the queues explicitly after the allocator is available
+    void init() {
+        ready_queue.reserve();
+        block_queue.reserve();
+    }
 
     unsigned int get_active() const {
         return (*active)->tid;

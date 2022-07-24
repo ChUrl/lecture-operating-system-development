@@ -11,6 +11,9 @@ void Semaphore::p() {
         this->lock.release();
     } else {
         // Block and manage thread in semaphore queue until it's woken up by v() again
+        if (!wait_queue.initialized()) {  // TODO: I will replace this suboptimal datastructure in the future
+            wait_queue.reserve();
+        }
         this->wait_queue.push_back(scheduler.get_active());
 
         CPU::disable_int();  // Make sure the block() comes through after releasing the lock
