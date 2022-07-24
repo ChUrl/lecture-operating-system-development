@@ -8,11 +8,13 @@
 // Je nach Breite wird auf Bytegrenzen aufgerundet:
 //  8 Pixel -> 1 Byte; 12 Pixel -> 2 Byte
 
-#ifndef __FONTS_H__
-#define __FONTS_H__
+#ifndef FONTS_H__
+#define FONTS_H__
 
 class Font {
 public:
+    virtual ~Font() = default;
+
     virtual const unsigned char* getChar(int c) const = 0;
     virtual unsigned int get_char_width() const = 0;
     virtual unsigned int get_char_height() const = 0;

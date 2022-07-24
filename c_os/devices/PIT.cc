@@ -30,7 +30,7 @@ void PIT::interval(int us) {
 
     control.outb(0x36);  // Zähler 0 Mode 3
 
-    unsigned int cntStart = (1193180.0 / 1000000.0) * us;  // 1.19Mhz PIT
+    unsigned int cntStart = static_cast<unsigned int>((1193180.0 / 1000000.0) * us);  // 1.19Mhz PIT
 
     data0.outb(cntStart & 0xFF);  // Zaehler-0 laden (Lobyte)
     data0.outb(cntStart >> 8);    // Zaehler-0 laden (Hibyte)
@@ -75,10 +75,10 @@ void PIT::trigger() {
     /* hier muss Code eingefuegt werden */
 
     // Indicator
-    if (systime - this->last_indicator_refresh >= 10) {
-        this->indicator_pos = (this->indicator_pos + 1) % 4;
-        CGA::show(79, 0, this->indicator[this->indicator_pos]);
-        this->last_indicator_refresh = systime;
+    if (systime - last_indicator_refresh >= 10) {
+        indicator_pos = (indicator_pos + 1) % 4;
+        CGA::show(79, 0, indicator[indicator_pos]);
+        last_indicator_refresh = systime;
     }
 
     // Preemption

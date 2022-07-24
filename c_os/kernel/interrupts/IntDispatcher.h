@@ -10,18 +10,19 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 30.7.16                              *
  *****************************************************************************/
-#ifndef __IntDispatcher_include__
-#define __IntDispatcher_include__
+#ifndef IntDispatcher_include__
+#define IntDispatcher_include__
 
 #include "kernel/interrupts/ISR.h"
 #include "user/lib/Logger.h"
+#include "user/lib/Array.h"
 
 class IntDispatcher {
 private:
     NamedLogger log;
 
     enum { size = 256 };
-    ISR* map[size];
+    bse::array<ISR*, size> map;
 
 public:
     IntDispatcher(const IntDispatcher& copy) = delete;  // Verhindere Kopieren

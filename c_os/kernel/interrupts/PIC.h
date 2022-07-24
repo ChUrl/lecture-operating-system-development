@@ -14,8 +14,8 @@
  *                                                                           *
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *****************************************************************************/
-#ifndef __PIC_include__
-#define __PIC_include__
+#ifndef PIC_include__
+#define PIC_include__
 
 #include "kernel/IOport.h"
 

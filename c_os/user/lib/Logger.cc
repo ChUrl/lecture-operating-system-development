@@ -19,61 +19,61 @@ void Logger::log(const char* message, CGA::color col) const {
     if (Logger::kout_enabled) {
         CGA::color old_col = kout.color_fg;
         kout << fgc(col)
-             << Logger::level_to_string(this->current_message_level) << "::"
+             << Logger::level_to_string(current_message_level) << "::"
              << message << fgc(old_col);
         kout.flush();  // Don't add newline, Logger already does that
     }
     if (Logger::serial_enabled) {
         switch (col) {
         case CGA::WHITE:
-            serial.write(ansi_white);
+            SerialOut::write(ansi_white);
             break;
         case CGA::LIGHT_MAGENTA:
-            serial.write(ansi_magenta);
+            SerialOut::write(ansi_magenta);
             break;
         case CGA::LIGHT_RED:
-            serial.write(ansi_red);
+            SerialOut::write(ansi_red);
             break;
         case CGA::LIGHT_BLUE:
-            serial.write(ansi_blue);
+            SerialOut::write(ansi_blue);
             break;
         default:
-            serial.write(ansi_default);
+            SerialOut::write(ansi_default);
         }
-        serial.write(Logger::level_to_string(this->current_message_level));
-        serial.write(":: ");
-        serial.write(message);
-        serial.write('\r');
+        SerialOut::write(Logger::level_to_string(current_message_level));
+        SerialOut::write(":: ");
+        SerialOut::write(message);
+        SerialOut::write('\r');
         // serial.write("\r\n");
     }
 }
 
 void Logger::flush() {
-    this->buffer[this->pos] = '\0';
+    buffer[pos] = '\0';
 
-    switch (this->current_message_level) {
+    switch (current_message_level) {
     case Logger::TRACE:
-        this->trace(&buffer);
+        trace(buffer.data());
         break;
     case Logger::DEBUG:
-        this->debug(&buffer);
+        debug(buffer.data());
         break;
     case Logger::ERROR:
-        this->error(&buffer);
+        error(buffer.data());
         break;
     case Logger::INFO:
-        this->info(&buffer);
+        info(buffer.data());
         break;
     }
 
-    this->current_message_level = Logger::INFO;
-    this->pos = 0;
+    current_message_level = Logger::INFO;
+    pos = 0;
     Logger::unlock();
 }
 
 void Logger::trace(const char* message) const {
     if (Logger::level <= Logger::TRACE) {
-        this->log(message, CGA::WHITE);
+        log(message, CGA::WHITE);
     }
 }
 void Logger::trace(const bse::string& message) const {
@@ -82,7 +82,7 @@ void Logger::trace(const bse::string& message) const {
 
 void Logger::debug(const char* message) const {
     if (Logger::level <= Logger::DEBUG) {
-        this->log(message, CGA::LIGHT_MAGENTA);
+        log(message, CGA::LIGHT_MAGENTA);
     }
 }
 void Logger::debug(const bse::string& message) const {
@@ -91,7 +91,7 @@ void Logger::debug(const bse::string& message) const {
 
 void Logger::error(const char* message) const {
     if (Logger::level <= Logger::ERROR) {
-        this->log(message, CGA::LIGHT_RED);
+        log(message, CGA::LIGHT_RED);
     }
 }
 void Logger::error(const bse::string& message) const {
@@ -100,7 +100,7 @@ void Logger::error(const bse::string& message) const {
 
 void Logger::info(const char* message) const {
     if (Logger::level <= Logger::INFO) {
-        this->log(message, CGA::LIGHT_BLUE);
+        log(message, CGA::LIGHT_BLUE);
     }
 }
 void Logger::info(const bse::string& message) const {

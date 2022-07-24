@@ -1,5 +1,5 @@
-#ifndef __Logger_Include_H_
-#define __Logger_Include_H_
+#ifndef Logger_Include_H_
+#define Logger_Include_H_
 
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
@@ -15,8 +15,6 @@ public:
 
 private:
     Logger() = default;
-    Logger(const Logger& copy) = delete;
-    void operator=(const Logger& copy) = delete;
 
     static bool kout_enabled;
     static bool serial_enabled;
@@ -24,6 +22,7 @@ private:
     void log(const char* message, CGA::color col) const;
 
     friend class NamedLogger;  // Allow NamedLogger to lock/unlock
+
     SpinLock sem;              // Semaphore would be a cyclic include
     static void lock() { Logger::instance().sem.acquire(); }
     static void unlock() { Logger::instance().sem.release(); }
@@ -31,6 +30,11 @@ private:
     // static void unlock() {}
 
 public:
+//    ~Logger() override = default;
+
+    Logger(const Logger& copy) = delete;
+    void operator=(const Logger& copy) = delete;
+
     enum LogLevel {
         TRACE,
         DEBUG,
@@ -51,13 +55,13 @@ public:
     void info(const char* message) const;
     void info(const bse::string& message) const;
 
-    // TODO: Make level change accessible over menu
-    static void set_level(LogLevel level) {
-        Logger::level = level;
+    // TODO: Make lvl change accessible over menu
+    static void set_level(LogLevel lvl) {
+        Logger::level = lvl;
     }
 
-    static char* level_to_string(LogLevel level) {
-        switch (level) {
+    static char* level_to_string(LogLevel lvl) {
+        switch (lvl) {
         case Logger::TRACE:
             return "TRACE";
         case Logger::DEBUG:
@@ -94,7 +98,7 @@ private:
     const char* name;
 
 public:
-    NamedLogger(const char* name) : name(name) {}
+    explicit NamedLogger(const char* name) : name(name) {}
 
     Logger& trace() {
         Logger::lock();

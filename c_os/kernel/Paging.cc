@@ -53,20 +53,20 @@
 #include "user/lib/Logger.h"
 
 // Bits fuer Eintraege in der Page-Table
-#define PAGE_PRESENT 0x001
-#define PAGE_WRITEABLE 0x002
-#define PAGE_BIGSIZE 0x080
-#define PAGE_RESERVED 0x800  // Bit 11 ist frei fuer das OS
+constexpr const unsigned int PAGE_PRESENT = 0x001;
+constexpr const unsigned int PAGE_WRITEABLE = 0x002;
+constexpr const unsigned int PAGE_BIGSIZE = 0x080;
+constexpr const unsigned int PAGE_RESERVED = 0x800;  // Bit 11 ist frei fuer das OS
 
 // Adresse des Page-Directory (benoetigt 4 KB)
-#define PAGE_DIRECTORY 0x200000
+constexpr const unsigned int PAGE_DIRECTORY = 0x200000;
 
 // Adresse der Page-Table (benoetigt 4 KB)
-#define PAGE_TABLE 0x201000
+constexpr const unsigned int PAGE_TABLE = 0x201000;
 
 // Start- und End-Adresse der 4 KB Seiten die durch die Page-Table adressiert werden
-#define FST_ALLOCABLE_PAGE 0x202000
-#define LST_ALLOCABLE_PAGE 0x2FF000
+constexpr const unsigned int FST_ALLOCABLE_PAGE = 0x202000;
+constexpr const unsigned int LST_ALLOCABLE_PAGE = 0x2FF000;
 
 /*****************************************************************************
  * Funktion:        pg_alloc_page                                            *
@@ -77,7 +77,7 @@
 unsigned int* pg_alloc_page() {
     unsigned int* p_page;
 
-    p_page = (unsigned int*)PAGE_TABLE;
+    p_page = reinterpret_cast<unsigned int*>(PAGE_TABLE);
 
     // 1. Eintrag ist fuer Null-Pointer-Exception reserviert
     // ausserdem liegt an die Page-Table an Adresse PAGE_TABLE
@@ -87,10 +87,10 @@ unsigned int* pg_alloc_page() {
         // pruefe ob Page frei
         if (((*p_page) & PAGE_RESERVED) == 0) {
             *p_page = (*p_page | PAGE_RESERVED);
-            return (unsigned int*)(i << 12);  // Address without flags (Offset 0)
+            return reinterpret_cast<unsigned int*>(i << 12);  // Address without flags (Offset 0)
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /*****************************************************************************
@@ -103,7 +103,7 @@ void pg_write_protect_page(const unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
-    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12);  // Pagetable entry
+    unsigned int* page = reinterpret_cast<unsigned int*>(PAGE_TABLE) + (reinterpret_cast<unsigned int>(p_page) >> 12);  // Pagetable entry
 
     unsigned int mask = PAGE_WRITEABLE;  // fill to 32bit
     *page = *page & ~mask;               // set writable to 0
@@ -118,7 +118,7 @@ void pg_notpresent_page(const unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
-    unsigned int* page = (unsigned int*)PAGE_TABLE + ((unsigned int)p_page >> 12);  // Pagetable entry
+    unsigned int* page = reinterpret_cast<unsigned int*>(PAGE_TABLE) + (reinterpret_cast<unsigned int>(p_page) >> 12);  // Pagetable entry
 
     unsigned int mask = PAGE_PRESENT;
     *page = *page & ~mask;  // set present to 0
@@ -131,7 +131,7 @@ void pg_notpresent_page(const unsigned int* p_page) {
  *                  Bit geloescht.                                           *
  *****************************************************************************/
 void pg_free_page(unsigned int* p_page) {
-    int idx = (unsigned int)p_page >> 12;
+    unsigned int idx = reinterpret_cast<unsigned int>(p_page) >> 12;
 
     // ausserhalb Page ?
     if (idx < 1 || idx > 1023) {
@@ -139,7 +139,7 @@ void pg_free_page(unsigned int* p_page) {
     }
 
     // Eintrag einlesen und aendern (PAGE_WRITEABLE loeschen)
-    p_page = (unsigned int*)PAGE_TABLE;
+    p_page = reinterpret_cast<unsigned int*>(PAGE_TABLE);
     p_page += idx;
 
     *p_page = ((idx << 12) | PAGE_WRITEABLE | PAGE_PRESENT);
@@ -170,7 +170,7 @@ void pg_init() {
     //
 
     // Eintrag 0: Zeiger auf 4 KB Page-Table
-    p_pdir = (unsigned int*)PAGE_DIRECTORY;
+    p_pdir = reinterpret_cast<unsigned int*>(PAGE_DIRECTORY);
     *p_pdir = PAGE_TABLE | PAGE_WRITEABLE | PAGE_PRESENT;
 
     // Eintraege 1-1023: Direktes Mapping (1:1) auf 4 MB Pages (ohne Page-Table)
@@ -186,7 +186,7 @@ void pg_init() {
     //
     // 1. Page-Table
     //
-    p_page = (unsigned int*)PAGE_TABLE;
+    p_page = reinterpret_cast<unsigned int*>(PAGE_TABLE);
 
     // ersten Eintrag loeschen -> not present, write protected -> Null-Pointer abfangen
     *p_page = 0;
@@ -205,5 +205,5 @@ void pg_init() {
     }
 
     // Paging aktivieren (in startup.asm)
-    paging_on((unsigned int*)PAGE_DIRECTORY);
+    paging_on(reinterpret_cast<unsigned int*>(PAGE_DIRECTORY));
 }

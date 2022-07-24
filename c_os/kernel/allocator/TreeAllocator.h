@@ -1,5 +1,5 @@
-#ifndef __TreeAllocator_include__
-#define __TreeAllocator_include__
+#ifndef TreeAllocator_include__
+#define TreeAllocator_include__
 
 #include "kernel/Allocator.h"
 #include "user/lib/Logger.h"
@@ -40,7 +40,7 @@ private:
 
     // Returns the size of the usable memory of a block
     unsigned int get_size(list_block_t* block) const;
-    unsigned int get_size(tree_block_t* block) const { return this->get_size((list_block_t*)block); }
+    unsigned int get_size(tree_block_t* block) const { return get_size(reinterpret_cast<list_block_t*>(block)); }
 
     void dump_free_memory(tree_block_t* node);
 
@@ -57,16 +57,20 @@ private:
     void rbt_fix_remove(tree_block_t* x);
 
     tree_block_t* rbt_search_bestfit(tree_block_t* node, unsigned int req_size);
-    tree_block_t* rbt_search_bestfit(unsigned int req_size) { return this->rbt_search_bestfit(this->free_start, req_size); }
+    tree_block_t* rbt_search_bestfit(unsigned int req_size) { return rbt_search_bestfit(free_start, req_size); }
 
     void dll_insert(list_block_t* previous, list_block_t* node);
-    void dll_insert(tree_block_t* previous, tree_block_t* node) { this->dll_insert((list_block_t*)previous, (list_block_t*)node); }
+    void dll_insert(tree_block_t* previous, tree_block_t* node) {
+        dll_insert(reinterpret_cast<list_block_t*>(previous), reinterpret_cast<list_block_t*>(node));
+    }
     void dll_remove(list_block_t* node);
 
 public:
     TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     TreeAllocator() : log("RBT-Alloc") {};
+
+//    ~TreeAllocator() override = default;
 
     void init() override;
     void dump_free_memory() override;

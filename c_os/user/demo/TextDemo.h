@@ -8,17 +8,16 @@
  * Autor:           Michael Schoettner, HHU, 26.10.2018                       *
  *****************************************************************************/
 
-#ifndef __TextDemo_include__
-#define __TextDemo_include__
+#ifndef TextDemo_include__
+#define TextDemo_include__
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
 
 class TextDemo : public Thread {
-private:
+public:
     TextDemo(const TextDemo& copy) = delete;
 
-public:
     TextDemo() : Thread("TextDemo") {}
 
     void run() override;

@@ -10,8 +10,8 @@
  * Autor:           Michael Schoettner, 2.2.2017                             *
  *****************************************************************************/
 
-#ifndef __Bluescreen_include__
-#define __Bluescreen_include__
+#ifndef Bluescreen_include__
+#define Bluescreen_include__
 
 // dump blue screen (will not return)
 void bs_dump(unsigned int exceptionNr);

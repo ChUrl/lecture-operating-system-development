@@ -107,7 +107,7 @@ int main() {
     // DONE: Use templates for queue so threads don't have to be casted down from chain
     // TODO: Only use references instead of pointers where possible
     // DONE: Unify debug output format
-    // TODO: Cleanup: Remove I added this... Notes, just leave explanations
+    // DONE: Cleanup: Remove I added this... Notes, just leave explanations
     // DONE: Remove Math "lib" or do something with it
     // CANCELED: Add some fixed point math like sine approximation or fractions?
     // TODO: Cleanup imports: Only import stuff in implementation when only needed there
@@ -117,15 +117,15 @@ int main() {
     // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
     // DONE: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
     //       Or check if thread is still running
-    // TODO: Delete copy constructors that weren't already deleted
+    // DONE: Delete copy constructors that weren't already deleted
     // DONE: Switch out semaphore Queue with ArrayList? Or switch back Scheduler to Queue?
     // CANCELED: Add virtual destructors and make sure to call them with delete when objects are removed
-    // TODO: Replace empty constructors/destructors with default keyword
+    // DONE: Replace empty constructors/destructors with default keyword
     // DONE: Synchronize the outstream
     // DONE: Remove Iterator from List.h
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // DONE: Remove the Input.h file and replace functionality with kevman
-    // TODO: Replace C style casts with C++ casts
+    // DONE: Replace C style casts with C++ casts
     // TODO: Add Move/Copy/Assignment stuff to vector, array etc (all where it's missing)
 
     // Scheduler doesn't return

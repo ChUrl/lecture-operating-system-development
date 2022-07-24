@@ -1,5 +1,5 @@
-#ifndef __UniquePointer_Include_H_
-#define __UniquePointer_Include_H_
+#ifndef UniquePointer_Include_H_
+#define UniquePointer_Include_H_
 
 #include <utility>
 
@@ -34,11 +34,11 @@ namespace bse {
             ptr = nullptr;
         }
 
+    public:
         // Forbid copying
         unique_ptr(const unique_ptr& copy) = delete;
         unique_ptr& operator=(const unique_ptr& copy) = delete;
 
-    public:
         // Construction
         unique_ptr() = default;  // Allow declaration without explicit definition
 
@@ -74,9 +74,9 @@ namespace bse {
 
         // Resetting: Replaces managed object, deleting the old one
         void reset() { del(); }
-        void reset(T_* ptr) {
+        void reset(T_* pt) {
             del();
-            this->ptr = ptr;
+            ptr = pt;
         }
 
         // Release: Releases ownership without deletion
@@ -92,7 +92,7 @@ namespace bse {
             return ptr;
         }
 
-        // Nice to have operators
+        // Pointer operators
         T_* operator->() { return ptr; }
         const T_* operator->() const { return ptr; }
         T_& operator*() { return *ptr; }
@@ -103,7 +103,7 @@ namespace bse {
 
         bool operator==(const unique_ptr& other) const { return ptr == other.ptr; }
 
-        // These are only for array unique_ptr but I didn't want to define a full template specialization just for this
+        // These are only for array unique_ptr but I didn't enforce that
         T_& operator[](std::size_t i) { return ptr[i]; }
         const T_& operator[](std::size_t i) const { return ptr[i]; }
     };

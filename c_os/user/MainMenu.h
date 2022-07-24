@@ -1,5 +1,5 @@
-#ifndef __MainMenu_Inlucde_H_
-#define __MainMenu_Inlucde_H_
+#ifndef MainMenu_Inlucde_H_
+#define MainMenu_Inlucde_H_
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
@@ -7,17 +7,17 @@
 
 class MainMenu : public Thread {
 private:
-    MainMenu(const MainMenu& copy) = delete;
-
     KeyEventListener listener;
 
 public:
-    MainMenu() : Thread("MainMenu"), listener(this->tid) {
-        kevman.subscribe(this->listener);
+    MainMenu(const MainMenu& copy) = delete;
+
+    MainMenu() : Thread("MainMenu"), listener(tid) {
+        kevman.subscribe(listener);
     }
 
     ~MainMenu() override {
-        kevman.unsubscribe(this->listener);
+        kevman.unsubscribe(listener);
     }
 
     void run() override;

@@ -15,15 +15,12 @@
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *                  Aenderungen von Michael Schoettner, HHU, 06.04.20        *
  *****************************************************************************/
-#ifndef __StringBuffer_include__
-#define __StringBuffer_include__
+#ifndef StringBuffer_include__
+#define StringBuffer_include__
 
 #include "user/lib/Array.h"
 
 class StringBuffer {
-private:
-    StringBuffer(const StringBuffer& copy);  // Verhindere Kopieren
-
     // Alle Variablen und Methoden dieser Klasse sind "protected",
     // da die abgeleiteten Klassen einen direkten Zugriff auf den
     // Puffer, den Konstruktor, den Destruktor und die Methode put
@@ -42,6 +39,10 @@ protected:
 
     // Methode zur Ausgabe des Pufferinhalts
     virtual void flush() = 0;
+public:
+    StringBuffer(const StringBuffer& copy) = delete;  // Verhindere Kopieren
+
+//    virtual ~StringBuffer() = default;
 };
 
 #endif

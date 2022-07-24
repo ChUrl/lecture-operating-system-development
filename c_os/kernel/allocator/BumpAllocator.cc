@@ -20,8 +20,8 @@ void BumpAllocator::init() {
 
     /* Hier muess Code eingefuegt werden */
 
-    this->allocations = 0;
-    this->next = (unsigned char*)heap_start;
+    allocations = 0;
+    next = reinterpret_cast<unsigned char*>(heap_start);
 
     log.info() << "Initialized Bump Allocator" << endl;
 }
@@ -36,8 +36,8 @@ void BumpAllocator::dump_free_memory() {
     /* Hier muess Code eingefuegt werden */
 
     kout << "Freier Speicher:" << endl
-         << " - Next: " << hex << (unsigned int)this->next
-         << ", Allocations: " << dec << this->allocations << endl;
+         << " - Next: " << hex << reinterpret_cast<unsigned int>(next)
+         << ", Allocations: " << dec << allocations << endl;
 }
 
 /*****************************************************************************
@@ -51,14 +51,14 @@ void* BumpAllocator::alloc(unsigned int req_size) {
 
     log.debug() << "Requested " << hex << req_size << " Bytes" << endl;
 
-    if (req_size + (unsigned int)this->next > this->heap_end) {
+    if (req_size + reinterpret_cast<unsigned int>(next) > heap_end) {
         log.error() << " - More memory requested than available :(" << endl;
         return nullptr;
     }
 
-    void* allocated = this->next;
-    this->next = (unsigned char*)((unsigned int)this->next + req_size);
-    this->allocations = this->allocations + 1;
+    void* allocated = next;
+    next = reinterpret_cast<unsigned char*>(reinterpret_cast<unsigned int>(next) + req_size);
+    allocations = allocations + 1;
 
     log.trace() << " - Allocated " << hex << req_size << " Bytes." << endl;
 
@@ -71,5 +71,5 @@ void* BumpAllocator::alloc(unsigned int req_size) {
  * Beschreibung:    Nicht implementiert.                                     *
  *****************************************************************************/
 void BumpAllocator::free(void* ptr) {
-    log.error() << "   mm_free: ptr= " << hex << (unsigned int)ptr << ", not supported" << endl;
+    log.error() << "   mm_free: ptr= " << hex << reinterpret_cast<unsigned int>(ptr) << ", not supported" << endl;
 }

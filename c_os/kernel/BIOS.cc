@@ -17,13 +17,13 @@ extern "C" {
 }
 
 // in startup.asm im GDT-Eintrag so festgeschrieben!
-#define BIOS16_CODE_MEMORY_START 0x24000
+constexpr const unsigned int BIOS16_CODE_MEMORY_START = 0x24000;
 
 // Parameter fuer BIOS-Aufrufe (Register)
-#define BIOS16_PARAM_BASE 0x26000
+constexpr const unsigned int BIOS16_PARAM_BASE = 0x26000;
 
 // Zeiger auf Speichbereich fuer Parameter fuer BIOS-Aufruf (siehe BIOS.h)
-struct BIOScall_params* BC_params = (struct BIOScall_params*)BIOS16_PARAM_BASE;
+BIOScall_params* BC_params = reinterpret_cast<BIOScall_params*>(BIOS16_PARAM_BASE);
 
 /*****************************************************************************
  * Methode:         BIOS::BIOS                                               *
@@ -33,7 +33,7 @@ struct BIOScall_params* BC_params = (struct BIOScall_params*)BIOS16_PARAM_BASE;
  *                  im 4. GDT-Eintrag (siehe startup.asm).                   *
  *****************************************************************************/
 BIOS::BIOS() {
-    unsigned char* codeAddr = (unsigned char*)BIOS16_CODE_MEMORY_START;
+    unsigned char* codeAddr = reinterpret_cast<unsigned char*>(BIOS16_CODE_MEMORY_START);
 
     // mov eax, 25000 (Adresse wohin aktuelles esp gesichert wird)
     *codeAddr = 0x66;
@@ -305,7 +305,6 @@ BIOS::BIOS() {
     *codeAddr = 0x66;
     codeAddr++;
     *codeAddr = 0xCB;
-    codeAddr++;
 }
 
 /*****************************************************************************
@@ -314,10 +313,10 @@ BIOS::BIOS() {
  * Beschreibung:    Fuehrt einen BIOS-Aufruf per Software-Interrupt durch.   *
  *****************************************************************************/
 void BIOS::Int(int inter) {
-    unsigned char* ptr = (unsigned char*)BIOS16_CODE_MEMORY_START;
+    unsigned char* ptr = reinterpret_cast<unsigned char*>(BIOS16_CODE_MEMORY_START);
 
     // Interrupt-Nummer in 16-Bit Code-Segment schreiben (unschoen, aber ...)
-    *(ptr + 48) = (unsigned char)inter;
+    *(ptr + 48) = static_cast<unsigned char>(inter);
 
     CPU::disable_int();  // Interrupts abschalten
     bios_call();

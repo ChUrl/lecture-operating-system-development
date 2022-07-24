@@ -1,5 +1,5 @@
-#ifndef __preemptive_thread_include__
-#define __preemptive_thread_include__
+#ifndef preemptive_thread_include__
+#define preemptive_thread_include__
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
@@ -8,9 +8,10 @@
 class PreemptiveLoopThread : public Thread {
 private:
     int id;
-    PreemptiveLoopThread(const PreemptiveLoopThread& copy) = delete;  // Verhindere Kopieren
 
 public:
+    PreemptiveLoopThread(const PreemptiveLoopThread& copy) = delete;  // Verhindere Kopieren
+
     // Gibt der Loop einen Stack und eine Id.
     PreemptiveLoopThread(int i) : Thread("LoopThread"), id(i) {}
 
@@ -20,11 +21,11 @@ public:
 
 class PreemptiveThreadDemo : public Thread {
 private:
-    PreemptiveThreadDemo(const PreemptiveThreadDemo& copy) = delete;  // Verhindere Kopieren
-
     unsigned int number_of_threads;
 
 public:
+    PreemptiveThreadDemo(const PreemptiveThreadDemo& copy) = delete;  // Verhindere Kopieren
+
     PreemptiveThreadDemo(unsigned int n) : Thread("PreemptiveThreadDemo"), number_of_threads(n) {}
 
     // Thread-Startmethode

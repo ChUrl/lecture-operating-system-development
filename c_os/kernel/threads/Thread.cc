@@ -56,20 +56,20 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
     // wird, sie darf also nicht terminieren, sonst kracht's.
 
     // I thought this syntax was a bit clearer than decrementing a pointer
-    stack[-1] = (unsigned int)object;
+    stack[-1] = reinterpret_cast<unsigned int>(object);
     stack[-2] = 0x131155U;
-    stack[-3] = (unsigned int)kickoff;
+    stack[-3] = reinterpret_cast<unsigned int>(kickoff);
     stack[-4] = 0;                         // EAX
     stack[-5] = 0;                         // ECX
     stack[-6] = 0;                         // EDX
     stack[-7] = 0;                         // EBX
-    stack[-8] = (unsigned int)&stack[-3];  // ESP
+    stack[-8] = reinterpret_cast<unsigned int>(&stack[-3]);  // ESP
     stack[-9] = 0;                         // EBP
     stack[-10] = 0;                        // ESI
     stack[-11] = 0;                        // EDI
     stack[-12] = 0x200U;
 
-    *esp = (unsigned int)&stack[-12];
+    *esp = reinterpret_cast<unsigned int>(&stack[-12]);
 }
 
 /*****************************************************************************
@@ -98,7 +98,7 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
 Thread::Thread(char* name) : stack(new unsigned int[1024]), esp(0), log(name), name(name), tid(ThreadCnt++) {
-    log.info() << "Initialized thread with ID: " << this->tid << " (" << name << ")" << endl;
+    log.info() << "Initialized thread with ID: " << tid << " (" << name << ")" << endl;
     Thread_init(&esp, &stack[1024], kickoff, this);  // Stack grows from top to bottom
 }
 
@@ -124,5 +124,5 @@ void Thread::start() const {
 
     /* hier muss Code eingefügt werden */
 
-    Thread_start(this->esp);
+    Thread_start(esp);
 }

@@ -30,17 +30,19 @@
  *                                                                           *
  * Autor:           Michael Schoettner, HHU, 13.6.2020                        *
  *****************************************************************************/
-#ifndef __Allocator_include__
-#define __Allocator_include__
+#ifndef Allocator_include__
+#define Allocator_include__
 
-constexpr unsigned int BASIC_ALIGN = 4;                // 32 Bit so 4 Bytes?
-constexpr unsigned int HEAP_MIN_FREE_BLOCK_SIZE = 64;  // min. Groesse eines freien Blocks
+constexpr const unsigned int BASIC_ALIGN = 4;                // 32 Bit so 4 Bytes?
+constexpr const unsigned int HEAP_MIN_FREE_BLOCK_SIZE = 64;  // min. Groesse eines freien Blocks
 
 class Allocator {
 public:
     Allocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     Allocator();
+
+//    virtual ~Allocator() = default;
 
     unsigned int heap_start;
     unsigned int heap_end;

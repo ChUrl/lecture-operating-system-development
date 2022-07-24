@@ -18,7 +18,7 @@ void VectorDemo::run() {
     log.info() << "Initial list size: " << dec << list.size() << endl;
 
     log.info() << "Adding elements in order" << endl;
-    for (unsigned int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) {
         list.push_back(i);
     }
     print(log.info(), list);
@@ -32,7 +32,7 @@ void VectorDemo::run() {
     // ============================================================
 
     log.info() << "Adding elements in order with realloc" << endl;
-    for (unsigned int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; ++i) {
         log.info() << "Add " << dec << i << endl;
         list.push_back(i);
     }
@@ -46,7 +46,7 @@ void VectorDemo::run() {
 
     // ============================================================
 
-    for (unsigned int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) {
         list.push_back(i);
     }
     print(log.info(), list);

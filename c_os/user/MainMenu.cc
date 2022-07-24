@@ -37,7 +37,7 @@ void MainMenu::run() {
     char input = '\0';
     unsigned int running_demo = 0;
     while (running) {
-        input = this->listener.waitForKeyEvent();
+        input = listener.waitForKeyEvent();
 
         if ((input >= '0' && input <= '9') || input == '!') {
             switch (input) {

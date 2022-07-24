@@ -1,7 +1,9 @@
-#ifndef __MYSTDLIB_INCLUDE_H_
-#define __MYSTDLIB_INCLUDE_H_
+#ifndef MYSTDLIB_INCLUDE_H_
+#define MYSTDLIB_INCLUDE_H_
 
 namespace bse {
+
+    // add using byte or sth to replace char
 
     template<typename T>
     void memcpy(T* destination, const T* source, const unsigned int count = 1) {
@@ -14,7 +16,7 @@ namespace bse {
 
     template<typename T>
     void zero(T* destination) {
-        memset((char*)destination, '\0', sizeof(T));
+        memset(reinterpret_cast<char*>(destination), '\0', sizeof(T));
     }
 
     // void strcpy(char* destination, char* source);

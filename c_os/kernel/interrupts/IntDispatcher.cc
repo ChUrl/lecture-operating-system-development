@@ -15,7 +15,7 @@
 #include "kernel/Globals.h"
 #include "kernel/interrupts/Bluescreen.h"
 
-extern "C" void int_disp(unsigned int slot);
+extern "C" void int_disp(unsigned int vector);
 
 /*****************************************************************************
  * Prozedur:        int_disp                                                 *
@@ -60,12 +60,12 @@ int IntDispatcher::assign(unsigned int vector, ISR& isr) {
 
     /* hier muss Code eingefuegt werden */
 
-    if (vector >= this->size) {
+    if (vector >= size) {
         log.error() << "Invalid vector number when assigning" << endl;
         return -1;
     }
 
-    this->map[vector] = &isr;
+    map[vector] = &isr;
     log.info() << "Registered ISR for vector " << dec << vector << endl;
 
     return 0;
@@ -85,11 +85,11 @@ int IntDispatcher::report(unsigned int vector) {
 
     /* hier muss Code eingefuegt werden */
 
-    if (vector >= this->size) {
+    if (vector >= size) {
         return -1;
     }
 
-    ISR* isr = this->map[vector];
+    ISR* isr = map[vector];
 
     if (isr == nullptr) {
         log.error() << "No ISR registered for vector " << vector << endl;

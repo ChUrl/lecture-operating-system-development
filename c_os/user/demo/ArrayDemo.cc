@@ -3,7 +3,6 @@
 void ArrayDemo::run() {
     bse::array<int, 10> arr1 {};
     bse::array<int, 10> arr2 {};
-    bse::array<Thread*, 10> arr3 {};
 
     kout.lock();
     kout.clear();

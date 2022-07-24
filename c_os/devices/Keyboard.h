@@ -8,8 +8,8 @@
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *                  Modifikationen, Michael Schoettner, 2.6.2022             *
  *****************************************************************************/
-#ifndef __Keyboard_include__
-#define __Keyboard_include__
+#ifndef Keyboard_include__
+#define Keyboard_include__
 
 #include "devices/Key.h"
 #include "kernel/interrupts/ISR.h"
@@ -74,13 +74,15 @@ private:
 public:
     Keyboard(const Keyboard& copy) = delete;  // Verhindere Kopieren
 
-    unsigned int lastkey;  // speichert den ASCII-Code der zuletzt gedrückten Taste
-
     // Initialisierung der Tastatur.
     Keyboard();
 
+//    ~Keyboard() override = default;
+
+    // unsigned int lastkey;  // speichert den ASCII-Code der zuletzt gedrückten Taste
+
     // Fuehrt einen Neustart des Rechners durch.
-    void reboot();
+    static void reboot();
 
     // Einstellen der Wiederholungsrate der Tastatur.
     void set_repeat_rate(int speed, int delay);

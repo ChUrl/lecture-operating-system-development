@@ -9,8 +9,8 @@
  * Autor:           Michael, Schoettner, HHU, 22.8.2016                      *
  *****************************************************************************/
 
-#ifndef __Scheduler_include__
-#define __Scheduler_include__
+#ifndef Scheduler_include__
+#define Scheduler_include__
 
 #include "kernel/threads/Thread.h"
 #include "user/lib/Logger.h"
@@ -33,8 +33,8 @@ private:
     unsigned int idle_tid = 0U;
 
     // Roughly the old dispatcher functionality
-    /*[[noreturn]]*/ void start(bse::vector<bse::unique_ptr<Thread>>::iterator next);                        // Start next without prev
-    /*[[noreturn]]*/ void switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::iterator next);  // Switch from prev to next
+    void start(bse::vector<bse::unique_ptr<Thread>>::iterator next);                        // Start next without prev
+    void switch_to(Thread* prev_raw, bse::vector<bse::unique_ptr<Thread>>::iterator next);  // Switch from prev to next
 
     // Kann nur vom Idle-Thread aufgerufen werden (erster Thread der vom Scheduler gestartet wird)
     void enable_preemption(unsigned int tid) { idle_tid = tid; }
@@ -63,7 +63,7 @@ public:
     bool preemption_enabled() const { return idle_tid != 0U; }
 
     // Scheduler starten
-    /*[[noreturn]]*/ void schedule();
+    void schedule();
 
     // Helper that directly constructs the thread, then readys it
     template<typename T, typename... Args>
@@ -80,7 +80,7 @@ public:
     // NOTE: When a thread exits itself it will disappear...
     //       Maybe put exited threads in an exited queue?
     //       Then they would have to be acquired from there to exit...
-    /* [[noreturn]] */ void exit();  // Returns on error because we don't have exceptions
+    void exit();  // Returns on error because we don't have exceptions
 
     // Thread mit 'Gewalt' terminieren
     void kill(unsigned int tid, bse::unique_ptr<Thread>* ptr);
@@ -94,13 +94,13 @@ public:
     void nice_kill(unsigned int tid) { nice_kill(tid, nullptr); }
 
     // CPU freiwillig abgeben und Auswahl des naechsten Threads
-    /* [[noreturn]] */ void yield();  // Returns when only the idle thread runs
+    void yield();  // Returns when only the idle thread runs
 
     // Thread umschalten; wird aus der ISR des PITs gerufen
-    /* [[noreturn]] */ void preempt();  // Returns when only the idle thread runs
+    void preempt();  // Returns when only the idle thread runs
 
     // Blocks current thread (move to block_queue)
-    /* [[noreturn]] */ void block();  // Returns on error because we don't have exceptions
+    void block();  // Returns on error because we don't have exceptions
 
     // Deblock by tid (move to ready_queue)
     void deblock(unsigned int tid);

@@ -1,5 +1,5 @@
-#ifndef __VECTOR_INCLUDE_H_
-#define __VECTOR_INCLUDE_H_
+#ifndef VECTOR_INCLUDE_H_
+#define VECTOR_INCLUDE_H_
 
 // NOTE: I decided to implement this because I wanted some sort of dynamic array (for example for the keyeventmanager).
 //       Also I wanted to template the Queue (for the scheduler) but with this I can just replace the Queue and use the
@@ -101,16 +101,14 @@ namespace bse {
         }
 
     public:
-        vector(bool lazy = false) {
+        explicit vector(bool lazy = false) {
             if (!lazy) {  // I added this as a work around, the scheduler can't initialize the queues right
                           // away because when the scheduler is started the allocator is not ready.
                 init();
             }
         };
 
-        vector(const vector& copy) {
-            buf_cap = copy.buf_cap;
-            buf_pos = copy.buf_pos;
+        vector(const vector& copy) : buf_pos(copy.buf_pos), buf_cap(copy.buf_cap) {
             buf = new T[buf_cap];
             for (unsigned int i = 0; i < buf_pos; ++i) {
                 buf[i] = copy[i];  // Does a copy since copy is marked const reference
@@ -131,9 +129,7 @@ namespace bse {
             return *this;
         }
 
-        vector(vector&& move) noexcept {
-            buf_cap = move.buf_cap;
-            buf_pos = move.buf_pos;
+        vector(vector&& move) noexcept : buf_pos(move.buf_pos), buf_cap(move.buf_cap) {
             buf = move.buf;
 
             move.buf_cap = 0;

@@ -9,8 +9,8 @@
  * Autor:           Michael Schoettner, HHU, 3.3.2022                        *
  *****************************************************************************/
 
-#ifndef __BumpAllocator_include__
-#define __BumpAllocator_include__
+#ifndef BumpAllocator_include__
+#define BumpAllocator_include__
 
 #include "kernel/Allocator.h"
 #include "user/lib/Logger.h"
@@ -26,6 +26,8 @@ public:
     BumpAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     BumpAllocator() : log("BMP-Alloc") {};  // Allocator() called implicitely in C++
+
+//    ~BumpAllocator() override = default;
 
     void init() override;
     void dump_free_memory() override;

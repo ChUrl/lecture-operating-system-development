@@ -59,7 +59,7 @@ void CGA::getpos(unsigned int& x, unsigned int& y) {
       (cursor_low & 0xFF) | ((cursor_high << 8) & 0xFF00);
 
     x = cursor % COLUMNS;
-    y = (int)(cursor / COLUMNS);
+    y = (cursor / COLUMNS);
 }
 
 /*****************************************************************************
@@ -146,11 +146,11 @@ void CGA::print(const char* string, unsigned int n, unsigned char attrib) const 
 }
 
 void CGA::print(const bse::string& string, const unsigned int n, const unsigned char attrib) const {
-    print((const char*)string, n, attrib);
+    print(static_cast<const char*>(string), n, attrib);
 }
 
 void CGA::print(const bse::string& string, const unsigned char attrib) const {
-    print((const char*)string, string.size(), attrib);
+    print(static_cast<const char*>(string), string.size(), attrib);
 }
 
 /*****************************************************************************
@@ -202,7 +202,7 @@ unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     /* Hier muess Code eingefuegt werden */
 
-    return (int)blink << 7  // B0000000
+    return static_cast<int>(blink) << 7  // B0000000
          | (bg & 0x7) << 4  // 0HHH0000 (Hintergrund)
          | (fg & 0xF);      // 0000VVVV (Vordergrund)
 }

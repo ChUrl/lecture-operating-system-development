@@ -8,11 +8,12 @@
  * Autor:           Michael Schoettner, 23.8.2016                            *
  *****************************************************************************/
 
-#ifndef __PIT_include__
-#define __PIT_include__
+#ifndef PIT_include__
+#define PIT_include__
 
 #include "kernel/interrupts/ISR.h"
 #include "kernel/IOport.h"
+#include "user/lib/Array.h"
 
 class PIT : public ISR {
 private:
@@ -22,12 +23,14 @@ private:
     enum { time_base = 838 }; /* ns */
     int timer_interval;
 
-    const char indicator[4] = {'|', '/', '-', '\\'};
+    const bse::array<char, 4> indicator{'|', '/', '-', '\\'};
     unsigned int indicator_pos = 0;
     unsigned long last_indicator_refresh = 0;
 
 public:
     PIT(const PIT& copy) = delete;  // Verhindere Kopieren
+
+//    ~PIT() override = default;
 
     // Zeitgeber initialisieren.
     explicit PIT(int us) {

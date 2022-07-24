@@ -1,5 +1,5 @@
-#ifndef __SerialOut_Include_H_
-#define __SerialOut_Include_H_
+#ifndef SerialOut_Include_H_
+#define SerialOut_Include_H_
 
 #include "kernel/IOport.h"
 #include "user/lib/String.h"
@@ -8,24 +8,19 @@
 
 class SerialOut {
 private:
-    const IOport com1;
+    static const IOport com1;
 
-    SerialOut(const SerialOut& copy) = delete;
-
-    int serial_received();
-    int is_transmit_empty();
+    static int serial_received();
+    static int is_transmit_empty();
 
 public:
-    SerialOut() : com1(0x3f8) {
-        this->init();
-    }
+    SerialOut(const SerialOut& copy) = delete;
+    SerialOut();
 
-    int init() const;
-
-    char read();
-    void write(char a);
-    void write(const char* a);
-    void write(const bse::string& a);
+    static char read();
+    static void write(char a);
+    static void write(const char* a);
+    static void write(const bse::string& a);
 };
 
 #endif

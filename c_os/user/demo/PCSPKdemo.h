@@ -1,20 +1,20 @@
-#ifndef __PCSPKdemo_INCLUDE_H_
-#define __PCSPKdemo_INCLUDE_H_
+#ifndef PCSPKdemo_INCLUDE_H_
+#define PCSPKdemo_INCLUDE_H_
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
 
 class PCSPKdemo : public Thread {
 private:
-    PCSPKdemo(const PCSPKdemo& copy) = delete;
-
-    void (PCSPK::*melody)(void);  // Allow to pass a melody to play when initializing the demo
+    void (PCSPK::*melody)();  // Allow to pass a melody to play when initializing the demo
 
 public:
-    PCSPKdemo(void (PCSPK::*melody)(void)) : Thread("PCSPKdemo"), melody(melody) {}
+    PCSPKdemo(const PCSPKdemo& copy) = delete;
+
+    explicit PCSPKdemo(void (PCSPK::*melody)()) : Thread("PCSPKdemo"), melody(melody) {}
 
     ~PCSPKdemo() override {
-        pcspk.off();
+        PCSPK::off();
     }
 
     void run() override;

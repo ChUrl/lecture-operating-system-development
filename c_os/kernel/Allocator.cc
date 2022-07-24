@@ -34,9 +34,9 @@
 #include "kernel/Allocator.h"
 #include "kernel/Globals.h"
 
-#define MEM_SIZE_DEF 8 * 1024 * 1024  // Groesse des Speichers = 8 MB
-#define HEAP_START 0x300000    // Startadresse des Heaps
-#define HEAP_SIZE 1024 * 1024  // Default-Groesse des Heaps, falls \
+constexpr const unsigned int MEM_SIZE_DEF = 8 * 1024 * 1024;  // Groesse des Speichers = 8 MB
+constexpr const unsigned int HEAP_START = 0x300000;    // Startadresse des Heaps
+constexpr const unsigned int HEAP_SIZE = 1024 * 1024;  // Default-Groesse des Heaps, falls \
                                // nicht über das BIOS ermittelbar
 
 /*****************************************************************************

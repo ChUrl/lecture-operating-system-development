@@ -7,8 +7,8 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 30.7.16                              *
  *****************************************************************************/
-#ifndef __Globals_include__
-#define __Globals_include__
+#ifndef Globals_include__
+#define Globals_include__
 
 #include "devices/CGA_Stream.h"
 #include "devices/Keyboard.h"

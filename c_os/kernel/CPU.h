@@ -9,8 +9,8 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 30.7.16                              *
  *****************************************************************************/
-#ifndef __CPU_include__
-#define __CPU_include__
+#ifndef CPU_include__
+#define CPU_include__
 
 class CPU {
 public:

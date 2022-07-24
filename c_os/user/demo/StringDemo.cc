@@ -40,14 +40,14 @@ void StringDemo::run() {
     log.info() << "Reassign str2" << endl;
     str2 = "Hello";
 
-    bse::array<char, 5> arr;
+    bse::array<char, 5> arr{};
     arr[0] = 'H';
     arr[1] = 'e';
     arr[2] = 'l';
     arr[3] = 'l';
     arr[4] = 'o';
-    kout << "bse::array<char, 5> to bse::string: " << arr << ", size: " << ((bse::string)arr).size() << endl;
-    kout << "(bse::string)arr (" << arr << ") == str2 (" << str2 << "): " << static_cast<int>((bse::string)arr == str2) << endl;
+    kout << "bse::array<char, 5> to bse::string: " << static_cast<bse::string>(arr) << ", size: " << (bse::string(arr)).size() << endl;
+    kout << "(bse::string)arr (" << static_cast<bse::string>(arr) << ") == str2 (" << str2 << "): " << static_cast<int>(bse::string(arr) == str2) << endl;
 
     kout.unlock();
     scheduler.exit();

@@ -16,7 +16,7 @@ const IOport Keyboard::data_port(0x60);
 
 /* Tabellen fuer ASCII-Codes (Klassenvariablen) intiialisieren */
 
-constexpr unsigned char Keyboard::normal_tab[] = {
+constexpr const unsigned char Keyboard::normal_tab[] = {
   0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 225, 39, '\b',
   0, 'q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 129, '+', '\n',
   0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 148, 132, '^', 0, '#',
@@ -24,7 +24,7 @@ constexpr unsigned char Keyboard::normal_tab[] = {
   '*', 0, ' ', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '-',
   0, 0, 0, '+', 0, 0, 0, 0, 0, 0, 0, '<', 0, 0};
 
-constexpr unsigned char Keyboard::shift_tab[] = {
+constexpr const unsigned char Keyboard::shift_tab[] = {
   0, 0, '!', '"', 21, '$', '%', '&', '/', '(', ')', '=', '?', 96, 0,
   0, 'Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 154, '*', 0,
   0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 153, 142, 248, 0, 39,
@@ -32,7 +32,7 @@ constexpr unsigned char Keyboard::shift_tab[] = {
   0, 0, ' ', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '>', 0, 0};
 
-constexpr unsigned char Keyboard::alt_tab[] = {
+constexpr const unsigned char Keyboard::alt_tab[] = {
   0, 0, 0, 253, 0, 0, 0, 0, '{', '[', ']', '}', '\\', 0, 0,
   0, '@', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '~', 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -40,10 +40,10 @@ constexpr unsigned char Keyboard::alt_tab[] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '|', 0, 0};
 
-constexpr unsigned char Keyboard::asc_num_tab[] = {
+constexpr const unsigned char Keyboard::asc_num_tab[] = {
   '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', ','};
 
-constexpr unsigned char Keyboard::scan_num_tab[] = {
+constexpr const unsigned char Keyboard::scan_num_tab[] = {
   8, 9, 10, 53, 5, 6, 7, 27, 2, 3, 4, 11, 51};
 
 /*****************************************************************************
@@ -269,7 +269,7 @@ Key Keyboard::key_hit() {
         return invalid;
     }
 
-    code = (unsigned char)data_port.inb();
+    code = data_port.inb();
     if (key_decoded()) {
         return gather;
     }
@@ -287,7 +287,7 @@ void Keyboard::reboot() {
 
     // Dem BIOS mitteilen, dass das Reset beabsichtigt war
     // und kein Speichertest durchgefuehrt werden muss.
-    *(unsigned short*)0x472 = 0x1234;
+    *reinterpret_cast<unsigned short*>(0x472) = 0x1234;
 
     // Der Tastaturcontroller soll das Reset ausloesen.
     do {
@@ -332,17 +332,17 @@ void Keyboard::set_led(char led, bool on) {
 // und erlaubt den keyboard interrupt im PIC
 void Keyboard::plugin() {
     intdis.assign(IntDispatcher::keyboard, *this);
-    pic.allow(PIC::keyboard);
+    PIC::allow(PIC::keyboard);
 }
 
 void Keyboard::trigger() {
-    Key key = this->key_hit();
-    this->lastkey = key.ascii();
+    Key key = key_hit();
+    // lastkey = key.ascii();
 
     // NOTE: My keyboard has no delete key...
-    if (key.ctrl_left() && key.alt_left() && (char)key == 'r') {
-        this->reboot();
+    if (key.ctrl_left() && key.alt_left() && static_cast<char>(key) == 'r') {
+        reboot();
     } else if (key != 0) {
-        kevman.broadcast(key);
+        kevman.broadcast(key);  // Send key to all subscribed threads
     }
 }

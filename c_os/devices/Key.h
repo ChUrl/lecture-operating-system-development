@@ -7,8 +7,8 @@
  *                                                                           *
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *****************************************************************************/
-#ifndef __Key_include__
-#define __Key_include__
+#ifndef Key_include__
+#define Key_include__
 
 class Key {
     // Kopieren erlaubt!
@@ -98,7 +98,7 @@ public:
     bool alt() const { return alt_left() || alt_right(); }
     bool ctrl() const { return ctrl_left() || ctrl_right(); }
 
-    operator char() const { return (char)asc; }
+    operator char() const { return static_cast<char>(asc); }
 
     // Scan-Codes einiger spezieller Tasten
     struct scan {

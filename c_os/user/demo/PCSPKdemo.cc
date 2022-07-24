@@ -6,7 +6,7 @@ void PCSPKdemo::run() {
     kout << "Playing..." << endl;
     kout.unlock();
 
-    (pcspk.*this->melody)();  // This syntax is confusing as hell
+    (pcspk.*melody)();  // This syntax is confusing as hell
 
     kout.lock();
     kout << "Finished" << endl;

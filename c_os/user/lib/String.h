@@ -1,5 +1,5 @@
-#ifndef __String_Include_H_
-#define __String_Include_H_
+#ifndef String_Include_H_
+#define String_Include_H_
 
 #include "user/lib/Array.h"
 #include "user/lib/Iterator.h"
@@ -24,8 +24,9 @@ namespace bse {
             strncpy(buf, len + 1, str);
         }
 
+        // Convert char array to string
         template<unsigned int N>
-        string(const array<char, N>& arr) : len(N), buf(new char[len + 1]) {
+        explicit string(const array<char, N>& arr) : len(N), buf(new char[len + 1]) {
             for (unsigned int i = 0; i < N; ++i) {
                 buf[i] = arr[i];
             }

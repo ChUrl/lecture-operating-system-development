@@ -16,7 +16,6 @@
 #include "kernel/Globals.h"
 
 const IOport PCSPK::control(0x43);
-const IOport PCSPK::data0(0x40);
 const IOport PCSPK::data2(0x42);
 const IOport PCSPK::ppi(0x61);
 
@@ -29,7 +28,7 @@ const IOport PCSPK::ppi(0x61);
  *                  len: Laenge des Tons in ms                               *
  *****************************************************************************/
 void PCSPK::play(float f, int len) {
-    int freq = (int)f;
+    int freq = static_cast<int>(f);
     int cntStart = 1193180 / freq;
     int status;
 
@@ -39,7 +38,7 @@ void PCSPK::play(float f, int len) {
     data2.outb(cntStart / 256);  // Zaehler-2 laden (Hibyte)
 
     // Lautsprecher einschalten
-    status = (int)ppi.inb();  // Status-Register des PPI auslesen
+    status = static_cast<int>(ppi.inb());  // Status-Register des PPI auslesen
     ppi.outb(status | 3);     // Lautpsrecher Einschalten
 
     // Pause
@@ -57,7 +56,7 @@ void PCSPK::play(float f, int len) {
 void PCSPK::off() {
     int status;
 
-    status = (int)ppi.inb();       // Status-Register des PPI auslesen
+    status = static_cast<int>(ppi.inb());       // Status-Register des PPI auslesen
     ppi.outb((status >> 2) << 2);  // Lautsprecher ausschalten
 }
 

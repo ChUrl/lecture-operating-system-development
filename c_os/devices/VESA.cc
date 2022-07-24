@@ -56,10 +56,9 @@ struct VbeInfoBlock {
  * Beschreibung:    Schalter in den Text-Modus 80x25 Zeichen.                *
  *****************************************************************************/
 void VESA::initTextMode() {
-    allocator.free((void*)hfb);  // Memory is allocated after every start and never deleted, so add that
     BC_params->AX = 0x4f02;      // SVFA BIOS, init mode
     BC_params->BX = 0x4003;      // 80x25
-    bios.Int(0x10);
+    BIOS::Int(0x10);
 }
 
 /*****************************************************************************
@@ -76,9 +75,9 @@ bool VESA::initGraphicMode(unsigned short mode) {
     BC_params->AX = 0x4F00;
     BC_params->ES = RETURN_MEM >> 4;
     BC_params->DI = RETURN_MEM & 0xF;
-    bios.Int(0x10);
+    BIOS::Int(0x10);
 
-    struct VbeInfoBlock* ib = (struct VbeInfoBlock*)RETURN_MEM;
+    VbeInfoBlock* ib = reinterpret_cast<VbeInfoBlock*>(RETURN_MEM);
 
     // Signaturen pruefen
     if (BC_params->AX != 0x004F) {
@@ -94,18 +93,18 @@ bool VESA::initGraphicMode(unsigned short mode) {
     //    kout << "TotalVideoMemory:  " << ((ib->TotalMemory*65536) / (1024*1024)) << " MB" << endl;
 
     // Gewuenschten Grafikmodus aus Antwort suchen
-    unsigned short* modePtr = (unsigned short*)((ib->VideoModePtr[1] << 4) + ib->VideoModePtr[0]);
+    unsigned short* modePtr = reinterpret_cast<unsigned short*>((ib->VideoModePtr[1] << 4) + ib->VideoModePtr[0]);
     for (int i = 0; modePtr[i] != 0xFFFF; ++i) {
         // Gewuenschter Grafikmodus gefunden?
         if (modePtr[i] == mode) {
-            struct VbeModeInfoBlock* minf = (struct VbeModeInfoBlock*)RETURN_MEM;
+            VbeModeInfoBlock* minf = reinterpret_cast<VbeModeInfoBlock*>(RETURN_MEM);
 
             // Weitere Infos ueber diesen Grafikmodus abfragen
             BC_params->AX = 0x4F01;
             BC_params->CX = mode;
             BC_params->ES = RETURN_MEM >> 4;
             BC_params->DI = RETURN_MEM & 0xF;
-            bios.Int(0x10);
+            BIOS::Int(0x10);
 
             // Text-Modi 0-3 haben keinen LFB
             if (mode > 3 && (minf->attributes & 0x90) == 0) {
@@ -116,15 +115,15 @@ bool VESA::initGraphicMode(unsigned short mode) {
             mode_nr = mode;
             xres = minf->Xres;
             yres = minf->Yres;
-            bpp = (int)minf->bpp;
+            bpp = static_cast<int>(minf->bpp);
             lfb = minf->physbase;
 
-            hfb = (unsigned int)new char[xres * yres * bpp / 8];
+            hfb = reinterpret_cast<unsigned int>(new char[xres * yres * bpp / 8]);
 
             // Grafikmodus einschalten
             BC_params->AX = 0x4f02;  // SVFA BIOS, init mode
             BC_params->BX = mode;
-            bios.Int(0x10);
+            BIOS::Int(0x10);
             return true;
         }
     }

@@ -21,10 +21,10 @@ void SmartPointerDemo::run() {
         bse::unique_ptr<int> ptr1 = bse::make_unique<int>(1);
         bse::unique_ptr<int> ptr2;
 
-        log.info() << "*ptr1 == " << *ptr1 << ", (bool)ptr2 == " << (bool)ptr2 << endl;
+        log.info() << "*ptr1 == " << *ptr1 << ", (bool)ptr2 == " << static_cast<bool>(ptr2) << endl;
         log.info() << "Moving ptr1 => ptr2 (no allocations should happen)..." << endl;
         ptr2 = std::move(ptr1);
-        log.info() << "(bool)ptr1 == " << (bool)ptr1 << ", *ptr2 == " << *ptr2 << endl;
+        log.info() << "(bool)ptr1 == " << static_cast<bool>(ptr1) << ", *ptr2 == " << *ptr2 << endl;
 
         log.info() << "Leaving scope..." << endl;
     }

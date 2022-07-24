@@ -1,8 +1,8 @@
 // vim: set et ts=4 sw=4:
 
-#define FONTDATAMAX_SUN_12x22 11264
+constexpr const unsigned int FONTDATAMAX_SUN_12x22 = 11264;
 
-constexpr unsigned char fontdata_sun_12x22[FONTDATAMAX_SUN_12x22] = {
+constexpr const unsigned char fontdata_sun_12x22[FONTDATAMAX_SUN_12x22] = {
 
     /* 0 0x00 '^@' */
     0x00, 0x00, /* 000000000000 */

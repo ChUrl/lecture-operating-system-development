@@ -9,16 +9,16 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 06.04.20                             *
 *****************************************************************************/
-#ifndef __ISR_include__
-#define __ISR_include__
+#ifndef ISR_include__
+#define ISR_include__
 
 class ISR {
-
-private:
+public:
     ISR(const ISR& copy) = delete;  // Verhindere Kopieren
 
-public:
-    ISR() {}
+//    virtual ~ISR() = default;
+
+    ISR() = default;
 
     // Unterbrechungsbehandlungsroutine
     virtual void trigger() = 0;

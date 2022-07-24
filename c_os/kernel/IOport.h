@@ -13,8 +13,8 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 28.8.2016                            *
  *****************************************************************************/
-#ifndef __IOport_include__
-#define __IOport_include__
+#ifndef IOport_include__
+#define IOport_include__
 
 class IOport {
 private:
@@ -36,7 +36,7 @@ public:
     void outb(unsigned char offset, unsigned char val) const {
         asm volatile("outb %0, %1"
                      :
-                     : "a"(val), "Nd"((unsigned short)(address + offset)));
+                     : "a"(val), "Nd"(static_cast<unsigned short>(address + offset)));
     }
 
     // Wortweise Ausgabe eines Wertes ueber einen I/O-Port.
@@ -69,7 +69,7 @@ public:
 
         asm volatile("inb %1, %0"
                      : "=a"(ret)
-                     : "Nd"((unsigned short)(address + offset)));
+                     : "Nd"(static_cast<unsigned short>(address + offset)));
         return ret;
     }
 

@@ -1,5 +1,5 @@
-#ifndef __Iterator_Include_H_
-#define __Iterator_Include_H_
+#ifndef Iterator_Include_H_
+#define Iterator_Include_H_
 
 namespace bse {
 
@@ -9,45 +9,41 @@ namespace bse {
     private:
         T* ptr = nullptr;
 
+    public:
         ContinuousIterator() = delete;
 
-    public:
         ContinuousIterator(T* ptr) : ptr(ptr) {}
 
-        T* get() const {
-            return ptr;
-        }
-
         ContinuousIterator& operator++() {
-            ++this->ptr;
+            ++ptr;
             return *this;
         }
 
         ContinuousIterator& operator--() {
-            --this->ptr;
+            --ptr;
             return *this;
         }
 
         ContinuousIterator operator+(unsigned int add) {
-            return ContinuousIterator(this->ptr + add);
+            return ContinuousIterator(ptr + add);
         }
 
         ContinuousIterator operator-(unsigned int sub) {
-            return ContinuousIterator(this->ptr - sub);
+            return ContinuousIterator(ptr - sub);
         }
 
         // Convenience
-        T* operator->() { return this->ptr; }
-        const T* operator->() const { return this->ptr; }
-        T& operator*() { return *this->ptr; }
-        const T& operator*() const { return *this->ptr; }
+        T* operator->() { return ptr; }
+        const T* operator->() const { return ptr; }
+        T& operator*() { return *ptr; }
+        const T& operator*() const { return *ptr; }
 
-        bool operator<(const ContinuousIterator& other) const { return this->ptr < other.ptr; }
-        bool operator<=(const ContinuousIterator& other) const { return this->ptr <= other.ptr; }
-        bool operator>(const ContinuousIterator& other) const { return this->ptr > other.ptr; }
-        bool operator>=(const ContinuousIterator& other) const { return this->ptr >= other.ptr; }
-        bool operator==(const ContinuousIterator& other) const { return this->ptr == other.ptr; }
-        bool operator!=(const ContinuousIterator& other) const { return this->ptr != other.ptr; }
+        bool operator<(const ContinuousIterator& other) const { return ptr < other.ptr; }
+        bool operator<=(const ContinuousIterator& other) const { return ptr <= other.ptr; }
+        bool operator>(const ContinuousIterator& other) const { return ptr > other.ptr; }
+        bool operator>=(const ContinuousIterator& other) const { return ptr >= other.ptr; }
+        bool operator==(const ContinuousIterator& other) const { return ptr == other.ptr; }
+        bool operator!=(const ContinuousIterator& other) const { return ptr != other.ptr; }
 
         template<typename t>
         friend unsigned int distance(const ContinuousIterator<t>& first, const ContinuousIterator<t>& last);

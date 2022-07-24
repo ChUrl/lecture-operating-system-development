@@ -8,8 +8,8 @@
  * Autor:           Michael Schoettner, HHU, 26.10.2018                      *
  *****************************************************************************/
 
-#ifndef __KeyboardDemo_include__
-#define __KeyboardDemo_include__
+#ifndef KeyboardDemo_include__
+#define KeyboardDemo_include__
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
@@ -17,13 +17,13 @@
 
 class KeyboardDemo : public Thread {
 private:
-    KeyboardDemo(const KeyboardDemo& copy) = delete;
-
     KeyEventListener listener;
 
 public:
-    KeyboardDemo() : Thread("KeyboardDemo"), listener(this->tid) {
-        kevman.subscribe(this->listener);
+    KeyboardDemo(const KeyboardDemo& copy) = delete;
+
+    KeyboardDemo() : Thread("KeyboardDemo"), listener(tid) {
+        kevman.subscribe(listener);
     }
 
     // Base class destructor will be called automatically
@@ -35,7 +35,7 @@ public:
             //       thread set it (so use nice_kill)
             kout.unlock();
         }
-        kevman.unsubscribe(this->listener);
+        kevman.unsubscribe(listener);
     }
 
     void run() override;

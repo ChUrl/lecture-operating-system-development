@@ -9,8 +9,8 @@
  * Autor:           Michael Schoettner, HHU, 13.6.2020                        *
  *****************************************************************************/
 
-#ifndef __LinkedListAllocator_include__
-#define __LinkedListAllocator_include__
+#ifndef LinkedListAllocator_include__
+#define LinkedListAllocator_include__
 
 #include "kernel/Allocator.h"
 #include "lib/SpinLock.h"
@@ -46,6 +46,8 @@ public:
     LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
     LinkedListAllocator() : log("LL-Alloc") {}
+
+//    ~LinkedListAllocator() override = default;
 
     void init() override;
     void dump_free_memory() override;

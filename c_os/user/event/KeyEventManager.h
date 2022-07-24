@@ -1,5 +1,5 @@
-#ifndef __KeyEventManager_Include_H_
-#define __KeyEventManager_Include_H_
+#ifndef KeyEventManager_Include_H_
+#define KeyEventManager_Include_H_
 
 #include "user/event/KeyEventListener.h"
 #include "user/lib/Logger.h"
@@ -10,13 +10,13 @@
 
 class KeyEventManager {
 private:
-    KeyEventManager(const KeyEventManager& copy) = delete;
-
     NamedLogger log;
 
     bse::vector<KeyEventListener*> listeners;
 
 public:
+    KeyEventManager(const KeyEventManager& copy) = delete;
+
     KeyEventManager() : log("KEvMan"), listeners(true) {}
 
     void init() {

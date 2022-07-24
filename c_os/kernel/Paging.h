@@ -49,8 +49,8 @@
  * Autor:           Michael Schoettner, 2.2.2017                             *
  *****************************************************************************/
 
-#ifndef __Paging_include__
-#define __Paging_include__
+#ifndef Paging_include__
+#define Paging_include__
 
 // Externe Funktionen in startup.asm
 extern "C" {

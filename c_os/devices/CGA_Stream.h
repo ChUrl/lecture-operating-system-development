@@ -12,8 +12,8 @@
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *                  Aenderungen von Michael Schoettner, HHU, 06.04.20        *
  *****************************************************************************/
-#ifndef __CGA_Stream_include__
-#define __CGA_Stream_include__
+#ifndef CGA_Stream_include_H_
+#define CGA_Stream_include_H_
 
 #include "devices/CGA.h"
 #include "lib/OutStream.h"
@@ -42,7 +42,7 @@ class CGA_Stream : public OutStream, public CGA {
 private:
     // Allow for synchronization of output text, needed when running something in parallel to
     // the PreemptiveThreadDemo for example
-    // NOTE: Should only be used by threads (like the demos) to not deadlock the system
+    // NOTE: Should only be used by threads (like the demos) to not lock the system
     Semaphore sem;
 
     CGA::color color_fg;
@@ -57,6 +57,8 @@ public:
     CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
         pos = 0;
     }
+
+//    ~CGA_Stream() override = default;
 
     void lock() { sem.p(); }
     void unlock() { sem.v(); }

@@ -8,19 +8,19 @@
  * Autor:           Michael Schoettner, HHU, 19.5.2022                       *
  *****************************************************************************/
 
-#ifndef __VESA_include__
-#define __VESA_include__
+#ifndef VESA_include__
+#define VESA_include__
 
 #include "devices/LFBgraphics.h"
 #include "user/lib/Logger.h"
 
 // Ausgewaehlte Grafikmodi mit Mode-Nummer
-#define MODE_640_480_16BITS 0x111
-#define MODE_640_480_24BITS 0x112
-#define MODE_800_600_16BITS 0x114
-#define MODE_800_600_24BITS 0x115
-#define MODE_1024_768_16BITS 0x117
-#define MODE_1024_768_24BITS 0x118
+constexpr const unsigned int MODE_640_480_16BITS = 0x111;
+constexpr const unsigned int MODE_640_480_24BITS = 0x112;
+constexpr const unsigned int MODE_800_600_16BITS = 0x114;
+constexpr const unsigned int MODE_800_600_24BITS = 0x115;
+constexpr const unsigned int MODE_1024_768_16BITS = 0x117;
+constexpr const unsigned int MODE_1024_768_24BITS = 0x118;
 
 class VESA : public LFBgraphics {
 private:
@@ -34,7 +34,7 @@ public:
 
     // Bestimmten Grafikmodus einschalten
     bool initGraphicMode(unsigned short mode);
-    void initTextMode();
+    static void initTextMode();
 };
 
 #endif

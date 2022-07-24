@@ -2,7 +2,7 @@ Makefile
 ======================================
 - Added the -std=c++17 flag to enable better constexpr support.
 - Removed optimizations as the system would crash with them.
-  The BlueScreen would show an empty callstack on crashes with -O2 so I guess the problem is the missing ebp or something like that.
+  The BlueScreen would show an empty callstack on crashes with -O2, so I guess the problem is the missing ebp or something like that.
 - Added qemu-stdio target for easy access to the serial output
   
 Changes

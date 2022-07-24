@@ -9,7 +9,6 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 11.12.2018                           *
  *****************************************************************************/
-#include "devices/CGA.h"
 #include "kernel/Globals.h"
 
 // in startup.asm
@@ -68,11 +67,11 @@ int bs_ypos = 0;
 void bs_clear() {
     unsigned int x;
     unsigned int y;
-    unsigned short* ptr = (unsigned short*)0xb8000;
+    unsigned short* ptr = reinterpret_cast<unsigned short*>(0xb8000);
 
     for (x = 0; x < 80; x++) {
         for (y = 0; y < 25; y++) {
-            *(ptr + y * 80 + x) = (short)0x1F00;
+            *(ptr + y * 80 + x) = static_cast<short>(0x1F00);
         }
     }
 
@@ -96,7 +95,7 @@ void bs_lf() {
  * Beschreibung:    Ein Zeichen ausgeben.                                    *
  *****************************************************************************/
 void bs_print_char(char c) {
-    unsigned char* ptr = (unsigned char*)0xb8000;
+    unsigned char* ptr = reinterpret_cast<unsigned char*>(0xb8000);
 
     *(ptr + bs_ypos * 80 * 2 + bs_xpos * 2) = c;
     bs_xpos++;
@@ -122,9 +121,9 @@ void bs_print_string(char* str) {
  *****************************************************************************/
 void bs_printHexDigit(int c) {
     if (c < 10) {
-        bs_print_char('0' + (unsigned char)c);
+        bs_print_char('0' + static_cast<unsigned char>(c));
     } else {
-        bs_print_char('A' + (unsigned char)(c - 10));
+        bs_print_char('A' + static_cast<unsigned char>(c - 10));
     }
 }
 
@@ -145,7 +144,7 @@ void bs_print_uintHex(unsigned int c) {
  * Beschreibung:    String mit Integer ausgeben. Wird verwendet um ein       *
  *                  Register auszugeben.                                     *
  *****************************************************************************/
-void bs_printReg(char* str, int value) {
+void bs_printReg(char* str, unsigned int value) {
     bs_print_string(str);
     bs_print_uintHex(value);
     bs_print_string("   \0");
@@ -211,7 +210,7 @@ void bs_dump(unsigned int exceptionNr) {
     get_int_esp(&int_esp);
 
     // wir müssen den Inhalt auslesen und das als Zeiger verwenden, um den Stack auszulesen
-    sptr = (unsigned int*)*int_esp;
+    sptr = reinterpret_cast<unsigned int*>(*int_esp);
 
     bs_lf();
 
@@ -252,7 +251,7 @@ void bs_dump(unsigned int exceptionNr) {
 
     // Exception mit Error-Code?
     if (has_error_code == 1) {
-        int error_nr = *(sptr + 8);
+        unsigned int error_nr = *(sptr + 8);
 
         if (exceptionNr == 14) {
             if (error_nr == 3) {
@@ -278,7 +277,7 @@ void bs_dump(unsigned int exceptionNr) {
     bs_print_string("Calling Stack:\0");
     bs_lf();
     int x = 0;
-    unsigned int* ebp = (unsigned int*)*(sptr + 2);
+    unsigned int* ebp = reinterpret_cast<unsigned int*>(*(sptr + 2));
     unsigned int raddr;
 
     // solange eip > 1 MB && ebp < 128 MB, max. Aufruftiefe 10
@@ -289,7 +288,7 @@ void bs_dump(unsigned int exceptionNr) {
         bs_lf();
 
         // dynamische Kette -> zum Aufrufer
-        ebp = (unsigned int*)*ebp;
+        ebp = reinterpret_cast<unsigned int*>(*ebp);
 
         x++;
     }

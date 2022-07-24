@@ -7,8 +7,8 @@
  *                                                                           *
  * Autor:           Michael Schoettner, HHU, 25.9.2016                       *
  *****************************************************************************/
-#ifndef __HeapDemo_include__
-#define __HeapDemo_include__
+#ifndef HeapDemo_include__
+#define HeapDemo_include__
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
@@ -21,10 +21,9 @@ public:
 };
 
 class HeapDemo : public Thread {
-private:
+public:
     HeapDemo(const HeapDemo& copy) = delete;
 
-public:
     HeapDemo() : Thread("HeapDemo") {}
 
     void run() override;

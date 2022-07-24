@@ -6,7 +6,7 @@
 /*                                            */
 /**********************************************/
 
-#define FONTDATAMAX_8x8 2048
+constexpr unsigned int FONTDATAMAX_8x8 = 2048;
 
 constexpr unsigned char fontdata_8x8[FONTDATAMAX_8x8] = {
 

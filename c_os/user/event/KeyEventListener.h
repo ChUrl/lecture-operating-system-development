@@ -1,16 +1,17 @@
-#ifndef __KeyEventListener_Include_H_
-#define __KeyEventListener_Include_H_
+#ifndef KeyEventListener_Include_H_
+#define KeyEventListener_Include_H_
 
 #include "kernel/threads/Thread.h"
 
 class KeyEventListener {
 private:
-    KeyEventListener(const KeyEventListener& copy) = delete;
-
     char lastChar = '\0';
 
-public:
+    friend class KeyEventManager;
     unsigned int tid;  // Thread which contains this listener, so the listener can block the thread
+
+public:
+    KeyEventListener(const KeyEventListener& copy) = delete;
 
     KeyEventListener(unsigned int tid) : tid(tid) {}
 

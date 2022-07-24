@@ -11,8 +11,8 @@
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *                  Aenderungen von Michael Schoettner, HHU, 21.8.2016       *
  *****************************************************************************/
-#ifndef __CGA_include__
-#define __CGA_include__
+#ifndef CGA_include_H_
+#define CGA_include_H_
 
 #include "kernel/IOport.h"
 #include "user/lib/Array.h"
@@ -29,8 +29,10 @@ public:
 
     // Konstruktur mit Initialisierung der Ports
     CGA() {
-        this->setpos(0, 0);
+        CGA::setpos(0, 0);
     }
+
+//    virtual ~CGA() = default;
 
     static const unsigned int CGA_START = 0xb8000U;
 

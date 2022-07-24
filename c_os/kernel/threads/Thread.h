@@ -7,9 +7,9 @@
  *                  Thread-Objekte werden vom Scheduler in einer verketteten *
  *                  Liste 'readylist' verwaltet.                             *
  *                                                                           *
- *                  Im Konstruktor wird der initialie Kontext des Threads    * 
+ *                  Im Konstruktor wird der initialie Kontext des Threads    *
  *                  eingerichtet. Mit 'start' wird ein Thread aktiviert.     *
- *                  Die CPU sollte mit 'yield' freiwillig abgegeben werden.  * 
+ *                  Die CPU sollte mit 'yield' freiwillig abgegeben werden.  *
  *                  Um bei einem Threadwechsel den Kontext sichern zu        *
  *                  koennen, enthaelt jedes Threadobjekt eine Struktur       *
  *                  ThreadState, in dem die Werte der nicht-fluechtigen      *
@@ -25,8 +25,8 @@
  * Autor:           Michael, Schoettner, HHU, 16.12.2016                     *
  *****************************************************************************/
 
-#ifndef __Thread_include__
-#define __Thread_include__
+#ifndef Thread_include__
+#define Thread_include__
 
 #include "user/lib/Logger.h"
 
@@ -49,21 +49,21 @@ public:
     Thread(const Thread& copy) = delete;  // Verhindere Kopieren
 
     virtual ~Thread() {
-        log.info() << "Uninitialized thread, ID: " << dec << this->tid << " (" << name << ")" << endl;
-        delete[] this->stack;
+        log.info() << "Uninitialized thread, ID: " << dec << tid << " (" << name << ")" << endl;
+        delete[] stack;
     }
 
     // Thread aktivieren
-    /*[[noreturn]]*/ void start() const;
+    void start() const;
 
     // Umschalten auf Thread 'next'
-    /*[[noreturn]]*/ void switchTo(Thread& next);
+    void switchTo(Thread& next);
 
     // Ask thread to terminate itself
     void suicide() { running = false; }
 
     // Methode des Threads, muss in Sub-Klasse implementiert werden
-    [[noreturn]] virtual void run() = 0;
+    virtual void run() = 0;
 };
 
 #endif

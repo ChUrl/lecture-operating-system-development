@@ -32,10 +32,10 @@ void LinkedListAllocator::init() {
 
     /* Hier muess Code eingefuegt werden */
 
-    this->free_start = (free_block_t*)this->heap_start;
-    this->free_start->allocated = false;
-    this->free_start->size = this->heap_size - sizeof(free_block_t);
-    this->free_start->next = this->free_start;  // Only one block, points to itself
+    free_start = reinterpret_cast<free_block_t*>(heap_start);
+    free_start->allocated = false;
+    free_start->size = heap_size - sizeof(free_block_t);
+    free_start->next = free_start;  // Only one block, points to itself
 
     log.info() << "Initialized LinkedList Allocator" << endl;
 }
@@ -51,14 +51,14 @@ void LinkedListAllocator::dump_free_memory() {
 
     kout << "Freier Speicher:" << endl;
 
-    if (this->free_start == nullptr) {
+    if (free_start == nullptr) {
         kout << " - No free Blocks" << endl;
     } else {
-        kout << " - Freelist start: " << hex << (unsigned int)this->free_start << endl;
+        kout << " - Freelist start: " << hex << reinterpret_cast<unsigned int>(free_start) << endl;
 
-        free_block_t* current = this->free_start;
+        free_block_t* current = free_start;
         do {
-            kout << " - Free Block (Start: " << hex << (unsigned int)current
+            kout << " - Free Block (Start: " << hex << reinterpret_cast<unsigned int>(current)
                  << " Size: " << hex << current->size << ")" << endl;
             current = current->next;
         } while (current != free_start);
@@ -71,16 +71,16 @@ void LinkedListAllocator::dump_free_memory() {
  * Beschreibung:    Einen neuen Speicherblock allozieren.                    * 
  *****************************************************************************/
 void* LinkedListAllocator::alloc(unsigned int req_size) {
-    this->lock.acquire();
+    lock.acquire();
 
     /* Hier muess Code eingefuegt werden */
     // NOTE: next pointer zeigt auf headeranfang, returned wird zeiger auf anfang des nutzbaren freispeichers
 
     log.debug() << "Requested " << hex << req_size << " Bytes" << endl;
 
-    if (this->free_start == nullptr) {
+    if (free_start == nullptr) {
         log.error() << " - No free memory remaining :(" << endl;
-        this->lock.release();
+        lock.release();
         return nullptr;
     }
 
@@ -91,7 +91,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
         log.trace() << " - Rounded to word border (+" << dec << req_size_diff << " bytes)" << endl;
     }
 
-    free_block_t* current = this->free_start;
+    free_block_t* current = free_start;
     do {
         if (current->size >= rreq_size) {  // Size doesn't contain header, only usable
             // Current block large enough
@@ -106,7 +106,7 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 // In case of only one freeblock:
                 // [current | new_next]
                 free_block_t* new_next =
-                  (free_block_t*)((unsigned int)current + sizeof(free_block_t) + rreq_size);
+                  reinterpret_cast<free_block_t*>(reinterpret_cast<unsigned int>(current) + sizeof(free_block_t) + rreq_size);
 
                 // If only one block exists, current->next is current
                 // This shouldn't be a problem since the block gets removed from the list later
@@ -118,18 +118,18 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
                 current->size = rreq_size;
 
                 // Next-fit
-                this->free_start = new_next;
+                free_start = new_next;
 
                 log.trace() << " - Allocated " << hex << rreq_size << " Bytes with cutting" << endl;
             } else {
                 // Block too small to be cut, allocate whole block
 
                 // Next-fit
-                this->free_start = current->next;  // Pointer keeps pointing to current if last block
-                if (this->free_start == current) {
+                free_start = current->next;  // Pointer keeps pointing to current if last block
+                if (free_start == current) {
                     // No free block remaining
                     log.trace() << " - Disabled freelist" << endl;
-                    this->free_start = nullptr;
+                    free_start = nullptr;
                 }
 
                 log.trace() << " - Allocated " << hex << current->size << " Bytes without cutting" << endl;
@@ -155,16 +155,16 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
             // }
             // log.debug() << "Finished check" << endl;
 
-            log.debug() << "Returning memory address " << hex << ((unsigned int)current + sizeof(free_block_t)) << endl;
-            this->lock.release();
-            return (void*)((unsigned int)current + sizeof(free_block_t));  // Speicheranfang, nicht header
+            log.debug() << "returning memory address " << hex << reinterpret_cast<unsigned int>(current) + sizeof(free_block_t) << endl;
+            lock.release();
+            return reinterpret_cast<void*>(reinterpret_cast<unsigned int>(current) + sizeof(free_block_t));  // Speicheranfang, nicht header
         }
 
         current = current->next;
-    } while (current != this->free_start);  // Stop when arriving at the first block again
+    } while (current != free_start);  // Stop when arriving at the first block again
 
     log.error() << " - More memory requested than available :(" << endl;
-    this->lock.release();
+    lock.release();
     return nullptr;
 }
 
@@ -174,35 +174,35 @@ void* LinkedListAllocator::alloc(unsigned int req_size) {
  * Beschreibung:    Einen Speicherblock freigeben.                           *
  *****************************************************************************/
 void LinkedListAllocator::free(void* ptr) {
-    this->lock.acquire();
+    lock.acquire();
 
     /* Hier muess Code eingefuegt werden */
 
     // Account for header
-    free_block_t* block_start = (free_block_t*)((unsigned int)ptr - sizeof(free_block_t));
+    free_block_t* block_start = reinterpret_cast<free_block_t*>(reinterpret_cast<unsigned int>(ptr) - sizeof(free_block_t));
 
-    log.debug() << "Freeing " << hex << (unsigned int)ptr << ", Size: " << block_start->size << endl;
+    log.debug() << "Freeing " << hex << reinterpret_cast<unsigned int>(ptr) << ", Size: " << block_start->size << endl;
 
     if (!block_start->allocated) {
         log.error() << "Block already free" << endl;
-        this->lock.release();
+        lock.release();
         return;
     }
 
     // Reenable the freelist if no block was available
     // This also means that no merging can be done
-    if (this->free_start == nullptr) {
-        this->free_start = block_start;
+    if (free_start == nullptr) {
+        free_start = block_start;
         block_start->allocated = false;
         block_start->next = block_start;
 
         log.trace() << " - Enabling freelist with one block" << endl;
-        this->lock.release();
+        lock.release();
         return;
     }
 
     free_block_t* next_block =
-      (free_block_t*)((unsigned int)block_start + sizeof(free_block_t) + block_start->size);
+      reinterpret_cast<free_block_t*>(reinterpret_cast<unsigned int>(block_start) + sizeof(free_block_t) + block_start->size);
 
     // Find the next free block, multiple next blocks can be allocated so walk through them
     free_block_t* next_free = block_start->next;
@@ -212,7 +212,7 @@ void LinkedListAllocator::free(void* ptr) {
 
     free_block_t* previous_free = LinkedListAllocator::find_previous_block(next_free);
     free_block_t* previous_free_next =
-      (free_block_t*)((unsigned int)previous_free + sizeof(free_block_t) + previous_free->size);
+      reinterpret_cast<free_block_t*>(reinterpret_cast<unsigned int>(previous_free) + sizeof(free_block_t) + previous_free->size);
 
     // We have: [previous_free | previous_free_next | <> | block_start | next_block | <> | next_free]
     // The <> spaces don't have to exist and next_block could be the same as next_free
@@ -254,10 +254,10 @@ void LinkedListAllocator::free(void* ptr) {
         // If thats the case I should set the next pointer to the next adjacent block
         // when allocating a new block
 
-        if (this->free_start == next_free) {
+        if (free_start == next_free) {
             // next_free is now invalid after merge
-            log.trace() << " - Moving freelist start to " << hex << (unsigned int)block_start << endl;
-            this->free_start = block_start;
+            log.trace() << " - Moving freelist start to " << hex << reinterpret_cast<unsigned int>(block_start) << endl;
+            free_start = block_start;
         }
     } else {
         // Can't merge forward so size stays the same
@@ -283,16 +283,16 @@ void LinkedListAllocator::free(void* ptr) {
         // For pointers to block_start the same as above applies
         // so I don't think I have to manage anything else here
 
-        if (this->free_start == block_start) {
+        if (free_start == block_start) {
             // block_start is now invalid after merge
-            log.trace() << " - Moving freelist start to " << hex << (unsigned int)previous_free << endl;
-            this->free_start = previous_free;
+            log.trace() << " - Moving freelist start to " << hex << reinterpret_cast<unsigned int>(previous_free) << endl;
+            free_start = previous_free;
         }
     }
 
     // Depending on the merging this might write into the block, but doesn't matter
     block_start->allocated = false;
-    this->lock.release();
+    lock.release();
 }
 
 free_block_t* LinkedListAllocator::find_previous_block(free_block_t* next_block) {

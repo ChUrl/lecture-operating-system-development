@@ -1,6 +1,8 @@
 #include "user/devices/SerialOut.h"
 
-int SerialOut::init() const {
+const IOport SerialOut::com1(0x3f8);
+
+SerialOut::SerialOut() {
     // NOTE: I could add different ports for every register but this was easier as it's that way on OSDev
     com1.outb(1, 0x00);  // Disable all interrupts
     com1.outb(3, 0x80);  // Enable DLAB (set baud rate divisor)
@@ -13,14 +15,11 @@ int SerialOut::init() const {
     com1.outb(0xAE);     // Test serial chip (send byte 0xAE and check if serial returns same byte)
 
     // Check if serial is faulty (i.e: not same byte as sent)
-    if (com1.inb() != 0xAE) {
-        return 1;
+    if (com1.inb() == 0xAE) {
+        // If serial is not faulty set it in normal operation mode
+        // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
+                com1.outb(4, 0x0F);
     }
-
-    // If serial is not faulty set it in normal operation mode
-    // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
-    com1.outb(4, 0x0F);
-    return 0;
 }
 
 int SerialOut::serial_received() {
@@ -44,11 +43,11 @@ void SerialOut::write(const char a) {
 void SerialOut::write(const char* a) {
     const char* current = a;
     do {
-        this->write(*current);
+        write(*current);
         current = current + 1;
     } while (*current != '\0');
 }
 
 void SerialOut::write(const bse::string& a) {
-    write((const char*)a);
+    write(static_cast<const char*>(a));
 }

@@ -19,8 +19,8 @@
  * Autor:           Olaf Spinczyk, TU Dortmund                               *
  *                  Aenderungen von Michael Schoettner, HHU, 06.04.20        *
  *****************************************************************************/
-#ifndef __OutStream_include__
-#define __OutStream_include__
+#ifndef OutStream_include__
+#define OutStream_include__
 
 #include "lib/StringBuffer.h"
 #include "user/lib/String.h"
@@ -40,8 +40,6 @@ public:
 
 class OutStream : public StringBuffer {
 private:
-    OutStream(const OutStream& copy) = delete;  // Verhindere Kopieren
-
     // Some stream formatting
     unsigned char fill_used;   // indicates how many characters are already used by the text internally
     unsigned char fill_width;  // If input is shorter than fill_width fill remaining space up with fill_char
@@ -52,7 +50,11 @@ private:
     void fill_finalize();  // does the filling after text has been written to buffer
 
 public:
+    OutStream(const OutStream& copy) = delete;  // Verhindere Kopieren
+
     OutStream() : fill_used(0), fill_width(0), fill_char(' '), base(10) {}
+
+//    ~OutStream() override = default;
 
     // Methode zur Ausgabe des Pufferinhalts der Basisklasse StringBuffer.
     void flush() override;
@@ -79,7 +81,7 @@ public:
     }
 
     template<typename T>
-    friend T& operator<<(T& os, unsigned char c) { return os << (char)c; }
+    friend T& operator<<(T& os, unsigned char c) { return os << static_cast<char>(c); }
 
     // Darstellung einer nullterminierten Zeichenkette
     template<typename T>
@@ -97,22 +99,22 @@ public:
     // Can not use this exclusively for strings as these are heap allocated
     template<typename T>
     friend T& operator<<(T& os, const bse::string& string) {
-        os << (const char*)string;
+        os << static_cast<const char*>(string);
         return os;
     }
 
     // Darstellung ganzer Zahlen im Zahlensystem zur Basis base
     template<typename T>
-    friend T& operator<<(T& os, short ival) { return os << (long)ival; }
+    friend T& operator<<(T& os, short ival) { return os << static_cast<long>(ival); }
 
     template<typename T>
-    friend T& operator<<(T& os, unsigned short ival) { return os << (unsigned long)ival; }
+    friend T& operator<<(T& os, unsigned short ival) { return os << static_cast<unsigned long>(ival); }
 
     template<typename T>
-    friend T& operator<<(T& os, int ival) { return os << (long)ival; }
+    friend T& operator<<(T& os, int ival) { return os << static_cast<long>(ival); }
 
     template<typename T>
-    friend T& operator<<(T& os, unsigned int ival) { return os << (unsigned long)ival; }
+    friend T& operator<<(T& os, unsigned int ival) { return os << static_cast<unsigned long>(ival); }
 
     template<typename T>
     friend T& operator<<(T& os, long ival) {
@@ -122,13 +124,13 @@ public:
             ival = -ival;
         }
         // Dann wird der Absolutwert als vorzeichenlose Zahl ausgegeben.
-        return os << (unsigned long)ival;
+        return os << static_cast<unsigned long>(ival);
     }
 
     template<typename T>
     friend T& operator<<(T& os, unsigned long ival) {
-        unsigned long div = 0;
-        char digit = 0;
+        unsigned long div;
+        char digit;
 
         if (os.base == 8) {
             os.put('0');  // oktale Zahlen erhalten eine fuehrende Null
@@ -139,10 +141,10 @@ public:
 
         // Bestimmung der groessten Potenz der gewaehlten Zahlenbasis, die
         // noch kleiner als die darzustellende Zahl ist.
-        for (div = 1; ival / div >= (unsigned long)os.base; div *= os.base) {}
+        for (div = 1; ival / div >= static_cast<unsigned long>(os.base); div *= os.base) {}
 
         // ziffernweise Ausgabe der Zahl
-        for (; div > 0; div /= (unsigned long)os.base) {
+        for (; div > 0; div /= static_cast<unsigned long>(os.base)) {
             digit = ival / div;
             if (digit < 10) {
                 os.put('0' + digit);
@@ -160,7 +162,7 @@ public:
     friend T& operator<<(T& os, void* ptr) {
         int oldbase = os.base;
         os.base = 16;
-        os << (unsigned long)ptr;
+        os << reinterpret_cast<unsigned long>(ptr);
         os.base = oldbase;
         return os;
     }

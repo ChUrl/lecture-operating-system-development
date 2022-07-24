@@ -7,11 +7,11 @@
  *                                                                           *
  * Autor:           Michael Schoettner, 13.9.2016                            *
  *****************************************************************************/
-#ifndef __BIOS_include__
-#define __BIOS_include__
+#ifndef BIOS_include__
+#define BIOS_include__
 
 // Speicherseite fuer Rueckgabewerte von BIOS-Aufrufen
-#define RETURN_MEM 0x9F000
+constexpr const unsigned int RETURN_MEM = 0x9F000;
 
 // Struktur fuer Parameteruebergabe fuer einen BIOS-Aufruf
 struct BIOScall_params {
@@ -31,7 +31,7 @@ struct BIOScall_params {
 // kein Auffuellen von bytes auf Wortgrenzen
 
 // Zeiger auf Speichbereich fuer Parameter fuer BIOS-Aufruf
-extern struct BIOScall_params* BC_params;
+extern  BIOScall_params* BC_params;
 
 class BIOS {
 public:
@@ -41,7 +41,7 @@ public:
     BIOS();
 
     // BIOS-Aufruf, per Software-Interrupt
-    void Int(int inter);
+    static void Int(int inter);
 };
 
 #endif

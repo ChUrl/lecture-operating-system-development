@@ -1,5 +1,5 @@
-#ifndef __ARRAY_INCLUDE_H
-#define __ARRAY_INCLUDE_H
+#ifndef ARRAY_INCLUDE_H
+#define ARRAY_INCLUDE_H
 
 #include "user/lib/Iterator.h"
 #include <utility>
@@ -15,22 +15,30 @@ namespace bse {
         T buf[N];
 
     public:
-        array() {};  // If i write default something like bse::array<int, 10> arr; is not initialized...
+        array() = default;;  // If i write default something like bse::array<int, 10> arr; is not initialized...
+
+        array(std::initializer_list<T> list) {
+            typename std::initializer_list<T>::iterator it = list.begin();
+            for (unsigned int i = 0; i < N; ++i) {
+                buf[i] = *it;
+                ++it;
+            }
+        }
 
         iterator begin() { return iterator(&buf[0]); }
         iterator begin() const { return iterator(&buf[0]); }
         iterator end() { return iterator(&buf[N]); }
         iterator end() const { return iterator(&buf[N]); }
 
-        T& operator[](std::size_t i) { return this->buf[i]; }
-        constexpr const T& operator[](std::size_t i) const { return this->buf[i]; }
+        T& operator[](std::size_t i) { return buf[i]; }
+        constexpr const T& operator[](std::size_t i) const { return buf[i]; }
 
-        T* operator&() { return &buf[0]; }  // Not standard, I don't know yet if this will turn out to be a bad idea
-        const T* operator&() const { return &buf[0]; }
+        T* data() { return &buf[0]; }  // Not standard, I don't know yet if this will turn out to be a bad idea
+        const T* data() const { return &buf[0]; }
 
         void swap(array<T, N>& other) {
             for (std::size_t i = 0; i < N; ++i) {
-                std::swap(this->buf[i], other[i]);
+                std::swap(buf[i], other[i]);
             }
         }
 
@@ -39,7 +47,7 @@ namespace bse {
         template<std::size_t n>
         void swap_n(array<T, n>& other) {
             for (std::size_t i = 0; i < n; ++i) {
-                std::swap(this->buf[i], other[i]);
+                std::swap(buf[i], other[i]);
             }
         }
 

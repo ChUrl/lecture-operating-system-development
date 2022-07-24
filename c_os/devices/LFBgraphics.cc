@@ -13,7 +13,6 @@
  *****************************************************************************/
 
 #include "devices/LFBgraphics.h"
-#include "kernel/Globals.h"
 
 /* Hilfsfunktionen */
 void swap(unsigned int* a, unsigned int* b);
@@ -43,8 +42,8 @@ inline void LFBgraphics::drawMonoBitmap(unsigned int x, unsigned int y,
     unsigned short width_byte = width / 8 + ((width % 8 != 0) ? 1 : 0);
 
     for (unsigned int yoff = 0; yoff < height; ++yoff) {
-        int xpos = x;
-        int ypos = y + yoff;
+        unsigned int xpos = x;
+        unsigned int ypos = y + yoff;
         for (unsigned int xb = 0; xb < width_byte; ++xb) {
             for (int src = 7; src >= 0; --src) {
                 if ((1 << src) & *bitmap) {
@@ -86,14 +85,14 @@ void LFBgraphics::drawString(const Font& fnt, unsigned int x, unsigned int y,
  * Beschreibung:    Zeichnen eines Pixels.                                   *
  *****************************************************************************/
 void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) const {
-    unsigned char* ptr = (unsigned char*)lfb;
+    unsigned char* ptr = reinterpret_cast<unsigned char*>(lfb);
 
     if (hfb == 0 || lfb == 0) {
         return;
     }
 
     if (mode == BUFFER_INVISIBLE) {
-        ptr = (unsigned char*)hfb;
+        ptr = reinterpret_cast<unsigned char*>(hfb);
     }
 
     // Pixel ausserhalb des sichtbaren Bereichs?
@@ -119,7 +118,7 @@ void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) co
         *ptr = ((col >> 8) & 0xFF);
         ptr++;
         *ptr = ((col >> 16) & 0xFF);
-        ptr++;
+        ptr;
         return;
     case 32:
         ptr += (4 * x + 4 * y * xres);
@@ -128,7 +127,7 @@ void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) co
         *ptr = ((col >> 8) & 0xFF);
         ptr++;
         *ptr = ((col >> 16) & 0xFF);
-        ptr++;
+        ptr;
         return;
     }
 }
@@ -139,12 +138,12 @@ void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned in
     if (x1 == x2 && y2 > y1) {
         // Vertical line
         for (unsigned int i = y1; i <= y2; ++i) {
-            this->drawPixel(x1, i, col);
+            drawPixel(x1, i, col);
         }
     } else if (y1 == y2 && x2 > x1) {
         // Horizontal line
         for (unsigned int i = x1; i <= x2; ++i) {
-            this->drawPixel(i, y1, col);
+            drawPixel(i, y1, col);
         }
     } else {
         // Not straight
@@ -155,32 +154,32 @@ void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned in
 //    |          |
 // (x1, y2)---(x2, y2)
 void LFBgraphics::drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) const {
-    this->drawStraightLine(x1, y1, x2, y1, col);
-    this->drawStraightLine(x2, y1, x2, y2, col);
-    this->drawStraightLine(x1, y2, x2, y2, col);
-    this->drawStraightLine(x1, y1, x1, y2, col);
+    drawStraightLine(x1, y1, x2, y1, col);
+    drawStraightLine(x2, y1, x2, y2, col);
+    drawStraightLine(x1, y2, x2, y2, col);
+    drawStraightLine(x1, y1, x1, y2, col);
 }
 
 void LFBgraphics::drawCircle(unsigned int x, unsigned int y, unsigned int rad, unsigned int col) const {
     // TODO
 }
 
-void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data) const {
-    unsigned char* ptr;
+void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, const unsigned char* pixel_data) const {
+    const unsigned char* ptr;
     for (unsigned int x = 0; x < width; ++x) {
         for (unsigned int y = 0; y < height; ++y) {
-            ptr = (unsigned char*)pixel_data + (x + y * width) * bytes_pp;
+            ptr = pixel_data + (x + y * width) * bytes_pp;
 
             switch (bytes_pp) {
             case 2:
                 // TODO: Never tested, probably doesn't work
-                this->drawPixel(x, y, RGB_24(*ptr & 0b11111000, ((*ptr & 0b111) << 3) | (*(ptr + 1) >> 5),
+                drawPixel(x, y, RGB_24(*ptr & 0b11111000, ((*ptr & 0b111) << 3) | (*(ptr + 1) >> 5),
                                              *(ptr + 1) & 0b11111));  // RGB 565
                 break;
             case 3:
             case 4:
                 // Alpha gets ignored anyway
-                this->drawPixel(x, y, RGB_24(*ptr, *(ptr + 1), *(ptr + 2)));
+                drawPixel(x, y, RGB_24(*ptr, *(ptr + 1), *(ptr + 2)));
                 break;
             }
         }
@@ -193,7 +192,7 @@ void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned i
  * Beschreibung:    Bildschirm loeschen.                                     *
  *****************************************************************************/
 void LFBgraphics::clear() const {
-    unsigned int* ptr = (unsigned int*)lfb;
+    unsigned int* ptr = reinterpret_cast<unsigned int*>(lfb);
     unsigned int i;
 
     if (hfb == 0 || lfb == 0) {
@@ -201,7 +200,7 @@ void LFBgraphics::clear() const {
     }
 
     if (mode == 0) {
-        ptr = (unsigned int*)hfb;
+        ptr = reinterpret_cast<unsigned int*>(hfb);
     }
 
     switch (bpp) {
@@ -244,8 +243,8 @@ void LFBgraphics::setDrawingBuff(int v) {
  * Beschreibung:    Kopiert den versteckten Puffer in den sichtbaren LFB.    *
  *****************************************************************************/
 void LFBgraphics::copyHiddenToVisible() const {
-    unsigned int* sptr = (unsigned int*)hfb;
-    unsigned int* dptr = (unsigned int*)lfb;
+    unsigned int* sptr = reinterpret_cast<unsigned int*>(hfb);
+    unsigned int* dptr = reinterpret_cast<unsigned int*>(lfb);
     unsigned int i;
 
     if (hfb == 0 || lfb == 0) {
@@ -278,7 +277,7 @@ void LFBgraphics::copyHiddenToVisible() const {
 }
 
 void swap(unsigned int* a, unsigned int* b) {
-    int h = *a;
+    unsigned int h = *a;
 
     *a = *b;
     *b = h;

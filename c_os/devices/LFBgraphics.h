@@ -12,16 +12,18 @@
  *         https://blog.demofox.org/2015/01/17/bresenhams-drawing-algorithms *
  *****************************************************************************/
 
-#ifndef __LFBgraphics_include__
-#define __LFBgraphics_include__
+#ifndef LFBgraphics_include__
+#define LFBgraphics_include__
 
 #include "devices/fonts/Fonts.h"
 
 // Hilfsfunktionen um Farbwerte fuer einen Pixel zu erzeugen
-#define RGB_24(r, g, b) (unsigned int)((r << 16) + (g << 8) + b)
+constexpr unsigned int RGB_24(unsigned int r, unsigned int g, unsigned int b) {
+    return ((r << 16) + (g << 8) + b);
+}
 
-#define BUFFER_INVISIBLE 0
-#define BUFFER_VISIBLE 1
+constexpr const bool BUFFER_INVISIBLE = false;
+constexpr const bool BUFFER_VISIBLE  = true;
 
 class LFBgraphics {
 private:
@@ -50,7 +52,7 @@ public:
     void drawStraightLine(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) const;
     void drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) const;
 
-    void drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data) const;
+    void drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, const unsigned char* pixel_data) const;
 
     // stellt ein, ob in den sichtbaren Puffer gezeichnet wird
     void setDrawingBuff(int v);

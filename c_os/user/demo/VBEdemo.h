@@ -7,27 +7,27 @@
  *                                                                           *
  * Autor:           Michael Schoettner, HHU, 26.12.2016                      *
  *****************************************************************************/
-#ifndef __VBEdemo_include__
-#define __VBEdemo_include__
+#ifndef VBEdemo_include__
+#define VBEdemo_include__
 
 #include "kernel/Globals.h"
 #include "kernel/threads/Thread.h"
 
 class VBEdemo : public Thread {
-
 private:
-    VBEdemo(const VBEdemo& copy) = delete;  // Verhindere Kopieren
-
     // Hilfsfunktionen fuer drawColors()
-    int linInterPol1D(int x, int xr, int l, int r);
-    int linInterPol2D(int x, int y, int lt, int rt, int lb, int rb);
+    static int linInterPol1D(int x, int xr, int l, int r);
+    static int linInterPol2D(int x, int y, int lt, int rt, int lb, int rb);
 
 public:
+    VBEdemo(const VBEdemo& copy) = delete;  // Verhindere Kopieren
+
     // Gib dem Anwendungsthread einen Stack.
     VBEdemo() : Thread("VBEdemo") {}
 
     ~VBEdemo() override {
-        vesa.initTextMode();
+        allocator.free(reinterpret_cast<void*>(vesa.hfb));  // Memory is allocated after every start and never deleted, so add that
+        VESA::initTextMode();
     }
 
     // Thread-Startmethode
@@ -37,10 +37,10 @@ public:
     void drawColors();
 
     // Bitmap aus GIMP ausgeben
-    void drawBitmap();
+    static void drawBitmap();
 
     // Fonts ausgeben
-    void drawFonts();
+    static void drawFonts();
 };
 
 #endif
