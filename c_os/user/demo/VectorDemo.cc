@@ -1,11 +1,11 @@
 #include "user/demo/VectorDemo.h"
 
-void print(bse::vector<int> list) {
-    kout << "Printing List: ";
-    for (int i : list) {
-        kout << i << " ";
+void print(OutStream& os, const bse::vector<int>& list) {
+    os << "Printing List: ";
+    for (const int i : list) {
+        os << i << " ";
     }
-    kout << endl;
+    os << endl;
 }
 
 void VectorDemo::run() {
@@ -13,94 +13,96 @@ void VectorDemo::run() {
 
     kout.lock();
     kout.clear();
-    kout << "Initial list size: " << dec << list.size() << endl;
+    kout << "Logs are written to serial to see the memory interactions" << endl;
 
-    kout << "Adding elements in order" << endl;
+    log.info() << "Initial list size: " << dec << list.size() << endl;
+
+    log.info() << "Adding elements in order" << endl;
     for (unsigned int i = 0; i < 5; ++i) {
         list.push_back(i);
     }
-    print(list);
+    print(log.info(), list);
 
-    kout << "Removing all elements from the front" << endl;
+    log.info() << "Removing all elements from the front" << endl;
     for (unsigned int i = 0; i < 5; ++i) {
         list.erase(list.begin());
     }
-    print(list);
+    print(log.info(), list);
 
     // ============================================================
 
-    kout << "Adding elements in order with realloc" << endl;
+    log.info() << "Adding elements in order with realloc" << endl;
     for (unsigned int i = 0; i < 10; ++i) {
-        kout << "Add " << dec << i << endl;
+        log.info() << "Add " << dec << i << endl;
         list.push_back(i);
     }
-    print(list);
+    print(log.info(), list);
 
-    kout << "Removing all elements from the back" << endl;
+    log.info() << "Removing all elements from the back" << endl;
     for (unsigned int i = 0; i < 10; ++i) {
         list.erase(list.end() - 1);
     }
-    print(list);
+    print(log.info(), list);
 
     // ============================================================
 
     for (unsigned int i = 0; i < 5; ++i) {
         list.push_back(i);
     }
-    print(list);
+    print(log.info(), list);
 
-    kout << "Adding inside the list (at idx 0, 2, 5)" << endl;
+    log.info() << "Adding inside the list (at idx 0, 2, 5)" << endl;
     list.insert(list.begin() + 0, 10);
     list.insert(list.begin() + 2, 10);
     list.insert(list.begin() + 5, 10);
-    print(list);
+    print(log.info(), list);
 
-    kout << "Removing inside the list (at idx 0, 2, 5)" << endl;
+    log.info() << "Removing inside the list (at idx 0, 2, 5)" << endl;
     list.erase(list.begin() + 0);
     list.erase(list.begin() + 2);
     list.erase(list.begin() + 5);
-    print(list);
+    print(log.info(), list);
 
     for (unsigned int i = 0; i < 5; ++i) {
         list.erase(list.begin());
     }
-    print(list);
+    print(log.info(), list);
 
     // ============================================================
 
-    kout << "Mirror scheduling behavior" << endl;
+    log.info() << "Mirror scheduling behavior" << endl;
 
     // These are the threads
     int active = 0;  // Idle thread
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
-    print(list);
+    print(log.info(), list);
 
-    kout << "Starting..." << endl;
+    log.info() << "Starting..." << endl;
     for (unsigned int n = 0; n < 10000; ++n) {
         list.push_back(active);
         active = list[0];
         list.erase(list.begin());
 
         if (list.size() != 3 || active == -1) {
-            kout << "ERROR: Thread went missing" << endl;
+            log.info() << "ERROR: Thread went missing" << endl;
             break;
         }
 
         if (n < 5) {
-            print(list);
+            print(log.info(), list);
         }
     }
-    kout << "Finished." << endl;
+    log.info() << "Finished." << endl;
 
-    print(list);
+    print(log.info(), list);
 
     // ============================================================
 
-    kout << "Range based for support" << endl;
+    log.info() << "Range based for support" << endl;
     for (int i : list) {
-        kout << "List contains element: " << dec << i << endl;
+        log.info() << "List contains element: " << dec << i << endl;
     }
 
     kout.unlock();
