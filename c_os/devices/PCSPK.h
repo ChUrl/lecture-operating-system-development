@@ -78,7 +78,7 @@ public:
     void aerodynamic();
 
     // Ton abspielen
-    void play(float f, int len);
+    static void play(float f, int len);
 
     // Lautsprecher ausschalten
     static void off();
