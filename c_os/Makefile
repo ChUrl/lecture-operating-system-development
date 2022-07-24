@@ -229,9 +229,6 @@ bootdisk-hd: $(OBJDIR)/bootdisk.img
 # 'qemu' ruft den qemu-Emulator mit dem System auf.
 
 qemu: $(OBJDIR)/bootdisk.vmi
-	qemu-system-i386 -fda $(OBJDIR)/bootdisk.vmi -boot a -k en-us -soundhw pcspk -vga std -cpu 486
-
-qemu-stdio: $(OBJDIR)/bootdisk.vmi
 	qemu-system-i386 -fda $(OBJDIR)/bootdisk.vmi -boot a -k en-us -soundhw pcspk -vga std -cpu 486 -serial stdio
 
 # --------------------------------------------------------------------------
