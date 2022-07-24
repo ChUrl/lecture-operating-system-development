@@ -12,32 +12,34 @@
 #define __PIT_include__
 
 #include "kernel/interrupts/ISR.h"
+#include "kernel/IOport.h"
 
 class PIT : public ISR {
 private:
-    PIT(const PIT& copy) = delete;  // Verhindere Kopieren
+    const static IOport control;
+    const static IOport data0;
 
     enum { time_base = 838 }; /* ns */
     int timer_interval;
 
-    char indicator[4] = {'|', '/', '-', '\\'};
+    const char indicator[4] = {'|', '/', '-', '\\'};
     unsigned int indicator_pos = 0;
     unsigned long last_indicator_refresh = 0;
 
 public:
+    PIT(const PIT& copy) = delete;  // Verhindere Kopieren
+
     // Zeitgeber initialisieren.
-    PIT(int us) {
-        this->interval(us);
+    explicit PIT(int us) {
+        PIT::interval(us);
     }
 
     // Konfiguriertes Zeitintervall auslesen.
-    int interval() const {
-        return timer_interval;
-    }
+    int interval() const { return timer_interval; }
 
     // Zeitintervall in Mikrosekunden, nachdem periodisch ein Interrupt
     //erzeugt werden soll.
-    void interval(int us);
+    static void interval(int us);
 
     // Aktivierung der Unterbrechungen fuer den Zeitgeber
     void plugin();

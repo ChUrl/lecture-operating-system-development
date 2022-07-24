@@ -18,8 +18,8 @@
 #include "kernel/interrupts/PIC.h"
 #include "kernel/IOport.h"
 
-static IOport IMR1(0x21);  // interrupt mask register von PIC 1
-static IOport IMR2(0xa1);  // interrupt mask register von PIC 2
+IOport const PIC::IMR1(0x21);  // interrupt mask register von PIC 1
+IOport const PIC::IMR2(0xa1);  // interrupt mask register von PIC 2
 
 /*****************************************************************************
  * Methode:         PIC::allow                                               *

@@ -11,9 +11,12 @@
 #include "devices/Keyboard.h"
 #include "kernel/Globals.h"
 
+const IOport Keyboard::ctrl_port(0x64);
+const IOport Keyboard::data_port(0x60);
+
 /* Tabellen fuer ASCII-Codes (Klassenvariablen) intiialisieren */
 
-unsigned char Keyboard::normal_tab[] = {
+constexpr unsigned char Keyboard::normal_tab[] = {
   0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 225, 39, '\b',
   0, 'q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 129, '+', '\n',
   0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 148, 132, '^', 0, '#',
@@ -21,7 +24,7 @@ unsigned char Keyboard::normal_tab[] = {
   '*', 0, ' ', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '-',
   0, 0, 0, '+', 0, 0, 0, 0, 0, 0, 0, '<', 0, 0};
 
-unsigned char Keyboard::shift_tab[] = {
+constexpr unsigned char Keyboard::shift_tab[] = {
   0, 0, '!', '"', 21, '$', '%', '&', '/', '(', ')', '=', '?', 96, 0,
   0, 'Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 154, '*', 0,
   0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 153, 142, 248, 0, 39,
@@ -29,7 +32,7 @@ unsigned char Keyboard::shift_tab[] = {
   0, 0, ' ', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '>', 0, 0};
 
-unsigned char Keyboard::alt_tab[] = {
+constexpr unsigned char Keyboard::alt_tab[] = {
   0, 0, 0, 253, 0, 0, 0, 0, '{', '[', ']', '}', '\\', 0, 0,
   0, '@', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '~', 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -37,9 +40,10 @@ unsigned char Keyboard::alt_tab[] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '|', 0, 0};
 
-unsigned char Keyboard::asc_num_tab[] = {
+constexpr unsigned char Keyboard::asc_num_tab[] = {
   '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', ','};
-unsigned char Keyboard::scan_num_tab[] = {
+
+constexpr unsigned char Keyboard::scan_num_tab[] = {
   8, 9, 10, 53, 5, 6, 7, 27, 2, 3, 4, 11, 51};
 
 /*****************************************************************************
@@ -220,7 +224,7 @@ void Keyboard::get_ascii_code() {
  *                   schaltet und die Wiederholungsrate auf maximale         *
  *                   Geschwindigkeit eingestellt.                            *
  *****************************************************************************/
-Keyboard::Keyboard() : ctrl_port(0x64), data_port(0x60) {
+Keyboard::Keyboard() {
     // alle LEDs ausschalten (bei vielen PCs ist NumLock nach dem Booten an)
     set_led(led::caps_lock, false);
     set_led(led::scroll_lock, false);

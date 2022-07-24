@@ -17,16 +17,14 @@
 
 class Keyboard : public ISR {
 private:
-    Keyboard(const Keyboard& copy) = delete;  // Verhindere Kopieren
-
     unsigned char code;    // Byte von Tastatur
     unsigned char prefix;  // Prefix von Tastatur
     Key gather;            // letzter dekodierter Key
     char leds;             // Zustand LEDs
 
     // Benutzte Ports des Tastaturcontrollers
-    const IOport ctrl_port;  // Status- (R) u. Steuerregister (W)
-    const IOport data_port;  // Ausgabe- (R) u. Eingabepuffer (W)
+    static const IOport ctrl_port;  // Status- (R) u. Steuerregister (W)
+    static const IOport data_port;  // Ausgabe- (R) u. Eingabepuffer (W)
 
     // Bits im Statusregister
     enum { outb = 0x01,
@@ -58,11 +56,11 @@ private:
            prefix2 = 0xe1 };
 
     // Klassenvariablen
-    static unsigned char normal_tab[];
-    static unsigned char shift_tab[];
-    static unsigned char alt_tab[];
-    static unsigned char asc_num_tab[];
-    static unsigned char scan_num_tab[];
+    static const unsigned char normal_tab[];
+    static const unsigned char shift_tab[];
+    static const unsigned char alt_tab[];
+    static const unsigned char asc_num_tab[];
+    static const unsigned char scan_num_tab[];
 
     // Interpretiert die Make und Break-Codes der Tastatur.
     bool key_decoded();
@@ -74,6 +72,8 @@ private:
     Key key_hit();
 
 public:
+    Keyboard(const Keyboard& copy) = delete;  // Verhindere Kopieren
+
     unsigned int lastkey;  // speichert den ASCII-Code der zuletzt gedrückten Taste
 
     // Initialisierung der Tastatur.

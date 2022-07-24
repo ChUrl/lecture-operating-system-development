@@ -59,21 +59,20 @@
 #define C3 1046.50
 
 class PCSPK {
-
 private:
-    IOport control;  // Steuerregister (write only)
-    IOport data0;    // Zaehler-0 Datenregister (read/write)
-    IOport data2;    // Zaehler-2 Datenregister
-    IOport ppi;      // Status-Register des PPI
-
-    PCSPK(const PCSPK& copy);  // Verhindere Kopieren
+    static const IOport control;  // Steuerregister (write only)
+    static const IOport data0;    // Zaehler-0 Datenregister (read/write)
+    static const IOport data2;    // Zaehler-2 Datenregister
+    static const IOport ppi;      // Status-Register des PPI
 
     // Verzoegerung um X ms (in 1ms Schritten; Min. 1ms)
     inline void delay(int time);
 
 public:
+    PCSPK(const PCSPK& copy) = delete;  // Verhindere Kopieren
+
     // Konstruktor. Initialisieren der Ports.
-    PCSPK() : control(0x43), data0(0x40), data2(0x42), ppi(0x61) {}
+    PCSPK() {}
 
     // Demo Sounds
     void tetris();

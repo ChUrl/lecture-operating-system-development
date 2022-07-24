@@ -17,13 +17,17 @@
 #ifndef __PIC_include__
 #define __PIC_include__
 
-class PIC {
+#include "kernel/IOport.h"
 
+class PIC {
 private:
-    PIC(const PIC& copy) = delete;  // Verhindere Kopieren
+    static const IOport IMR1;  // interrupt mask register von PIC 1
+    static const IOport IMR2;  // interrupt mask register von PIC 2
 
 public:
-    PIC() {}
+    PIC(const PIC& copy) = delete;  // Verhindere Kopieren
+
+    PIC() = default;
 
     // IRQ-Nummern von Geraeten
     enum {
@@ -33,13 +37,13 @@ public:
     };
 
     // Freischalten der Weiterleitung eines IRQs durch den PIC an die CPU
-    void allow(int irq);
+    static void allow(int irq);
 
     // Unterdruecken der Weiterleitung eines IRQs durch den PIC an die CPU
-    void forbid(int irq);
+    static void forbid(int irq);
 
     // Abfragen, ob die Weiterleitung fuer einen bestimmten IRQ unterdrueckt ist
-    bool status(int interrupt_device);
+    static bool status(int interrupt_device);
 };
 
 #endif

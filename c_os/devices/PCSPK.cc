@@ -15,6 +15,11 @@
 #include "devices/PCSPK.h"
 #include "kernel/Globals.h"
 
+const IOport PCSPK::control(0x43);
+const IOport PCSPK::data0(0x40);
+const IOport PCSPK::data2(0x42);
+const IOport PCSPK::ppi(0x61);
+
 /*****************************************************************************
  * Methode:         PCSPK::play                                              *
  *---------------------------------------------------------------------------*

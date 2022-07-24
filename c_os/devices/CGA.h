@@ -20,19 +20,19 @@
 
 class CGA {
 private:
+    static const IOport index_port;  // Auswahl eines Register der Grafikkarte
+    static const IOport data_port;   // Lese-/Schreib-Zugriff auf Register der Grafikk.
+
+public:
     // Copy Konstrutkor unterbinden
     CGA(const CGA& copy) = delete;
 
-    IOport index_port;  // Auswahl eines Register der Grafikkarte
-    IOport data_port;   // Lese-/Schreib-Zugriff auf Register der Grafikk.
-
-public:
-    static const unsigned int CGA_START = 0xb8000U;
-
     // Konstruktur mit Initialisierung der Ports
-    CGA() : index_port(0x3d4), data_port(0x3d5) {
+    CGA() {
         this->setpos(0, 0);
     }
+
+    static const unsigned int CGA_START = 0xb8000U;
 
     // Konstanten fuer die moeglichen Farben im Attribut-Byte.
     typedef enum {
@@ -77,22 +77,22 @@ public:
     };
 
     // Setzen des Cursors in Spalte x und Zeile y.
-    void setpos(unsigned int x, unsigned int y);
+    static void setpos(unsigned int x, unsigned int y);
 
     // Abfragen der Cursorpostion
-    void getpos(unsigned int& x, unsigned int& y) const;
+    static void getpos(unsigned int& x, unsigned int& y) ;
 
     // Anzeige eines Zeichens mit Attribut an einer bestimmten Stelle
     static void show(unsigned int x, unsigned int y, char character, unsigned char attrib = STD_ATTR);
 
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
-    void print(const char* string, unsigned int n, unsigned char attrib = STD_ATTR);
-    void print(const bse::string& string, unsigned int n, unsigned char attrib = STD_ATTR);
-    void print(const bse::string& string, unsigned char attrib = STD_ATTR);
+    void print(const char* string, unsigned int n, unsigned char attrib = STD_ATTR) const;
+    void print(const bse::string& string, unsigned int n, unsigned char attrib = STD_ATTR) const;
+    void print(const bse::string& string, unsigned char attrib = STD_ATTR) const;
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen
-    virtual void scrollup();
+    virtual void scrollup() const;
 
     // Lösche den Textbildschirm
     virtual void clear();

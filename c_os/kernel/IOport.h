@@ -17,14 +17,13 @@
 #define __IOport_include__
 
 class IOport {
-    // Kopieren erlaubt!
-
+private:
     // 16-Bit Adresse im I/O-Adressraum
-    unsigned short address;
+    const unsigned short address;
 
 public:
     // Konstruktor, speichert Port-Adresse
-    IOport(unsigned short a) : address(a) {};
+    explicit IOport(unsigned short a) : address(a) {};
 
     // Byteweise Ausgabe eines Wertes ueber einen I/O-Port.
     void outb(unsigned char val) const {

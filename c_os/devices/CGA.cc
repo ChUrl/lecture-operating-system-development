@@ -14,12 +14,15 @@
 #include "devices/CGA.h"
 #include "user/lib/Memory.h"
 
+const IOport CGA::index_port(0x3d4);
+const IOport CGA::data_port(0x3d5);
+
 /*****************************************************************************
  * Methode:         CGA::setpos                                              *
  *---------------------------------------------------------------------------*
  * Beschreibung:    Setzen des Cursors in Spalte x und Zeile y.              *
  *****************************************************************************/
-void CGA::setpos(const unsigned int x, const unsigned int y) {
+void CGA::setpos(unsigned int x, unsigned int y) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -42,7 +45,7 @@ void CGA::setpos(const unsigned int x, const unsigned int y) {
  *                                                                           *
  * Rückgabewerte:   x und y                                                  *
  *****************************************************************************/
-void CGA::getpos(unsigned int& x, unsigned int& y) const {
+void CGA::getpos(unsigned int& x, unsigned int& y) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -70,7 +73,7 @@ void CGA::getpos(unsigned int& x, unsigned int& y) const {
  *      character   Das auszugebende Zeichen                                 *
  *      attrib      Attributbyte fuer das Zeichen                            *
  *****************************************************************************/
-void CGA::show(const unsigned int x, const unsigned int y, const char character, const unsigned char attrib) {
+void CGA::show(unsigned int x, unsigned int y, char character, unsigned char attrib) {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -95,7 +98,7 @@ void CGA::show(const unsigned int x, const unsigned int y, const char character,
  *      n           Laenger der Zeichenkette                                 *
  *      attrib      Attributbyte fuer alle Zeichen der Zeichenkette          *
  *****************************************************************************/
-void CGA::print(const char* string, const unsigned int n, const unsigned char attrib) {
+void CGA::print(const char* string, unsigned int n, unsigned char attrib) const {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -142,11 +145,11 @@ void CGA::print(const char* string, const unsigned int n, const unsigned char at
     setpos(cursor_x, cursor_y);
 }
 
-void CGA::print(const bse::string& string, const unsigned int n, const unsigned char attrib) {
+void CGA::print(const bse::string& string, const unsigned int n, const unsigned char attrib) const {
     print((const char*)string, n, attrib);
 }
 
-void CGA::print(const bse::string& string, const unsigned char attrib) {
+void CGA::print(const bse::string& string, const unsigned char attrib) const {
     print((const char*)string, string.size(), attrib);
 }
 
@@ -157,7 +160,7 @@ void CGA::print(const bse::string& string, const unsigned char attrib) {
  *                  Die neue Zeile am unteren Bildrand wird mit Leerzeichen  *
  *                  gefuellt.                                                *
  *****************************************************************************/
-void CGA::scrollup() {
+void CGA::scrollup() const {
 
     /* Hier muss Code eingefuegt werden */
 
@@ -195,7 +198,7 @@ void CGA::clear() {
  *      fg          Foreground color                                         *
  *      blink       ywa/no                                                   *
  *****************************************************************************/
-unsigned char CGA::attribute(const CGA::color bg, const CGA::color fg, const bool blink) {
+unsigned char CGA::attribute(CGA::color bg, CGA::color fg, bool blink) {
 
     /* Hier muess Code eingefuegt werden */
 

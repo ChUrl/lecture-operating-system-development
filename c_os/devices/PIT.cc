@@ -12,6 +12,9 @@
 #include "kernel/Globals.h"
 #include "kernel/IOport.h"
 
+const IOport PIT::control(0x43);
+const IOport PIT::data0(0x40);
+
 /*****************************************************************************
  * Methode:         PIT::interval                                            *
  *---------------------------------------------------------------------------*
@@ -25,12 +28,10 @@ void PIT::interval(int us) {
 
     /* hier muss Code eingefuegt werden */
 
-    IOport control(0x43);
     control.outb(0x36);  // Zähler 0 Mode 3
 
     unsigned int cntStart = (1193180.0 / 1000000.0) * us;  // 1.19Mhz PIT
 
-    IOport data0(0x40);
     data0.outb(cntStart & 0xFF);  // Zaehler-0 laden (Lobyte)
     data0.outb(cntStart >> 8);    // Zaehler-0 laden (Hibyte)
 }
@@ -47,7 +48,7 @@ void PIT::plugin() {
     /* hier muss Code eingefuegt werden */
 
     intdis.assign(IntDispatcher::timer, *this);
-    pic.allow(PIC::timer);
+    PIC::allow(PIC::timer);
 }
 
 /*****************************************************************************
