@@ -1,9 +1,12 @@
+Important
+======================================
+- This does not run in the latest "vanilla" C++ VM image, g++-multilib has to be installed extra
+
 Makefile
 ======================================
 - Added the -std=c++17 flag to enable better constexpr support.
 - Removed optimizations as the system would crash with them.
   The BlueScreen would show an empty callstack on crashes with -O2, so I guess the problem is the missing ebp or something like that.
-- Added qemu-stdio target for easy access to the serial output
   
 Changes
 ======================================
@@ -29,6 +32,7 @@ Additions
 - Basic unique_ptr
 - Basic fixed size array (just a wrapper for C-style arrays)
 - Basic dynamic string (heap allocated)
+- Basic span
 
 Bugs
 ======================================
@@ -37,9 +41,14 @@ Bugs
 - The PreemptiveThreadDemo LoopThreads can't be exited, the demo can't be launched multiple times
 - Tree Allocator (uses a red black tree to find best-fit blocks) crashes when freelist root is removed
 - Can't restart the OS (bluescreen)
-- Random bluescreens that are hard to pinpoint
+- Fast keyboard inputs sometimes trigger bluescreens
+- Different combinations of demos also trigger bluescreens
+- Other seemingly random bluescreens that are hard to pinpoint
 
-Findings
+Other
 ======================================
+- Keyboard repeat rate and led functionality is missing
+- Circle functionality in VESA mode is missing
 - Singleton can't have a destructor, as C++ doesn't know how to deinitialize them after program exit.
   This happens because we compile with very limited libraries so "atexit" to register destructors is missing.
+  I wanted to make the device/hardware classes (PCSPK, CPU etc) singleton because it doesn't make sense to have more than one.
