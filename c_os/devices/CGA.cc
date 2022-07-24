@@ -17,6 +17,10 @@
 const IOport CGA::index_port(0x3d4);
 const IOport CGA::data_port(0x3d5);
 
+bse::span<CGA::cga_char_t, CGA::ROWS * CGA::COLUMNS> CGA::SCREEN{reinterpret_cast<CGA::cga_char_t*>(0xb8000U)};
+bse::span<CGA::cga_line_t, CGA::ROWS> CGA::SCREEN_ROWS{reinterpret_cast<CGA::cga_line_t*>(0xb8000U)};
+CGA::cga_page_t* CGA::SCREEN_PAGE {reinterpret_cast<CGA::cga_page_t*>(0xb8000U)};
+
 /*****************************************************************************
  * Methode:         CGA::setpos                                              *
  *---------------------------------------------------------------------------*
@@ -82,7 +86,7 @@ void CGA::show(unsigned int x, unsigned int y, char character, unsigned char att
         return;
     }
 
-    cga_char_t* pos = reinterpret_cast<cga_char_t*>(CGA_START) + x + y * COLUMNS;
+    cga_char_t* pos= SCREEN[x + y * COLUMNS];
     pos->cga_char = character;
     pos->cga_attribute = attrib;
 }
@@ -165,12 +169,10 @@ void CGA::scrollup() const {
     /* Hier muss Code eingefuegt werden */
 
     // Move up
-    bse::memcpy<cga_line_t>(reinterpret_cast<cga_line_t*>(CGA_START),
-                            reinterpret_cast<cga_line_t*>(CGA_START) + 1,
-                            ROWS - 1);
+    bse::memcpy<cga_line_t>(SCREEN_ROWS[0], SCREEN_ROWS[1], ROWS - 1);
 
     // Clear last line
-    bse::zero<cga_line_t>(reinterpret_cast<cga_line_t*>(CGA_START) + ROWS - 1);
+    bse::zero<cga_line_t>(SCREEN_ROWS[ROWS - 1]);
 }
 
 /*****************************************************************************
@@ -182,7 +184,7 @@ void CGA::clear() {
 
     /* Hier muess Code eingefuegt werden */
 
-    bse::zero<cga_page_t>(reinterpret_cast<cga_page_t*>(CGA_START));
+    bse::zero<cga_page_t>(SCREEN_PAGE);
     setpos(0, 0);
 }
 

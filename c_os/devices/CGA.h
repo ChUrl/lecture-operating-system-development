@@ -16,6 +16,7 @@
 
 #include "kernel/IOport.h"
 #include "user/lib/Array.h"
+#include "user/lib/Span.h"
 #include "user/lib/String.h"
 
 class CGA {
@@ -33,8 +34,6 @@ public:
     }
 
 //    virtual ~CGA() = default;
-
-    static const unsigned int CGA_START = 0xb8000U;
 
     // Konstanten fuer die moeglichen Farben im Attribut-Byte.
     typedef enum {
@@ -77,6 +76,10 @@ public:
     struct cga_page_t {
         bse::array<cga_line_t, ROWS> cga_page;
     };
+
+    static bse::span<cga_char_t, ROWS * COLUMNS> SCREEN;
+    static bse::span<cga_line_t, ROWS> SCREEN_ROWS;
+    static cga_page_t* SCREEN_PAGE;  // No span because can't address anything in [0, 1]
 
     // Setzen des Cursors in Spalte x und Zeile y.
     static void setpos(unsigned int x, unsigned int y);
