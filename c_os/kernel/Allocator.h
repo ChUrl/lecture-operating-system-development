@@ -40,12 +40,12 @@ class Allocator {
 public:
     Allocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
+    Allocator();
+
     unsigned int heap_start;
     unsigned int heap_end;
     unsigned int heap_size;
     unsigned int initialized;
-
-    Allocator();
 
     virtual void init() = 0;
     virtual void dump_free_memory() = 0;
