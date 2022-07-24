@@ -16,16 +16,15 @@
 #include "user/lib/Logger.h"
 
 class BumpAllocator : Allocator {
-
 private:
     unsigned char* next;
     unsigned int allocations;
 
     NamedLogger log;
 
+public:
     BumpAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
 
-public:
     BumpAllocator() : log("BMP-Alloc") {};  // Allocator() called implicitely in C++
 
     void init() override;
