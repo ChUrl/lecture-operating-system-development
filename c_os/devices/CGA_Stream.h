@@ -67,15 +67,19 @@ public:
     // Change stream color
     template<typename T>
     friend T& operator<<(T& os, const fgc& fg) {
+        CGA::color old_bg = os.color_bg;
         os.flush();
+        os.color_bg = old_bg;
         os.color_fg = fg.fg;
         return os;
     }
 
     template<typename T>
     friend T& operator<<(T& os, const bgc& bg) {
+        CGA::color old_fg = os.color_fg;
         os.flush();
-        os.color_fg = bg.bg;
+        os.color_fg = old_fg;
+        os.color_bg = bg.bg;
         return os;
     }
 };
