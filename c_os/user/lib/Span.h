@@ -7,44 +7,48 @@
 namespace bse {
 
     // 0 is unchecked
-    template<typename T, const std::size_t N = 0>
+    template<typename T, std::size_t N = 0>
     class span {
     public:
         using iterator = ContinuousIterator<T>;
 
     private:
-        const T* ptr;
+        T* ptr;
         std::size_t sz = N;
 
     public:
         span() = default;
 
-        span(const T* first) : ptr(first) {}
+        span(T* first) : ptr(first) {}
 
-        span(const T* first, const T* last) : ptr(first), sz(last - first) {}
+        span(T* first, T* last) : ptr(first), sz(last - first) {}
 
-        iterator begin() { return iterator(&ptr[0]); }
-        iterator begin() const { return iterator(&ptr[0]); }
+        iterator begin() { return iterator(ptr); }
+        iterator begin() const { return iterator(ptr); }
         // If size is unchecked end() is equal to begin()
         iterator end() { return iterator(&ptr[N]); }
         iterator end() const { return iterator(&ptr[N]); }
 
-        constexpr T& operator[](std::size_t i) {
-            if constexpr (N != 0 && i >= N) {
-                return nullptr;
+        T* operator[](std::size_t i) {
+            if constexpr (N != 0) {
+                if (i >= N) { return nullptr; }
             }
-            return ptr[i];
+            return &ptr[i];
         }
 
-        constexpr const T& operator[](std::size_t i) const {
-            if constexpr (N != 0 && i >= N) {
-                return nullptr;
+        const T* operator[](std::size_t i) const {
+            if constexpr (N != 0) {
+                if (i >= N) { return nullptr; }
             }
-            return ptr[i];
+            return &ptr[i];
         }
 
-        T* data() { return &ptr[0]; }
-        const T* data() const { return &ptr[0]; }
+        T* data() { return ptr; }
+        const T* data() const { return ptr; }
+
+        explicit operator T*() {
+            return ptr;
+        }
 
         // First is inclusive, last exclusive [first, last)
         span& subspan(std::size_t first, std::size_t last = N) {
