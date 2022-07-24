@@ -138,9 +138,7 @@ namespace bse {
             return *this;
         }
 
-        vector(vector&& move) noexcept : buf_pos(move.buf_pos), buf_cap(move.buf_cap) {
-            buf = move.buf;
-
+        vector(vector&& move) noexcept : buf(move.buf), buf_pos(move.buf_pos), buf_cap(move.buf_cap) {
             move.buf_cap = 0;
             move.buf_pos = 0;
             move.buf = nullptr;
