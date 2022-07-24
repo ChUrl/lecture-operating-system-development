@@ -1,2 +1,2 @@
-Checks: "boost-*, bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, misc-*, moderinze-*, performance-*, portability-*, readability-*"
+Checks: "boost-*, bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, misc-*, moderinze-*, performance-*, portability-*, readability-*, -readability-magic-numbers, -cppcoreguidelines-avoid-magic-numbers"
 FormatStyle: file
