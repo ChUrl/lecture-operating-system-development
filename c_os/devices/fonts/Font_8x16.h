@@ -6,9 +6,9 @@
 /*                                            */
 /**********************************************/
 
-constexpr unsigned int FONTDATAMAX_8x16 = 4096;
+constexpr const unsigned int FONTDATAMAX_8x16 = 4096;
 
-constexpr unsigned char fontdata_8x16[FONTDATAMAX_8x16] = {
+constexpr const unsigned char fontdata_8x16[FONTDATAMAX_8x16] = {
 
     /* 0 0x00 '^@' */
     0x00, /* 00000000 */
