@@ -191,6 +191,7 @@ void Scheduler::kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     }
 
     log.error() << "Kill: Couldn't find thread with id: " << tid << " in ready- or block-queue" << endl;
+    log.error() << "Mabe it already exited itself?" << endl;
     CPU::enable_int();
 }
 
@@ -219,6 +220,7 @@ void Scheduler::nice_kill(unsigned int tid, bse::unique_ptr<Thread>* ptr) {
     }
 
     log.error() << "Can't nice kill thread (not found) with id: " << tid << endl;
+    log.error() << "Mabe it already exited itself?" << endl;
     CPU::enable_int();
 }
 
