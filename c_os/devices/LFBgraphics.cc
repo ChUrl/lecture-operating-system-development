@@ -38,7 +38,7 @@ int abs(int a);
  *****************************************************************************/
 inline void LFBgraphics::drawMonoBitmap(unsigned int x, unsigned int y,
                                         unsigned int width, unsigned int height,
-                                        unsigned char* bitmap, unsigned int color) {
+                                        const unsigned char* bitmap, unsigned int color) const {
     // Breite in Bytes
     unsigned short width_byte = width / 8 + ((width % 8 != 0) ? 1 : 0);
 
@@ -69,11 +69,10 @@ inline void LFBgraphics::drawMonoBitmap(unsigned int x, unsigned int y,
  * Beschreibung:    Gibt eine Zeichenkette mit gewaehlter Schrift an der     *
  *                  Position x,y aus.                                        *
  *****************************************************************************/
-void LFBgraphics::drawString(Font& fnt, unsigned int x, unsigned int y,
-                             unsigned int col, char* str, unsigned int len) {
+void LFBgraphics::drawString(const Font& fnt, unsigned int x, unsigned int y,
+                             unsigned int col, const char* str, unsigned int len) const {
     for (unsigned int i = 0; i < len; ++i) {
-        drawMonoBitmap(x, y, fnt.get_char_width(), fnt.get_char_height(),
-                       fnt.getChar(*(str + i)), col);
+        drawMonoBitmap(x, y, fnt.get_char_width(), fnt.get_char_height(), fnt.getChar(*(str + i)), col);
         x += fnt.get_char_width();
     }
 }
@@ -86,7 +85,7 @@ void LFBgraphics::drawString(Font& fnt, unsigned int x, unsigned int y,
  *                                                                           *
  * Beschreibung:    Zeichnen eines Pixels.                                   *
  *****************************************************************************/
-void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) {
+void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) const {
     unsigned char* ptr = (unsigned char*)lfb;
 
     if (hfb == 0 || lfb == 0) {
@@ -134,7 +133,7 @@ void LFBgraphics::drawPixel(unsigned int x, unsigned int y, unsigned int col) {
     }
 }
 
-void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) {
+void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) const {
     // Don't set mode inside the drawing function to use them in animations
 
     if (x1 == x2 && y2 > y1) {
@@ -155,18 +154,18 @@ void LFBgraphics::drawStraightLine(unsigned int x1, unsigned int y1, unsigned in
 // (x1, y1)---(x2, y1)
 //    |          |
 // (x1, y2)---(x2, y2)
-void LFBgraphics::drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) {
+void LFBgraphics::drawRectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int col) const {
     this->drawStraightLine(x1, y1, x2, y1, col);
     this->drawStraightLine(x2, y1, x2, y2, col);
     this->drawStraightLine(x1, y2, x2, y2, col);
     this->drawStraightLine(x1, y1, x1, y2, col);
 }
 
-void LFBgraphics::drawCircle(unsigned int x, unsigned int y, unsigned int rad, unsigned int col) {
+void LFBgraphics::drawCircle(unsigned int x, unsigned int y, unsigned int rad, unsigned int col) const {
     // TODO
 }
 
-void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data) {
+void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned int bytes_pp, unsigned char* pixel_data) const {
     unsigned char* ptr;
     for (unsigned int x = 0; x < width; ++x) {
         for (unsigned int y = 0; y < height; ++y) {
@@ -193,7 +192,7 @@ void LFBgraphics::drawSprite(unsigned int width, unsigned int height, unsigned i
  *---------------------------------------------------------------------------*
  * Beschreibung:    Bildschirm loeschen.                                     *
  *****************************************************************************/
-void LFBgraphics::clear() {
+void LFBgraphics::clear() const {
     unsigned int* ptr = (unsigned int*)lfb;
     unsigned int i;
 
@@ -244,7 +243,7 @@ void LFBgraphics::setDrawingBuff(int v) {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Kopiert den versteckten Puffer in den sichtbaren LFB.    *
  *****************************************************************************/
-void LFBgraphics::copyHiddenToVisible() {
+void LFBgraphics::copyHiddenToVisible() const {
     unsigned int* sptr = (unsigned int*)hfb;
     unsigned int* dptr = (unsigned int*)lfb;
     unsigned int i;
