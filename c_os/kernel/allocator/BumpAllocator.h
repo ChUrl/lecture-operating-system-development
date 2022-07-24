@@ -13,7 +13,7 @@
 #define BumpAllocator_include__
 
 #include "kernel/Allocator.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 class BumpAllocator : Allocator {
 private:

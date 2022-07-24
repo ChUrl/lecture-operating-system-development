@@ -14,7 +14,7 @@
 
 #include "kernel/Allocator.h"
 #include "lib/SpinLock.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 // Format eines freien Blocks, 4 + 4 + 4 Byte
 typedef struct free_block {

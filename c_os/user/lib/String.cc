@@ -1,6 +1,5 @@
 #include "user/lib/String.h"
-#include "user/lib/Math.h"
-#include "user/lib/Memory.h"
+#include "user/lib/mem/Memory.h"
 
 unsigned int bse::strlen(const char* str) {
     const char* current = str;

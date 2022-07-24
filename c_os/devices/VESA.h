@@ -12,7 +12,7 @@
 #define VESA_include__
 
 #include "devices/LFBgraphics.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 // Ausgewaehlte Grafikmodi mit Mode-Nummer
 constexpr const unsigned int MODE_640_480_16BITS = 0x111;

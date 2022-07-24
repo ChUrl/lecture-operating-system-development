@@ -13,8 +13,8 @@
 #define Scheduler_include__
 
 #include "kernel/threads/Thread.h"
-#include "user/lib/Logger.h"
 #include "user/lib/mem/UniquePointer.h"
+#include "user/lib/utility/Logger.h"
 #include "user/lib/Vector.h"
 
 class Scheduler {

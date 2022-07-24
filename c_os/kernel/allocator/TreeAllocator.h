@@ -2,7 +2,7 @@
 #define TreeAllocator_include__
 
 #include "kernel/Allocator.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 // I can't imagine that this is fast with all the tree logic?
 

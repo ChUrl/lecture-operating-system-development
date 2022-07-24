@@ -1,4 +1,4 @@
-#include "user/lib/Logger.h"
+#include "Logger.h"
 #include "kernel/Globals.h"
 
 bool Logger::kout_enabled = true;

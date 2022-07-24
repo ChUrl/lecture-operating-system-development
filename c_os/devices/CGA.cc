@@ -12,7 +12,7 @@
  *                  Aenderungen von Michael Schoettner, HHU, 21.8.2016       *
  *****************************************************************************/
 #include "devices/CGA.h"
-#include "user/lib/Memory.h"
+#include "user/lib/mem/Memory.h"
 
 const IOport CGA::index_port(0x3d4);
 const IOport CGA::data_port(0x3d5);

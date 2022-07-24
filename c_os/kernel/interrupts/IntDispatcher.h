@@ -14,8 +14,8 @@
 #define IntDispatcher_include__
 
 #include "kernel/interrupts/ISR.h"
-#include "user/lib/Logger.h"
 #include "user/lib/Array.h"
+#include "user/lib/utility/Logger.h"
 
 class IntDispatcher {
 private:

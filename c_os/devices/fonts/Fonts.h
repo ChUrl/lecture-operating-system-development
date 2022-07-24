@@ -11,6 +11,8 @@
 #ifndef FONTS_H__
 #define FONTS_H__
 
+#include "user/lib/Array.h"
+
 class Font {
 public:
     virtual ~Font() = default;
@@ -48,12 +50,12 @@ extern const unsigned char fontdata_pearl_8x8[];
 extern const unsigned char fontdata_sun_12x22[];
 extern const unsigned char fontdata_sun_8x16[];
 
-typedef FontInstance<8, 16, fontdata_8x16> Font_8x16;
-typedef FontInstance<8, 8, fontdata_8x8> Font_8x8;
-typedef FontInstance<8, 8, acorndata_8x8> Font_acorn_8x8;
-typedef FontInstance<8, 8, fontdata_pearl_8x8> Font_pearl_8x8;
-typedef FontInstance<12, 22, fontdata_sun_12x22> Font_sun_12x22;
-typedef FontInstance<8, 16, fontdata_sun_8x16> Font_sun_8x16;
+using Font_8x16 = FontInstance<8, 16, fontdata_8x16>;
+using Font_8x8 = FontInstance<8, 8, fontdata_8x8>;
+using Font_acorn_8x8 = FontInstance<8, 8, acorndata_8x8>;
+using Font_pearl_8x8 = FontInstance<8, 8, fontdata_pearl_8x8>;
+using Font_sun_12x22 = FontInstance<12, 22, fontdata_sun_12x22>;
+using Font_sun_8x16 = FontInstance<8, 16, fontdata_sun_8x16>;
 
 extern const Font_8x16 std_font_8x16;
 extern const Font_8x8 std_font_8x8;

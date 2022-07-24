@@ -11,7 +11,7 @@
 
 #include "kernel/allocator/LinkedListAllocator.h"
 #include "kernel/Globals.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 // I don't order the list by size so that the block order corresponds to the location in memory
 // Then I can easily merge adjacent free blocks by finding the previous block without looking at

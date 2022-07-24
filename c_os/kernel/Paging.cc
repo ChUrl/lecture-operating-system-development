@@ -50,7 +50,7 @@
  *****************************************************************************/
 #include "kernel/Paging.h"
 #include "kernel/Globals.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 // Bits fuer Eintraege in der Page-Table
 constexpr const unsigned int PAGE_PRESENT = 0x001;

@@ -28,7 +28,7 @@
 #ifndef Thread_include__
 #define Thread_include__
 
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 
 class Thread {
 private:

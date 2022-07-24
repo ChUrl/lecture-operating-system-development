@@ -2,7 +2,7 @@
 #define KeyEventManager_Include_H_
 
 #include "user/event/KeyEventListener.h"
-#include "user/lib/Logger.h"
+#include "user/lib/utility/Logger.h"
 #include "user/lib/Vector.h"
 
 // NOTE: Could do this more generally but we only have key events
