@@ -17,6 +17,7 @@ namespace bse {
     public:
         array() = default;;  // If i write default something like bse::array<int, 10> arr; is not initialized...
 
+        // Construct like this: bse::array<int, 5> {1, 2, 3, 4, 5};
         array(std::initializer_list<T> list) {
             typename std::initializer_list<T>::iterator it = list.begin();
             for (unsigned int i = 0; i < N; ++i) {
@@ -30,10 +31,10 @@ namespace bse {
         iterator end() { return iterator(&buf[N]); }
         iterator end() const { return iterator(&buf[N]); }
 
-        T& operator[](std::size_t i) { return buf[i]; }
+        constexpr T& operator[](std::size_t i) { return buf[i]; }
         constexpr const T& operator[](std::size_t i) const { return buf[i]; }
 
-        T* data() { return &buf[0]; }  // Not standard, I don't know yet if this will turn out to be a bad idea
+        T* data() { return &buf[0]; }
         const T* data() const { return &buf[0]; }
 
         void swap(array<T, N>& other) {
