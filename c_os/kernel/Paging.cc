@@ -99,7 +99,7 @@ unsigned int* pg_alloc_page() {
  * Beschreibung:    Schreibschutz fuer die uebergebene Seite aktivieren.     *
  *                  Dies fuer das Debugging nuetzlich.                       *
  *****************************************************************************/
-void pg_write_protect_page(unsigned int* p_page) {
+void pg_write_protect_page(const unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
@@ -114,7 +114,7 @@ void pg_write_protect_page(unsigned int* p_page) {
  *---------------------------------------------------------------------------*
  * Beschreibung:    Seite als ausgelagert markieren. Nur fuer Testzwecke.    *
  *****************************************************************************/
-void pg_notpresent_page(unsigned int* p_page) {
+void pg_notpresent_page(const unsigned int* p_page) {
 
     /* hier muss Code eingefügt werden */
 
@@ -161,9 +161,9 @@ void pg_init() {
     // sodass genau der physikalische Adressraum abgedeckt ist?
     num_pages = total_mem / (4096 * 1024);
 
-    logger << INFO << "pg_init: " << total_mem << endl;
-    logger << INFO << "   total_mem: " << total_mem << endl;
-    logger << INFO << "   #pages: " << total_mem / (4096 * 1024) << endl;
+    Logger::instance() << INFO << "pg_init: " << total_mem << endl;
+    Logger::instance() << INFO << "   total_mem: " << total_mem << endl;
+    Logger::instance() << INFO << "   #pages: " << total_mem / (4096 * 1024) << endl;
 
     //
     // Aufbau des Page-Directory

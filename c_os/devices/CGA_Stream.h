@@ -40,8 +40,6 @@ constexpr const fgc lgrey = fgc(CGA::LIGHT_GREY);
 
 class CGA_Stream : public OutStream, public CGA {
 private:
-    CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
-
     // Allow for synchronization of output text, needed when running something in parallel to
     // the PreemptiveThreadDemo for example
     // NOTE: Should only be used by threads (like the demos) to not deadlock the system
@@ -54,8 +52,10 @@ private:
     friend class Logger;  // Give access to the color
 
 public:
+    CGA_Stream(CGA_Stream& copy) = delete;  // Verhindere Kopieren
+
     CGA_Stream() : sem(1), color_fg(CGA::LIGHT_GREY), color_bg(CGA::BLACK), blink(false) {
-        flush();
+        pos = 0;
     }
 
     void lock() { sem.p(); }

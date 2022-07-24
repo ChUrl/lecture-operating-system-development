@@ -27,9 +27,9 @@ private:
     int mode_nr;  // Nummer des Modus
     NamedLogger log;
 
+public:
     VESA(const VESA& copy) = delete;  // Verhindere Kopieren
 
-public:
     VESA() : log("VESA") {}
 
     // Bestimmten Grafikmodus einschalten

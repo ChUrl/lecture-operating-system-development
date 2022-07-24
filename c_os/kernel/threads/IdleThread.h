@@ -15,13 +15,12 @@
 #include "kernel/threads/Thread.h"
 
 class IdleThread : public Thread {
-private:
+public:
     IdleThread(const Thread& copy) = delete;  // Verhindere Kopieren
 
-public:
     IdleThread() : Thread("IdleThread") {}
 
-    void run() override {
+    /*[[noreturn]]*/ void run() override {
         // Idle-Thread läuft, ab jetzt ist der Scheduler fertig initialisiert
         log.info() << "IdleThread enabled preemption" << endl;
         scheduler.enable_preemption(this->tid);

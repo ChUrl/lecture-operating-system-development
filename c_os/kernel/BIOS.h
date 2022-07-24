@@ -34,10 +34,9 @@ struct BIOScall_params {
 extern struct BIOScall_params* BC_params;
 
 class BIOS {
-private:
-    BIOS(const BIOS& copy);  // Verhindere Kopieren
-
 public:
+    BIOS(const BIOS& copy) = delete;  // Verhindere Kopieren
+
     // Initialisierung: manuelles Anlegen einer Funktion
     BIOS();
 

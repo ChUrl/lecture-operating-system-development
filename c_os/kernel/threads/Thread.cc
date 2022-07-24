@@ -55,51 +55,10 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
     // Funktion muss daher dafuer sorgen, dass diese Adresse nie benoetigt
     // wird, sie darf also nicht terminieren, sonst kracht's.
 
-    // *(--sp) = (unsigned int*)object;    // Parameter
+    // I thought this syntax was a bit clearer than decrementing a pointer
     stack[-1] = (unsigned int)object;
-
-    // *(--sp) = (unsigned int*)0x131155;  // Ruecksprungadresse (Dummy)
     stack[-2] = 0x131155U;
-
-    // Nun legen wir noch die Adresse der Funktion "kickoff" ganz oben auf
-    // den Stack. Wenn dann bei der ersten Aktivierung dieser Koroutine der
-    // Stackpointer so initialisiert wird, dass er auf diesen Eintrag
-    // verweist, genuegt ein ret, um die Funktion kickoff zu starten.
-    // Genauso sollen auch alle spaeteren Threadwechsel ablaufen.
-
-    // *(--sp) = (unsigned int*)kickoff;  // Adresse
     stack[-3] = (unsigned int)kickoff;
-
-    // Initialisierung der Struktur ThreadState mit den Werten, die die
-    // nicht-fluechtigen Register beim ersten Starten haben sollen.
-    // Wichtig ist dabei nur der Stackpointer.
-
-    // NOTE: Old code before I used pusha/popa
-    // regs->ebx = 0;
-    // regs->esi = 0;
-    // regs->edi = 0;
-    // regs->ebp = 0;
-    // regs->esp = sp;  // esp now points to the location of the address of kickoff
-
-    // nachfolgend die fluechtige Register
-    // wichtig fuer preemptives Multitasking
-    // regs->eax = 0;
-    // regs->ecx = 0;
-    // regs->edx = 0;
-
-    // flags initialisieren
-    // regs->efl = (void*)0x200;  // Interrupt-Enable
-
-    // NOTE: New code with pusha/popa
-    // unsigned int* temp = (unsigned int*)sp;
-    // *(--sp) = 0;                    // EAX
-    // *(--sp) = 0;                    // ECX
-    // *(--sp) = 0;                    // EDX
-    // *(--sp) = 0;                    // EBX
-    // *(--sp) = (unsigned int*)temp;  // ESP
-    // *(--sp) = 0;                    // EBP
-    // *(--sp) = 0;                    // ESI
-    // *(--sp) = 0;                    // EDI
     stack[-4] = 0;                         // EAX
     stack[-5] = 0;                         // ECX
     stack[-6] = 0;                         // EDX
@@ -108,12 +67,8 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
     stack[-9] = 0;                         // EBP
     stack[-10] = 0;                        // ESI
     stack[-11] = 0;                        // EDI
-
-    // popf
-    // *(--sp) = (unsigned int*)0x200;  // Interrupt-Enable
     stack[-12] = 0x200U;
 
-    // *esp = (unsigned int)sp;
     *esp = (unsigned int)&stack[-12];
 }
 
@@ -127,10 +82,10 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
  *                  wuerde ein sinnloser Wert als Ruecksprungadresse         * 
  *                  interpretiert werden und der Rechner abstuerzen.         *
  *****************************************************************************/
-void kickoff(Thread* object) {
+[[noreturn]] void kickoff(Thread* object) {
     object->run();
 
-    // object->run() kehrt hoffentlich nie hierher zurueck
+    // object->run() kehrt (hoffentlich) nie hierher zurueck
     while (true) {}
 }
 

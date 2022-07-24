@@ -13,11 +13,10 @@
 #define __CPU_include__
 
 class CPU {
-private:
-    CPU(const CPU& copy);  // Verhindere Kopieren
-
 public:
-    CPU() {}
+    CPU(const CPU& copy) = delete;  // Verhindere Kopieren
+
+    CPU() = default;
 
     // Erlauben von (Hardware-)Interrupts
     static inline void enable_int() {

@@ -32,8 +32,6 @@
 
 class Thread {
 private:
-    Thread(const Thread& copy) = delete;  // Verhindere Kopieren
-
     unsigned int* stack;
     unsigned int esp;
 
@@ -48,22 +46,24 @@ protected:
     friend class Scheduler;  // Scheduler can access tid
 
 public:
+    Thread(const Thread& copy) = delete;  // Verhindere Kopieren
+
     virtual ~Thread() {
         log.info() << "Uninitialized thread, ID: " << dec << this->tid << " (" << name << ")" << endl;
         delete[] this->stack;
     }
 
     // Thread aktivieren
-    void start() const;
+    /*[[noreturn]]*/ void start() const;
 
     // Umschalten auf Thread 'next'
-    void switchTo(Thread& next);
+    /*[[noreturn]]*/ void switchTo(Thread& next);
 
     // Ask thread to terminate itself
     void suicide() { running = false; }
 
     // Methode des Threads, muss in Sub-Klasse implementiert werden
-    virtual void run() = 0;
+    [[noreturn]] virtual void run() = 0;
 };
 
 #endif

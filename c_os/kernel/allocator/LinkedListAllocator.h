@@ -34,8 +34,6 @@ private:
     // freie Bloecke werden verkettet
     struct free_block* free_start = nullptr;
 
-    LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
-
     // Traverses the whole list forward till previous block is reached.
     // This can only be called on free blocks as allocated blocks
     // aren't reachable from the freelist.
@@ -45,6 +43,8 @@ private:
     SpinLock lock;
 
 public:
+    LinkedListAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
+
     LinkedListAllocator() : log("LL-Alloc") {}
 
     void init() override;

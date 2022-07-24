@@ -38,17 +38,14 @@ private:
 
     NamedLogger log;
 
-    TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
-
     // Returns the size of the usable memory of a block
     unsigned int get_size(list_block_t* block) const;
     unsigned int get_size(tree_block_t* block) const { return this->get_size((list_block_t*)block); }
 
     void dump_free_memory(tree_block_t* node);
 
-    // NOTE: Would be nice to have this stuff somewhere else for general use (scheduling?)
-    //       but that would require different rbt_node/dll_node structures.
-    //       If I need this again later I should move it.
+    // NOTE: Would be nice to have this stuff somewhere else for general use (scheduling?),
+    //       makes no sense to have this as members. I'll move it later
     void rbt_rot_l(tree_block_t* x);
     void rbt_rot_r(tree_block_t* x);
     void rbt_transplant(tree_block_t* a, tree_block_t* b);
@@ -67,6 +64,8 @@ private:
     void dll_remove(list_block_t* node);
 
 public:
+    TreeAllocator(Allocator& copy) = delete;  // Verhindere Kopieren
+
     TreeAllocator() : log("RBT-Alloc") {};
 
     void init() override;
