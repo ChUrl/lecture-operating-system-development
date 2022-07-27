@@ -1,8 +1,8 @@
 #include "user/MainMenu.h"
 #include "user/demo/ArrayDemo.h"
-#include "user/demo/BlueScreenDemo.h"
 #include "user/demo/HeapDemo.h"
 #include "user/demo/KeyboardDemo.h"
+#include "user/demo/PagingDemo.h"
 #include "user/demo/PCSPKdemo.h"
 #include "user/demo/PreemptiveThreadDemo.h"
 #include "user/demo/SmartPointerDemo.h"
@@ -20,7 +20,7 @@ void print_demo_menu() {
          << "3 - Keyboard Demo\n"
          << "4 - Heap Demo\n"
          << "5 - VBE Demo\n"
-         << "6 - Bluescreen Demo\n"
+         << "6 - Paging Demo\n"
          << "7 - Preemption Demo\n"
          << "Extra demos:\n"
          << "8 - bse::vector demo\n"
@@ -57,7 +57,7 @@ void MainMenu::run() {
                 running_demo = scheduler.ready<VBEdemo>();
                 break;
             case '6':
-                running_demo = scheduler.ready<BlueScreenDemo>();
+                running_demo = scheduler.ready<PagingDemo>();
                 break;
             case '7':
                 running_demo = scheduler.ready<PreemptiveThreadDemo>(3);
