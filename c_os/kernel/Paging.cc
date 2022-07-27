@@ -107,6 +107,8 @@ void pg_write_protect_page(const unsigned int* p_page) {
 
     unsigned int mask = PAGE_WRITEABLE;  // fill to 32bit
     *page = *page & ~mask;               // set writable to 0
+
+    invalidate_tlb_entry(p_page);
 }
 
 /*****************************************************************************
@@ -122,6 +124,8 @@ void pg_notpresent_page(const unsigned int* p_page) {
 
     unsigned int mask = PAGE_PRESENT;
     *page = *page & ~mask;  // set present to 0
+
+    invalidate_tlb_entry(p_page);
 }
 
 /*****************************************************************************
