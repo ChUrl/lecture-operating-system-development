@@ -105,15 +105,15 @@ int main() {
     //
     // NOTE: Cleanup
     // DONE: Use templates for queue so threads don't have to be casted down from chain
-    // TODO: Only use references instead of pointers where possible
+    // DONE: Only use references instead of pointers where possible
     // DONE: Unify debug output format
     // DONE: Cleanup: Remove I added this... Notes, just leave explanations
     // DONE: Remove Math "lib" or do something with it
     // CANCELED: Add some fixed point math like sine approximation or fractions?
-    // TODO: Cleanup imports: Only import stuff in implementation when only needed there
+    // DONE: Cleanup imports: Only import stuff in implementation when only needed there
     // CANCELED: Switch cpu_disableint() to semaphore etc (Spinlock in the scheduler?)
     // CANCELED: Change mylib types to not use T* but T and call with memcpy<Type*> instead of memcpy<Type>?
-    // TODO: Make more stuff const and static and static constexpr const
+    // DONE: Make more stuff const and static and static constexpr const
     // DONE: Remove ArrayList init and do this inside ArrayList when an operation on the list is done
     // DONE: Kevman unsubscribe is needed, because exited threads will still be woken up by kevman
     //       Or check if thread is still running
@@ -126,7 +126,7 @@ int main() {
     // DONE: Move Array/ArrayList/LinkedList/List to bse namespace
     // DONE: Remove the Input.h file and replace functionality with kevman
     // DONE: Replace C style casts with C++ casts
-    // TODO: Add Move/Copy/Assignment stuff to vector, array etc (all where it's missing)
+    // DONE: Add Move/Copy/Assignment stuff to vector, array etc (all where it's missing)
 
     // Scheduler doesn't return
     return 0;
