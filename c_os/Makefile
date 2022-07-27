@@ -70,27 +70,15 @@ DELETE = rm
 ASM = nasm
 CC ?= gcc
 CXX ?= g++
-
-# CC = clang
-# CXX = clang++
-
-EMPTY :=
-GCC = gcc
-ifeq ($(CXX),$(GCC))
-# Separate these as they are not compatible with clang14
-GCCFLAGS = -mmanual-endbr -mpreferred-stack-boundary=2
-else
-GCCFLAGS = $(EMPTY)
-endif
-
+GCCFLAGS ?= -mmanual-endbr -mpreferred-stack-boundary=2
 
 # NOTE: Need -O0 to allow paging/bluescreen to work (We need the ebp on the stack)
 #       Fortify source needs -O2, at least O1
 CFLAGS := $(CFLAGS) -O0 -m32 -march=i486 -Wall -fno-stack-protector -nostdlib -I. -g -ffreestanding -fno-pie -fno-pic -Wno-write-strings -mno-sse -mno-sse2 $(GCCFLAGS)
 
 # NOTE: -std=c++17 for if constexpr and probably some other stuff
-#       -std=c++20 is needed for template concepts and optional references, but we don't have it available :(
-CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++17
+#       -std=c++20 is needed for template concepts and optional references
+CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions -std=c++20
 
 BOOT = ../boot
 TOOLS = ../tools
