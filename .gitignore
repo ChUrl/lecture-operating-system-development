@@ -12,3 +12,4 @@ tools/build
 /c_os/.cache/
 /c_os/dep/
 /.direnv/
+/doxygen/
