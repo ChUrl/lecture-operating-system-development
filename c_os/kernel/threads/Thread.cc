@@ -28,7 +28,7 @@
 extern "C" {
     void Thread_start(unsigned int esp);
 
-    // NOTE: Only when backing up the previous thread the esp get's updated,
+    // NOTE: Only when backing up the previous thread the esp gets updated,
     //       so only esp_pre is a pointer
     void Thread_switch(unsigned int* esp_prev, unsigned int esp_next);
 }
@@ -98,6 +98,11 @@ void Thread_init(unsigned int* esp, unsigned int* stack, void (*kickoff)(Thread*
  *      stack       Stack für die neue Koroutine                             *
  *****************************************************************************/
 Thread::Thread(char* name) : stack(new unsigned int[1024]), esp(0), log(name), name(name), tid(ThreadCnt++) {
+    if (stack == nullptr) {
+        log.error() << "Couldn't initialize Thread (couldn't alloc stack)" << endl;
+        return;
+    }
+
     log.info() << "Initialized thread with ID: " << tid << " (" << name << ")" << endl;
     Thread_init(&esp, &stack[1024], kickoff, this);  // Stack grows from top to bottom
 }
