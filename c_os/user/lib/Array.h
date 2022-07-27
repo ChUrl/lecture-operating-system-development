@@ -15,7 +15,7 @@ namespace bse {
         T buf[N];
 
     public:
-        array() = default;;  // If i write default something like bse::array<int, 10> arr; is not initialized...
+        array() = default;  // If i write default something like bse::array<int, 10> arr; is not initialized...
 
         // Construct like this: bse::array<int, 5> {1, 2, 3, 4, 5};
         array(std::initializer_list<T> list) {
