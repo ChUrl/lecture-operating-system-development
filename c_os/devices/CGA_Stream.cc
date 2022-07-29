@@ -24,7 +24,8 @@
  *                  verwendet werden, um eine Ausgabe zu erzwingen.          *
  *****************************************************************************/
 void CGA_Stream::flush() {
-    print(buffer.data(), pos, attribute(color_bg, color_fg, blink));  // print(buffer...) would work syntactically
+    buffer[pos] = '\0';  // I removed the n argument from print so nullterminate the string
+    print(buffer.data(), attribute(color_bg, color_fg, blink));  // print(buffer...) would work syntactically
                                                                 // but the system wouldn't start, as the bse::array
                                                                 // would be implicitly converted to bse::string and
                                                                 // that is dynamically allocated.

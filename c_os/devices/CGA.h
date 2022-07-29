@@ -18,6 +18,7 @@
 #include "user/lib/Array.h"
 #include "user/lib/Span.h"
 #include "user/lib/String.h"
+#include "user/lib/StringView.h"
 
 class CGA {
 private:
@@ -77,9 +78,9 @@ public:
         bse::array<cga_line_t, ROWS> cga_page;
     };
 
-    static bse::span<cga_char_t, ROWS * COLUMNS> SCREEN;
-    static bse::span<cga_line_t, ROWS> SCREEN_ROWS;
-    static cga_page_t* SCREEN_PAGE;  // No span because can't address anything in [0, 1]
+    static const bse::span<cga_char_t, ROWS * COLUMNS> SCREEN;
+    static const bse::span<cga_line_t, ROWS> SCREEN_ROWS;
+    static cga_page_t* const SCREEN_PAGE;  // No span because can't address anything in [0, 1]
 
     // Setzen des Cursors in Spalte x und Zeile y.
     static void setpos(unsigned int x, unsigned int y);
@@ -91,9 +92,7 @@ public:
     static void show(unsigned int x, unsigned int y, char character, unsigned char attrib = STD_ATTR);
 
     // Anzeige mehrerer Zeichen ab der aktuellen Cursorposition
-    void print(const char* string, unsigned int n, unsigned char attrib = STD_ATTR) const;
-    void print(const bse::string& string, unsigned int n, unsigned char attrib = STD_ATTR) const;
-    void print(const bse::string& string, unsigned char attrib = STD_ATTR) const;
+    void print(const bse::string_view substring, unsigned char attrib = STD_ATTR) const;
 
     // Verschiebt den Bildschirminhalt um eine Zeile nach oben.
     // Neue Zeile am unteren Bildrand mit Leerzeichen fuellen

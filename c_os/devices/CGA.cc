@@ -17,9 +17,9 @@
 const IOport CGA::index_port(0x3d4);
 const IOport CGA::data_port(0x3d5);
 
-bse::span<CGA::cga_char_t, CGA::ROWS * CGA::COLUMNS> CGA::SCREEN{reinterpret_cast<CGA::cga_char_t*>(0xb8000U)};
-bse::span<CGA::cga_line_t, CGA::ROWS> CGA::SCREEN_ROWS{reinterpret_cast<CGA::cga_line_t*>(0xb8000U)};
-CGA::cga_page_t* CGA::SCREEN_PAGE {reinterpret_cast<CGA::cga_page_t*>(0xb8000U)};
+const bse::span<CGA::cga_char_t, CGA::ROWS * CGA::COLUMNS> CGA::SCREEN{reinterpret_cast<CGA::cga_char_t*>(0xb8000U)};
+const bse::span<CGA::cga_line_t, CGA::ROWS> CGA::SCREEN_ROWS{reinterpret_cast<CGA::cga_line_t*>(0xb8000U)};
+CGA::cga_page_t* const CGA::SCREEN_PAGE {reinterpret_cast<CGA::cga_page_t*>(0xb8000U)};
 
 /*****************************************************************************
  * Methode:         CGA::setpos                                              *
@@ -86,7 +86,7 @@ void CGA::show(unsigned int x, unsigned int y, char character, unsigned char att
         return;
     }
 
-    cga_char_t* pos= SCREEN[x + y * COLUMNS];
+    cga_char_t* pos = SCREEN[x + y * COLUMNS];
     pos->cga_char = character;
     pos->cga_attribute = attrib;
 }
@@ -98,11 +98,11 @@ void CGA::show(unsigned int x, unsigned int y, char character, unsigned char att
  *                  '\n' fuer Zeilenvorschub.                                *
  *                                                                           *
  * Parameter:                                                                *
- *      string      Auszugebende Zeichenkette                                *
+ *      substring      Auszugebende Zeichenkette                                *
  *      n           Laenger der Zeichenkette                                 *
  *      attrib      Attributbyte fuer alle Zeichen der Zeichenkette          *
  *****************************************************************************/
-void CGA::print(const char* string, unsigned int n, unsigned char attrib) const {
+void CGA::print(const bse::string_view string, unsigned char attrib) const {
 
     /* Hier muess Code eingefuegt werden */
 
@@ -110,8 +110,7 @@ void CGA::print(const char* string, unsigned int n, unsigned char attrib) const 
     unsigned int cursor_y = 0;  // Don't poll registers every stroke
     getpos(cursor_x, cursor_y);
 
-    for (int byte = 0; byte < n; ++byte) {
-        char current = *(string + byte);
+    for (char current : string) {
         if (current == '\n') {
             cursor_x = 0;
             cursor_y = cursor_y + 1;
@@ -147,14 +146,6 @@ void CGA::print(const char* string, unsigned int n, unsigned char attrib) const 
     }
 
     setpos(cursor_x, cursor_y);
-}
-
-void CGA::print(const bse::string& string, const unsigned int n, const unsigned char attrib) const {
-    print(static_cast<const char*>(string), n, attrib);
-}
-
-void CGA::print(const bse::string& string, const unsigned char attrib) const {
-    print(static_cast<const char*>(string), string.size(), attrib);
 }
 
 /*****************************************************************************
