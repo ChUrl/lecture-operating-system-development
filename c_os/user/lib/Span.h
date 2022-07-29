@@ -13,8 +13,8 @@ namespace bse {
         using iterator = ContinuousIterator<T>;
 
     private:
-        T* ptr;
-        std::size_t sz = N;
+        T* const ptr;
+        const std::size_t sz = N;
 
     public:
         span() = default;
@@ -31,14 +31,14 @@ namespace bse {
 
         T* operator[](std::size_t i) {
             if constexpr (N != 0) {
-                if (i >= N) { return nullptr; }
+                if (i < 0 || i >= N) { return nullptr; }
             }
             return &ptr[i];
         }
 
-        const T* operator[](std::size_t i) const {
+        T* operator[](std::size_t i) const {
             if constexpr (N != 0) {
-                if (i >= N) { return nullptr; }
+                if (i < 0 || i >= N) { return nullptr; }
             }
             return &ptr[i];
         }
