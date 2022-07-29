@@ -40,14 +40,8 @@ void SerialOut::write(const char a) {
     com1.outb(a);
 }
 
-void SerialOut::write(const char* a) {
-    const char* current = a;
-    do {
-        write(*current);
-        current = current + 1;
-    } while (*current != '\0');
-}
-
-void SerialOut::write(const bse::string& a) {
-    write(static_cast<const char*>(a));
+void SerialOut::write(const bse::string_view a) {
+    for (char current : a) {
+        write(current);
+    }
 }

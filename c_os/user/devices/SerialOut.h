@@ -3,6 +3,7 @@
 
 #include "kernel/IOport.h"
 #include "user/lib/String.h"
+#include "user/lib/StringView.h"
 
 // NOTE: I took this code from https://wiki.osdev.org/Serial_Ports
 
@@ -21,8 +22,7 @@ public:
 
     static char read();
     static void write(char a);
-    static void write(const char* a);
-    static void write(const bse::string& a);
+    static void write(const bse::string_view a);
 };
 
 #endif
