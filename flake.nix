@@ -100,7 +100,7 @@
             {
               name = "debug";
               help = "Start OS for gdb connection and run gdb";
-              command = "make clean && make qemu-gdb --jobs 6 & && make gdb";
+              command = "(make clean) && (make qemu-gdb --jobs 6 &) && (make gdb)";
             }
           ];
         };
