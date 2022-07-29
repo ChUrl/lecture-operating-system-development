@@ -10,15 +10,16 @@ namespace bse {
     class string_view {
     private:
         std::size_t len = 0;
-        char* buf = nullptr;
+        const char* buf = nullptr;
 
     public:
         using iterator = ContinuousIterator<char>;
 
         string_view() = default;
 
-        string_view(char* str) : len(strlen(str)), buf(str) {}
-
+        // Important that char* and string& can be implicitly converted: Only have to provide one
+        // implementation using stringview for everything
+        string_view(const char* str) : len(strlen(str)), buf(str) {}
         string_view(const string& str) : len(str.size()), buf(static_cast<char*>(str)) {}
 
         iterator begin() { return iterator(buf); }
@@ -26,10 +27,10 @@ namespace bse {
         iterator end() { return iterator(&buf[len]); }
         iterator end() const { return iterator(&buf[len]); }
 
-        explicit operator char*() { return buf; }
-        explicit operator char*() const { return buf; }
+        explicit operator const char*() { return buf; }
+        explicit operator const char*() const { return buf; }
 
-        char operator[](std::size_t pos) { return buf[pos]; }
+//        char operator[](std::size_t pos) { return buf[pos]; }
         char operator[](std::size_t pos) const { return buf[pos]; }
 
         bool operator==(const string_view& other) const {
