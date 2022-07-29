@@ -12,7 +12,8 @@ namespace bse {
     public:
         ContinuousIterator() = delete;
 
-        ContinuousIterator(T* ptr) : ptr(ptr) {}
+        // Use const_cast as the iterator has to increment the pointer
+        ContinuousIterator(const T* ptr) : ptr(const_cast<T*>(ptr)) {}
 
         ContinuousIterator& operator++() {
             ++ptr;
