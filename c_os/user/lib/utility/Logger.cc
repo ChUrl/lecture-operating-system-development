@@ -15,7 +15,7 @@ constexpr const char* ansi_cyan = "\033[1;36m";
 constexpr const char* ansi_white = "\033[1;37m";
 constexpr const char* ansi_default = "\033[0;39m ";
 
-void Logger::log(const char* message, CGA::color col) const {
+void Logger::log(const bse::string_view message, CGA::color col) const {
     if (Logger::kout_enabled) {
         CGA::color old_col = kout.color_fg;
         kout << fgc(col)
@@ -71,40 +71,28 @@ void Logger::flush() {
     Logger::unlock();
 }
 
-void Logger::trace(const char* message) const {
+void Logger::trace(const bse::string_view message) const {
     if (Logger::level <= Logger::TRACE) {
         log(message, CGA::WHITE);
     }
 }
-void Logger::trace(const bse::string& message) const {
-    trace(static_cast<const char*>(message));
-}
 
-void Logger::debug(const char* message) const {
+void Logger::debug(const bse::string_view message) const {
     if (Logger::level <= Logger::DEBUG) {
         log(message, CGA::LIGHT_MAGENTA);
     }
 }
-void Logger::debug(const bse::string& message) const {
-    debug(static_cast<const char*>(message));
-}
 
-void Logger::error(const char* message) const {
+void Logger::error(const bse::string_view message) const {
     if (Logger::level <= Logger::ERROR) {
         log(message, CGA::LIGHT_RED);
     }
 }
-void Logger::error(const bse::string& message) const {
-    error(static_cast<const char*>(message));
-}
 
-void Logger::info(const char* message) const {
+void Logger::info(const bse::string_view message) const {
     if (Logger::level <= Logger::INFO) {
         log(message, CGA::LIGHT_BLUE);
     }
-}
-void Logger::info(const bse::string& message) const {
-    info(static_cast<const char*>(message));
 }
 
 // Manipulatoren
