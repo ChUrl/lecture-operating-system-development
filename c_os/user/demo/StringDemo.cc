@@ -12,8 +12,8 @@ void StringDemo::run() {
 
     log.info() << "Reassign string" << endl;
     str1 = "Hello";
-    kout << str1 << " has length " << str1.size() << endl;
-    kout << "Again with strlen: Hello has length " << bse::strlen("Hello") << endl;
+    kout << str1 << " has length " << dec << str1.size() << endl;
+    kout << "Again with strlen: Hello has length " << dec << bse::strlen("Hello") << endl;
 
     kout << "Adding strings: " << str1 << " + World" << endl;
     log.info() << "Adding strings" << endl;
