@@ -12,7 +12,7 @@ namespace bse {
 
     class string {
     private:
-        unsigned int len = 0;
+        std::size_t len = 0;
         char* buf = nullptr;
 
     public:
@@ -25,9 +25,9 @@ namespace bse {
         }
 
         // Convert char array to string
-        template<unsigned int N>
+        template<std::size_t N>
         explicit string(const array<char, N>& arr) : len(N), buf(new char[len + 1]) {
-            for (unsigned int i = 0; i < N; ++i) {
+            for (std::size_t i = 0; i < N; ++i) {
                 buf[i] = arr[i];
             }
             buf[N] = '\0';
@@ -68,8 +68,8 @@ namespace bse {
             delete[] buf;
         }
 
-        iterator begin() { return iterator(&buf[0]); }
-        iterator begin() const { return iterator(&buf[0]); }
+        iterator begin() { return iterator(buf); }
+        iterator begin() const { return iterator(buf); }
         iterator end() { return iterator(&buf[len]); }
         iterator end() const { return iterator(&buf[len]); }
 
@@ -91,7 +91,7 @@ namespace bse {
         }
 
         string operator+(const char* other) const {
-            unsigned int other_len = strlen(other);
+            std::size_t other_len = strlen(other);
 
             string new_str;
             new_str.len = len + other_len;
@@ -140,7 +140,7 @@ namespace bse {
             return strcmp(buf, other.buf) != 0;
         }
 
-        unsigned int size() const {
+        std::size_t size() const {
             return len;
         }
     };
