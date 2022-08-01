@@ -18,16 +18,16 @@ namespace bse {
         string_view() = default;
 
         // Important that char* and string& can be implicitly converted: Only have to provide one
-        // implementation using stringview for everything
+        // implementation using stringview for everything (OutStream only uses string_view for example)
         string_view(const char* str) : len(strlen(str)), buf(str) {}
         string_view(const string& str) : len(str.size()), buf(static_cast<char*>(str)) {}
 
-        iterator begin() { return iterator(buf); }
+//        iterator begin() { return iterator(buf); }
         iterator begin() const { return iterator(buf); }
-        iterator end() { return iterator(&buf[len]); }
+//        iterator end() { return iterator(&buf[len]); }
         iterator end() const { return iterator(&buf[len]); }
 
-        explicit operator const char*() { return buf; }
+//        explicit operator const char*() { return buf; }
         explicit operator const char*() const { return buf; }
 
 //        char operator[](std::size_t pos) { return buf[pos]; }
