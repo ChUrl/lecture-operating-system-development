@@ -4,6 +4,8 @@
 #include "user/lib/Array.h"
 #include "user/lib/Iterator.h"
 
+// A heap dynamically heap-allocated string (mutable)
+
 namespace bse {
 
     unsigned int strlen(const char* str);
@@ -129,6 +131,32 @@ namespace bse {
             buf = new_buf;
             len = new_len;
 
+            return *this;
+        }
+
+        string operator*(unsigned int n) const {
+            string new_str;
+            new_str.len = len * n;
+            new_str.buf = new char[new_str.len];
+
+            for (unsigned int i = 0; i < n; ++i) {
+                strncpy(&new_str.buf[i * len], len, buf);
+            }
+
+            return new_str;
+        }
+
+        string& operator*=(unsigned int n) {
+            unsigned int new_len = len * n;
+            char* new_buf = new char[new_len];
+
+            for (unsigned int i = 0; i < n; ++i) {
+                strncpy(&new_buf[i * len], len, buf);
+            }
+
+            delete[] buf;
+            buf = new_buf;
+            len = new_len;
             return *this;
         }
 

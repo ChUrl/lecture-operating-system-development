@@ -26,6 +26,10 @@ void StringDemo::run() {
     str3 += " World";
     kout << str3 << endl;
 
+    kout << "Hello World *= 3" << endl;
+    str3 *= 3;
+    kout << str3 << endl;
+
     kout << "String iterator!" << endl;
     for (const char c : str1) {
         kout << c << " ";
