@@ -44,6 +44,8 @@ Bugs
 - Fast keyboard inputs sometimes trigger bluescreens
 - Different combinations of demos also trigger bluescreens
 - Other seemingly random bluescreens that are hard to pinpoint
+- Key event management doesn't differentiate between press/type/release etc.
+- Main menu doesn't work with multiple inputs (like holding a key)
 
 Other
 ======================================
